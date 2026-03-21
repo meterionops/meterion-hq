@@ -4,18 +4,30 @@
 Kernel v1 + Types Foundation
 
 ## Completed
-- Kernel v1 bootstrap (identity, governance, projectRegistry)
-- Pack A (executionContext, capability types)
-- Pack B (projectAdapter, routing, validation types)
+- Kernel v1 bootstrap implemented
+  - identity
+  - governance
+  - projectRegistry
+- Pack A implemented
+  - executionContext types
+  - capability types
+- Pack B implemented
+  - projectAdapter types
+  - routing types
+  - validation types
 
 ## Next
-- Pack C (supervisory kernel layer)
+- Implement Pack C (supervisory kernel layer)
+- Define Operational World Model contracts
+- Prepare decision reasoning layer
 
 ## Constraints
 - deterministic only
 - no side effects
 - no integrations
-- no execution
+- no execution logic
+- kernel remains pure and static
 
 ## Notes
-Pertti is a supervisory system, not an agent.
+Pertti is evolving from static kernel → structured reasoning system.
+No agent behavior allowed.
