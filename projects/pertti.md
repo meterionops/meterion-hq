@@ -280,3 +280,104 @@ Move from foundation → capability:
   - memory retrieval refinement
   - simulation engine expansion
   - learning loop activation
+
+## Discovery + Simulation Layer Complete
+
+Pertti now includes structured capability for:
+
+- discovering opportunities
+- modeling alternative futures
+- comparing hypothetical outcomes
+
+### What this enables
+
+Pertti can now:
+
+- identify new CityOS expansion opportunities (cities, sources, markets)
+- detect:
+  - content gaps
+  - SEO opportunities
+  - automation opportunities
+  - new product ideas
+
+- simulate:
+  - multiple strategies
+  - alternative launch paths
+  - different operational configurations
+
+- compare scenarios before any decision or execution
+
+---
+
+### Key Design Outcome
+
+Pertti is no longer only a supervisory system.
+
+It is now:
+
+- a supervisory system
+- a memory system
+- a discovery system
+- a simulation system
+
+This combination enables:
+
+- portfolio-level opportunity discovery
+- safe exploration of new business ideas
+- scalable multi-city expansion logic
+- structured reasoning over future possibilities
+
+---
+
+### Safety Guarantees
+
+The system enforces:
+
+- no simulation leakage into production truth
+- no automatic decision-making from discovery
+- no execution without policy + approval layers
+- explicit uncertainty representation
+
+---
+
+### Strategic Direction
+
+This unlocks:
+
+- venture discovery pipeline
+- simulation-driven strategy design
+- cross-project intelligence reuse
+- long-term system learning (via memory + feedback)
+
+---
+
+### Current State
+
+Pertti is now:
+
+- architecturally complete at contract level
+- capable of:
+  - observing
+  - reasoning
+  - discovering
+  - simulating
+
+Still missing:
+
+- formal venture proposal layer
+- execution orchestration integration
+- runtime + storage implementation
+
+---
+
+### Next Focus
+
+Move from exploration → formalization:
+
+- Venture Proposal Contracts (next step)
+
+After that:
+
+- simulation refinement
+- decision-policy integration with proposals
+- execution system bridging (OpenClaw / Codex)
