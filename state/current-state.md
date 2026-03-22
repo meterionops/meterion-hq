@@ -1120,3 +1120,133 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can frame, prioritize, and allocate work across the portfolio, it needs a governed way to revise strategic theses and themes based on memory, outcomes, and feedback over time.
+
+## 2026-03-22 — Strategic Review Loop Complete
+
+### Summary
+
+Pertti architecture has been extended with a strategic review and thesis revision layer on top of the previously completed strategic venture pipeline.
+
+New layer added in this phase:
+
+- Strategic Review / Thesis Revision Contracts
+
+This completes a full strategic loop for portfolio-level venture intelligence.
+
+Pertti can now:
+
+- generate opportunities
+- simulate alternative futures
+- formalize venture proposals
+- connect them to strategic themes
+- prioritize them
+- model capacity allocation
+- review and revise strategic theses based on evidence, outcomes, and feedback
+
+---
+
+### New Layer Added
+
+#### Strategic Review / Thesis Revision
+File:
+- `src/types/strategicReview.ts`
+
+Purpose:
+- represent explicit strategic review cycles
+- represent revision proposals for theses and themes
+- connect revision work to:
+  - memory evidence
+  - outcome artifacts
+  - learning / feedback artifacts
+  - governance review artifacts
+
+Capabilities introduced:
+- review cycle states
+- revision types
+- revision impact levels
+- evidence links
+- review records
+- review recommendations
+
+---
+
+### Strategic Portfolio Loop (Current)
+
+Pertti now supports the following strategic cycle:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Prioritization
+→ Portfolio Allocation / Capacity Planning
+→ Recommendation / Policy / Planning
+→ Outcome / Feedback / Governance Review
+→ Strategic Review / Thesis Revision
+→ back to Portfolio Thesis / Strategic Themes
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete strategy formation and revision loop.
+
+This means Pertti can now, at contract level:
+
+- frame strategic direction
+- align venture candidates to themes
+- prioritize them
+- allocate constrained capacity
+- review whether strategy itself should change
+
+This turns Pertti from a static portfolio reasoning model into a dynamic strategic operating model.
+
+---
+
+### Safety / Governance Properties Preserved
+
+The strategic review layer remains:
+
+- non-executing
+- non-policy-authoritative
+- evidence-linked
+- explicit about revision proposals
+- free of silent thesis mutation
+
+All strategy changes remain:
+- explainable
+- reviewable
+- auditable
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / theme layer (v1)
+- Prioritization layer (v1)
+- Portfolio allocation / capacity layer (v1)
+- Strategic review / thesis revision loop (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- portfolio initiative / program layer
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- strategic review execution workflow
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Portfolio Initiative / Program Contracts
+
+Rationale:
+Now that Pertti can create, prioritize, allocate, and revise strategic work, it needs a higher-order structure for grouping multiple proposals and initiatives into longer-running portfolio programs.
