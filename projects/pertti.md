@@ -3,7 +3,7 @@
 ## Status
 Active.
 
-Pertti has progressed from Kernel v1 and Supervisory Kernel Foundation into a broader supervisory architecture contract stack.
+Pertti has progressed from Kernel v1 and Supervisory Kernel Foundation into a broader supervisory operating model contract stack.
 
 ## Completed Baseline
 
@@ -36,74 +36,101 @@ Pack D
 Pack E
 - `src/index.ts` export update
 
-## Newly Completed Architecture Contracts
+## Completed Supervisory Architecture Contracts
 
 ### World Model Contracts
-Completed:
 - `src/types/worldModel.ts`
 
 Purpose:
-- defines structured state/action/constraint/consequence contracts
-- keeps World Model between validation and decision policy
+- structured state/action/constraint/consequence contracts
+- positioned between validation and decision policy
 - no execution
 - no policy implementation
 
 ### Recommendation Boundary Contracts
-Completed:
 - `src/types/recommendation.ts`
 
 Purpose:
-- defines recommendation candidates, rationale, and human review packaging
-- preserves separation between world model reasoning and downstream policy
+- recommendation candidates
+- rationale
+- human review packaging
+- clean boundary after world model reasoning
 
 ### World Model Engine Interface
-Completed:
 - `src/types/worldModelEngine.ts`
 
 Purpose:
-- defines pure engine invocation boundary
+- pure engine invocation boundary
 - no implementation logic
-- no simulation engine implementation yet
+- no simulation implementation
 
 ### Decision Policy Engine Contracts
-Completed:
 - `src/types/decisionPolicy.ts`
 
 Purpose:
-- defines policy-facing decision contracts
+- policy-facing decision contracts
 - explicit human approval requirement
 - no execution logic
-- status terminology kept separate from execution semantics
 
 ### Execution Routing Contracts
-Completed:
 - `src/types/executionRouting.ts`
 
 Purpose:
-- transforms policy decisions into abstract routing contracts
+- abstract routing contracts
 - preserves approval visibility
-- keeps routing distinct from execution
+- distinct from execution
 
 ### Outcome Ledger Contracts
-Completed:
 - `src/types/outcomeLedger.ts`
 
 Purpose:
-- defines audit-oriented, link-based ledger records
-- captures decisions, routes, impact, and audit notes
+- audit-oriented, link-based ledger records
+- captures decision/routing/impact context
 - no storage logic
 
 ### Learning / Feedback Contracts
-Completed:
 - `src/types/learningFeedback.ts`
 
 Purpose:
-- defines structured feedback records and learning targets
-- keeps learning boundary audit-friendly and non-adaptive
-- no learning engine logic
-- no self-modification
+- structured feedback records
+- learning targets
+- non-adaptive contract boundary
 
-## Current Locked Supervisory Spine
+### Planner Contracts
+- `src/types/planner.ts`
+
+Purpose:
+- structured goals, steps, dependencies, blockers
+- downstream of supervisory reasoning/policy/routing
+- no execution or scheduling
+
+### Project Adapter Resolver Contracts
+- `src/types/projectAdapterResolver.ts`
+
+Purpose:
+- project/step/route to adapter mapping
+- supports ambiguity and unresolved cases
+- no dispatch behavior
+
+### Role Task Model Contracts
+- `src/types/roleTask.ts`
+
+Purpose:
+- role-bound task representation
+- explicit capability requirements
+- task linkage to plan/route/adapter/project
+- no scheduling or execution
+
+### Task Dispatch Boundary Contracts
+- `src/types/taskDispatch.ts`
+
+Purpose:
+- dispatch readiness representation
+- approval gate boundary
+- abstract dispatch targets
+- no queue/worker/runtime behavior
+
+## Current Locked Supervisory Operating Model
 Validation
 → World Model
 → Recommendation Boundary
@@ -111,12 +138,16 @@ Validation
 → Execution Routing
 → Outcome Ledger
 → Learning / Feedback
+→ Planner
+→ Project Adapter Resolver
+→ Role Task Model
+→ Task Dispatch Boundary
 
 ## What Pertti Is Becoming
 Pertti is being built as:
 - a governance-driven supervisory AI operating system
 - a portfolio-level operator
-- a memory-capable and reasoning-capable system
+- a memory-capable, reasoning-capable, planning-capable system
 - a simulation-capable and review-oriented architecture
 
 Pertti is not:
@@ -126,16 +157,10 @@ Pertti is not:
 
 ## Recommended Next Step
 Next recommended architecture layer:
-- Planner Contracts
+- Supervisory Run Session Contracts
 
 Rationale:
-The current supervisory contract spine is now strong enough that planning can be defined on top of:
-- reasoning
-- recommendation
-- policy
-- routing
-- ledger
-- feedback
+The current contract stack is now broad enough that run/session boundaries should be explicitly defined before implementation-heavy runtime behavior.
 
 ## Operating Guidance
 Continue using:
@@ -148,4 +173,4 @@ Continue with:
 - review
 - next pack
 
-Avoid jumping directly into execution-heavy implementation before planner boundaries are locked.
+Avoid jumping into execution-heavy implementation before supervisory run/session boundaries are locked.
