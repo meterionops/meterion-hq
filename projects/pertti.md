@@ -499,3 +499,32 @@ This is the point where Pertti becomes capable, at architecture level, of not on
 ### Next recommended layer
 
 - Strategic Review / Thesis Revision Contracts
+
+## Strategic Review / Thesis Revision Loop Complete
+
+Pertti now includes an explicit strategic review layer that can:
+
+- review portfolio theses
+- propose revisions to themes and thesis framing
+- connect strategic changes to:
+  - memory evidence
+  - outcomes
+  - feedback
+  - governance review artifacts
+
+### What this enables
+
+Pertti can now:
+
+- avoid static strategy drift
+- revise portfolio logic explicitly
+- connect strategic changes to evidence
+- maintain a governed strategy loop over time
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of not only generating and allocating portfolio work but also revising the strategy that governs that work.
+
+### Next recommended layer
+
+- Portfolio Initiative / Program Contracts
