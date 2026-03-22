@@ -174,3 +174,22 @@ Continue with:
 - next pack
 
 Avoid jumping into execution-heavy implementation before supervisory run/session boundaries are locked.
+
+### Update — Supervisory Contracts v1 + Identity Layer
+
+Pertti supervisory contract system (v1) has been completed with:
+
+- full end-to-end contract stack (World Model → Outcome → Feedback)
+- canonical identity layer (canonicalIds.ts)
+- identity normalization across core and audit layers
+
+Pertti is now structurally capable of:
+
+- portfolio-level supervision
+- multi-project coordination
+- deterministic decision + audit loop
+- outcome-driven feedback cycles
+
+Next phase:
+- either identity/envelope refinement
+- or move toward opportunity discovery layer
