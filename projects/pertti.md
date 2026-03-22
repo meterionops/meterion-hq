@@ -415,3 +415,30 @@ This is the first point where Pertti becomes capable, at architecture level, of 
 ### Next recommended layer
 
 - Portfolio Thesis / Strategic Themes Contracts
+
+## Portfolio Thesis / Strategic Themes Layer Complete
+
+Pertti now includes a strategic framing layer that connects:
+
+- opportunities
+- simulations
+- venture proposals
+
+to broader portfolio theses and strategic themes.
+
+### What this enables
+
+Pertti can now:
+
+- avoid treating opportunities as isolated ideas
+- group multiple initiatives under shared strategic direction
+- frame venture candidates in portfolio context
+- prepare for explicit prioritization and allocation layers
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of not only generating ventures but also organizing them into coherent portfolio strategy.
+
+### Next recommended layer
+
+- Opportunity / Proposal Prioritization Contracts
