@@ -556,3 +556,27 @@ This is the point where Pertti becomes capable, at architecture level, of managi
 ### Next recommended layer
 
 - Initiative → Recommendation / Planning Bridge
+
+## Initiative → Recommendation / Planning Bridge Complete
+
+Pertti now includes an explicit bridge that connects:
+
+- portfolio initiatives / programs
+- recommendation artifacts
+- planning artifacts
+
+### What this enables
+
+Pertti can now:
+
+- decompose higher-order initiatives into downstream advisory structures
+- preserve traceability from portfolio strategy to operational planning
+- support partial initiative decomposition without hidden behavior
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of connecting portfolio program structures directly back into the lower-level supervisory operating pipeline.
+
+### Next recommended layer
+
+- Portfolio Gate / Investment Committee Contracts
