@@ -193,3 +193,90 @@ Pertti is now structurally capable of:
 Next phase:
 - either identity/envelope refinement
 - or move toward opportunity discovery layer
+
+## Memory Architecture — Contracts Layer Complete
+
+Pertti now includes a formal Memory OS contract layer.
+
+This defines how memory works across:
+
+- multiple projects
+- multiple cities (CityOS scale)
+- long-lived supervisory runs
+- simulation environments
+
+### What this enables
+
+Pertti can now:
+
+- store structured knowledge with:
+  - scope
+  - authority
+  - provenance
+  - temporal validity
+
+- separate:
+  - operational truth
+  - inferred knowledge
+  - simulation results
+
+- retrieve knowledge safely without:
+  - cross-project contamination
+  - simulation leakage
+
+- evolve knowledge via:
+  - explicit promotion lifecycle
+  - review and governance controls
+
+---
+
+### Key Design Outcome
+
+Pertti is no longer just a supervisory reasoning system.
+
+It is now:
+
+- a supervisory operating system
+- combined with a memory operating system
+
+This combination enables:
+
+- portfolio-level intelligence
+- multi-city supervision (CityOS)
+- long-term learning with governance
+- safe simulation-driven exploration
+
+---
+
+### Strategic Direction
+
+This unlocks future capabilities:
+
+- large-scale opportunity discovery
+- cross-project pattern learning
+- simulation-driven business creation
+- persistent system intelligence over time
+
+---
+
+### Current Status
+
+- Supervisory contracts: complete
+- Memory contracts: complete
+- Execution: still external (OpenClaw / Codex)
+- System remains:
+  - read-only
+  - propose-only
+  - governance-driven
+
+---
+
+### Next Focus
+
+Move from foundation → capability:
+
+- Opportunity Discovery layer (recommended next)
+- Later:
+  - memory retrieval refinement
+  - simulation engine expansion
+  - learning loop activation
