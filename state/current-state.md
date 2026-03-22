@@ -995,3 +995,128 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can frame and prioritize opportunities and proposals, it needs an explicit layer for allocating constrained attention, resources, and execution capacity across the portfolio.
+
+## 2026-03-22 — Portfolio Allocation Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with an explicit portfolio allocation and capacity planning layer on top of the previously completed strategic venture pipeline.
+
+New layer added in this phase:
+
+- Portfolio Allocation / Capacity Planning Contracts
+
+This gives Pertti the ability to move from:
+
+- opportunity discovery
+- venture proposal
+- strategic framing
+- prioritization
+
+into an explicit advisory model of:
+
+- where constrained portfolio attention should go
+- how capacity constraints are represented
+- what tradeoffs exist between candidate initiatives
+
+---
+
+### New Layer Added
+
+#### Portfolio Allocation / Capacity Planning
+File:
+- `src/types/portfolioAllocation.ts`
+
+Purpose:
+- represent advisory allocation structures
+- represent capacity constraints and capacity windows
+- connect opportunities, proposals, and strategic themes to constrained portfolio capacity
+- preserve tradeoff visibility before policy or execution decisions
+
+Capabilities introduced:
+- capacity units
+- capacity windows
+- capacity constraints
+- allocation targets
+- allocation reasons
+- allocation comparisons
+- advisory allocation records
+
+---
+
+### Strategic Venture Pipeline (Current)
+
+Pertti now supports the following strategic path:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Prioritization
+→ Portfolio Allocation / Capacity Planning
+→ Recommendation
+→ Decision Policy
+→ Planning / Routing / Dispatch
+→ External Execution
+→ Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti now includes the full contract-level structure required to:
+
+- discover new opportunities
+- model possible futures
+- shape venture candidates
+- connect them to portfolio strategy
+- prioritize them
+- express how constrained capacity should be allocated across them
+
+This makes Pertti architecturally capable of acting not only as a supervisory system, but as a portfolio intelligence and allocation system.
+
+---
+
+### Safety / Governance Properties Preserved
+
+The allocation layer remains:
+
+- non-executing
+- non-scheduling
+- non-policy-authoritative
+- advisory and explainable
+- explicit about constraints and tradeoffs
+
+No hidden optimization or execution semantics are introduced.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / themes layer (v1)
+- Prioritization layer (v1)
+- Portfolio allocation / capacity planning layer (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- strategic review / thesis revision loop
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- allocation execution / resource management
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Strategic Review / Thesis Revision Contracts
+
+Rationale:
+Now that Pertti can frame, prioritize, and allocate work across the portfolio, it needs a governed way to revise strategic theses and themes based on memory, outcomes, and feedback over time.
