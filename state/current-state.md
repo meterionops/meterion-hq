@@ -840,3 +840,158 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can generate and strategically frame venture candidates, it needs an explicit prioritization layer to determine what should move forward first.
+
+## 2026-03-22 — Strategic Venture Pipeline Complete
+
+### Summary
+
+Pertti architecture has been extended with a full strategic venture pipeline on top of the previously completed supervisory and memory systems.
+
+New layers added in this phase:
+
+- Opportunity Discovery Contracts
+- Simulation / Scenario Contracts
+- Venture Proposal Contracts
+- Proposal → Recommendation Bridge Contracts
+- Portfolio Thesis / Strategic Themes Contracts
+- Opportunity / Proposal Prioritization Contracts
+
+This means Pertti can now move structurally from observed patterns and memory into strategic venture candidates, simulated alternatives, formal proposals, recommendation conversion, thesis alignment, and explicit prioritization.
+
+---
+
+### Completed Strategic Venture Layers
+
+#### 1. Opportunity Discovery
+File:
+- `src/types/opportunityDiscovery.ts`
+
+Purpose:
+- discover structured opportunities
+- connect opportunities to signals, memory, and reasoning outputs
+- preserve uncertainty and scope
+
+#### 2. Simulation / Scenario
+File:
+- `src/types/simulationScenario.ts`
+
+Purpose:
+- represent hypothetical branches
+- attach assumptions, constraints, signals, and expected outcomes
+- keep all scenario artifacts explicitly hypothetical
+
+#### 3. Venture Proposal
+File:
+- `src/types/ventureProposal.ts`
+
+Purpose:
+- formalize opportunities and simulations into buildable but non-executing proposals
+- capture rationale, expected outcomes, dependencies, and options
+
+#### 4. Proposal → Recommendation Bridge
+File:
+- `src/types/proposalToRecommendation.ts`
+
+Purpose:
+- convert venture proposals into recommendation candidates
+- preserve conversion traceability
+- support rejection and deferral without hidden logic
+
+#### 5. Portfolio Thesis / Strategic Themes
+File:
+- `src/types/portfolioThesis.ts`
+
+Purpose:
+- frame opportunities and proposals within broader portfolio strategy
+- define strategic themes and thesis-level grouping
+- support portfolio coherence before prioritization
+
+#### 6. Prioritization
+File:
+- `src/types/prioritization.ts`
+
+Purpose:
+- express advisory prioritization signals for opportunities and proposals
+- capture strategic alignment, feasibility, and prioritization rationale
+- remain non-authoritative and separate from policy decisions
+
+---
+
+### Full Strategic Intelligence Path
+
+Pertti now supports the following end-to-end strategic path:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Prioritization
+→ Recommendation
+→ Decision Policy
+→ Planning / Routing / Dispatch
+→ External Execution
+→ Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti now includes:
+
+- Supervisory OS contracts
+- Memory OS contracts
+- Venture intelligence contracts
+- Strategic framing contracts
+- Prioritization contracts
+
+This means Pertti is architecturally capable of:
+
+- discovering new opportunities
+- modeling alternative futures
+- formalizing venture candidates
+- aligning them with strategy
+- prioritizing them before policy and execution
+
+---
+
+### Safety / Governance Properties Preserved
+
+All new layers remain:
+
+- deterministic at the contract layer
+- non-executing
+- non-policy-authoritative
+- traceable to evidence or rationale
+- uncertainty-aware
+- compatible with governance review and human override
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / theme layer (v1)
+- Prioritization layer (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- allocation / capacity planning layer
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- strategic review / thesis revision loop
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Portfolio Allocation / Capacity Planning Contracts
+
+Rationale:
+Now that Pertti can frame and prioritize opportunities and proposals, it needs an explicit layer for allocating constrained attention, resources, and execution capacity across the portfolio.
