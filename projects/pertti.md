@@ -528,3 +528,31 @@ This is the point where Pertti becomes capable, at architecture level, of not on
 ### Next recommended layer
 
 - Portfolio Initiative / Program Contracts
+
+## Portfolio Initiative / Program Layer Complete
+
+Pertti now includes a portfolio initiative layer that groups:
+
+- opportunities
+- venture proposals
+- allocation decisions
+- strategic themes
+
+into structured, longer-running portfolio efforts.
+
+### What this enables
+
+Pertti can now:
+
+- represent coordinated programs instead of isolated proposals
+- connect strategy to multi-step execution paths
+- model portfolio evolution over time
+- organize work across multiple initiatives simultaneously
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of managing a structured venture portfolio rather than a flat set of ideas or recommendations.
+
+### Next recommended layer
+
+- Initiative → Recommendation / Planning Bridge
