@@ -1372,3 +1372,127 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can structure work into initiatives, it needs a controlled and traceable way to translate those initiatives into concrete recommendations and planning inputs.
+
+## 2026-03-22 — Initiative Bridge Complete
+
+### Summary
+
+Pertti architecture has been extended with an explicit bridge from portfolio initiatives into downstream recommendation and planning artifacts.
+
+New layer added in this phase:
+
+- Initiative → Recommendation / Planning Bridge Contracts
+
+This completes the structural connection between:
+
+- higher-order portfolio initiatives/programs
+- recommendation-level advisory outputs
+- planner-facing operational structures
+
+---
+
+### New Layer Added
+
+#### Initiative → Recommendation / Planning Bridge
+File:
+- `src/types/initiativeBridge.ts`
+
+Purpose:
+- translate portfolio initiatives into recommendation-facing artifacts
+- translate portfolio initiatives into planning-facing artifacts
+- preserve decomposition traceability
+- support partial conversion without hidden logic
+
+Capabilities introduced:
+- initiative conversion statuses
+- initiative conversion reasons
+- initiative → recommendation links
+- initiative → plan links
+- explicit decomposition records
+- bridge input/output boundary
+
+---
+
+### Portfolio-to-Operations Path (Current)
+
+Pertti now supports the following structural flow:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Prioritization
+→ Portfolio Allocation / Capacity Planning
+→ Strategic Review / Thesis Revision
+→ Portfolio Initiative / Program
+→ Initiative → Recommendation / Planning Bridge
+→ Recommendation / Planner / Decision Policy
+→ Routing / Dispatch / Execution Surfaces
+→ Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti now includes an explicit bridge from portfolio-level structures into downstream operational advisory structures.
+
+This means Pertti can now:
+
+- shape portfolio initiatives
+- keep them strategically coherent
+- decompose them into recommendation and planning outputs
+- preserve traceability between high-level strategy and lower-level operational work
+
+This removes the previous architectural gap between:
+- initiative/program-level portfolio structures
+- recommendation/planning-level operational structures
+
+---
+
+### Safety / Governance Properties Preserved
+
+The bridge layer remains:
+
+- non-executing
+- non-scheduling
+- non-policy-authoritative
+- explicit about decomposition
+- free of hidden conversion behavior
+
+No silent initiative decomposition or execution behavior is introduced.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / themes layer (v1)
+- Prioritization layer (v1)
+- Portfolio allocation / capacity planning layer (v1)
+- Strategic review / thesis revision loop (v1)
+- Portfolio initiative / program layer (v1)
+- Initiative → Recommendation / Planning bridge (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- portfolio-level gate / investment committee layer
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- formal planning → execution surface bridge
+- memory trust/retrieval refinements
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Portfolio Gate / Investment Committee Contracts
+
+Rationale:
+Now that Pertti can generate, prioritize, allocate, group, and decompose initiatives, it needs a governed portfolio-level gate for formal approval, rejection, deferral, or investment-style decisions across higher-order work.
