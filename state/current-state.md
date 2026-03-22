@@ -1250,3 +1250,125 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can create, prioritize, allocate, and revise strategic work, it needs a higher-order structure for grouping multiple proposals and initiatives into longer-running portfolio programs.
+
+## 2026-03-22 — Portfolio Initiative Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a portfolio initiative / program layer on top of the completed strategic venture pipeline and strategic review loop.
+
+New layer added in this phase:
+
+- Portfolio Initiative / Program Contracts
+
+This introduces a stable structure for grouping opportunities, proposals, and allocations into longer-running portfolio efforts.
+
+---
+
+### New Layer Added
+
+#### Portfolio Initiative / Program
+File:
+- `src/types/portfolioInitiative.ts`
+
+Purpose:
+- group opportunities and proposals into structured initiatives
+- connect initiatives to:
+  - strategic themes and theses
+  - portfolio allocation decisions
+  - longer-running portfolio goals
+- provide a stable abstraction for multi-step, multi-proposal efforts
+
+Capabilities introduced:
+- initiative status and lifecycle
+- initiative types (program categories)
+- initiative scope
+- initiative goals
+- initiative rationale
+- explicit link sets (thesis, themes, opportunities, proposals, allocation)
+- initiative timelines
+- initiative-level review notes
+
+---
+
+### Strategic Portfolio Model (Current)
+
+Pertti now supports a full multi-layer portfolio intelligence structure:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Prioritization
+→ Portfolio Allocation / Capacity Planning
+→ Strategic Review / Thesis Revision
+→ Portfolio Initiative / Program
+→ Recommendation / Policy / Planning
+→ Execution / Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full portfolio structuring layer:
+
+- initiatives provide grouping across:
+  - multiple opportunities
+  - multiple proposals
+  - multiple allocation decisions
+- initiatives connect strategy to longer-running work
+- portfolio structure is no longer flat (list of proposals), but hierarchical
+
+This enables Pertti to reason about:
+
+- coordinated programs
+- multi-step venture tracks
+- cross-proposal execution paths
+- longer-term portfolio evolution
+
+---
+
+### Safety / Governance Properties Preserved
+
+The initiative layer remains:
+
+- non-executing
+- non-scheduling
+- non-policy-authoritative
+- purely structural and explanatory
+
+No execution or hidden orchestration behavior is introduced.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / themes layer (v1)
+- Prioritization layer (v1)
+- Portfolio allocation / capacity planning layer (v1)
+- Strategic review / thesis revision loop (v1)
+- Portfolio initiative / program layer (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- initiative → recommendation / planning bridge
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- portfolio-level approval / gating mechanisms
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Initiative → Recommendation / Planning Bridge
+
+Rationale:
+Now that Pertti can structure work into initiatives, it needs a controlled and traceable way to translate those initiatives into concrete recommendations and planning inputs.
