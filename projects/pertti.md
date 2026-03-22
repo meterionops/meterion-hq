@@ -381,3 +381,37 @@ After that:
 - simulation refinement
 - decision-policy integration with proposals
 - execution system bridging (OpenClaw / Codex)
+## Venture Intelligence Chain Complete
+
+Pertti now includes a complete upstream venture intelligence contract flow:
+
+- Opportunity Discovery
+- Simulation / Scenario
+- Venture Proposal
+- Proposal → Recommendation Bridge
+
+This means Pertti can now move structurally from:
+
+observed patterns / memory
+→ opportunity candidate
+→ simulated scenarios
+→ formal venture proposal
+→ recommendation candidate
+
+### What this enables
+
+Pertti can now support:
+
+- structured venture discovery
+- market-entry exploration
+- scenario-based opportunity shaping
+- proposal formalization before policy review
+- future portfolio-level strategic filtering
+
+### Strategic significance
+
+This is the first point where Pertti becomes capable, at architecture level, of acting as a venture formation system rather than only an operational supervisor.
+
+### Next recommended layer
+
+- Portfolio Thesis / Strategic Themes Contracts
