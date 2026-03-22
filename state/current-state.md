@@ -440,3 +440,157 @@ Future (not yet):
 - simulation execution logic
 - memory retrieval refinement
 - learning loop activation
+
+## 2026-03-22 — Venture Proposal Layer + Exploration Stack Complete
+
+STATE UPDATE — Venture Proposal Layer + Exploration Stack Complete
+Summary
+
+Pertti has now reached a major architectural milestone:
+
+Full exploration → proposal pipeline is defined as pure, governed, type-only contract layers.
+
+This introduces a complete upstream intelligence stack capable of:
+
+discovering opportunities
+
+simulating scenarios
+
+formalizing venture proposals
+
+feeding structured inputs into recommendation and policy systems
+
+All layers remain:
+
+deterministic
+
+non-executing
+
+governance-aligned
+
+traceable and auditable
+
+🧠 New Layer Added
+Venture Proposal Contracts (ventureProposal.ts)
+
+A new formalization boundary between exploration and decision-making.
+
+Capabilities:
+
+converts opportunities + simulations into structured proposals
+
+represents buildable venture candidates
+
+captures:
+
+rationale (problem, assumptions, risks, uncertainties)
+
+expected outcomes
+
+dependencies
+
+alternative options
+
+links proposals to:
+
+opportunity candidates
+
+simulation scenarios
+
+memory evidence
+
+Key property:
+
+Venture proposals are non-executing, uncertainty-aware, and review-oriented artifacts
+
+🔗 Exploration Stack (Now Complete)
+
+Pertti now includes a fully defined upstream intelligence pipeline:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Recommendation
+→ Decision Policy
+→ Planning / Routing / Dispatch
+→ Execution (external systems only)
+🧱 Architectural Properties
+
+The exploration stack enforces:
+
+1. Separation of Concerns
+
+discovery ≠ simulation ≠ proposal ≠ decision
+
+no layer leaks execution or policy responsibilities
+
+2. Traceability
+
+Every proposal can be traced back to:
+
+memory evidence
+
+opportunity signals
+
+simulation branches
+
+3. Uncertainty Awareness
+
+assumptions, risks, and uncertainties are first-class
+
+no implicit certainty is introduced
+
+4. Governance Compatibility
+
+proposals are safe inputs for:
+
+recommendation system
+
+decision policy layer
+
+no autonomous execution paths
+
+📁 Files Added (This Phase)
+
+src/types/opportunityDiscovery.ts
+
+src/types/simulationScenario.ts
+
+src/types/ventureProposal.ts
+
+🧩 System Maturity Update
+
+Pertti is now capable (architecturally) of:
+
+supervising multiple projects
+
+exploring new venture opportunities
+
+simulating strategic paths
+
+formalizing new business concepts as structured proposals
+
+This enables future capabilities such as:
+
+automated venture pipeline generation
+
+portfolio-level opportunity comparison
+
+country-level expansion simulation
+
+systematic discovery of new products/services
+
+⚠️ Still Missing (Next Steps)
+
+The following layers are not yet defined:
+
+Proposal → Recommendation bridge
+
+Strategic / portfolio-level prioritization
+
+Simulation evaluation refinement
+
+Memory retrieval optimization layer
+
+Execution integration (OpenClaw / external adapters)
