@@ -471,3 +471,31 @@ This is the point where Pertti becomes capable, at architecture level, of struct
 ### Next recommended layer
 
 - Portfolio Allocation / Capacity Planning Contracts
+
+## Portfolio Allocation / Capacity Planning Layer Complete
+
+Pertti now includes an explicit portfolio allocation layer that connects:
+
+- opportunities
+- venture proposals
+- strategic themes
+- prioritization outputs
+
+to constrained portfolio capacity.
+
+### What this enables
+
+Pertti can now:
+
+- express where limited attention and capacity should go
+- represent tradeoffs between initiatives
+- connect strategic direction to practical allocation choices
+- prepare for future portfolio operating decisions
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of not only deciding what is important but also modeling what can realistically be advanced under limited capacity.
+
+### Next recommended layer
+
+- Strategic Review / Thesis Revision Contracts
