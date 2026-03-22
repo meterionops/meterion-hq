@@ -287,3 +287,156 @@ Memory is not reasoning and does not replace the supervisory pipeline.
    - Memory Retrieval refinement (optional)
 
 Memory storage, retrieval engines, and infrastructure are intentionally NOT implemented yet.
+
+## 2026-03-22 — Opportunity Discovery + Simulation Contracts Complete
+
+### Summary
+
+Pertti architecture has been extended with:
+
+- Opportunity Discovery Contracts
+- Simulation / Scenario Contracts
+
+This completes the full upstream intelligence pipeline:
+
+memory → reasoning → discovery → simulation
+
+Pertti can now:
+
+- identify new opportunities
+- structure them as explicit candidates
+- simulate alternative futures
+- compare branches without making decisions
+- keep all hypothetical reasoning isolated from operational truth
+
+---
+
+### Opportunity Discovery Contracts (v1)
+
+New file:
+
+- src/types/opportunityDiscovery.ts
+
+#### Capabilities
+
+Pertti can now represent opportunities with:
+
+- explicit source:
+  - memory_pattern
+  - world_model
+  - simulation
+  - external_signal
+  - operator_input
+
+- scoped targeting:
+  - global / domain / project / city / country
+
+- structured hypothesis:
+  - assumptions
+  - risks
+  - uncertainties
+  - expected value
+
+- linked evidence:
+  - signals
+  - entities
+  - memory references
+
+- lightweight scoring (non-authoritative)
+
+#### Architectural Role
+
+Opportunity Discovery sits:
+
+- above memory + world model
+- before simulation and planning
+
+It introduces structured exploration without decision authority.
+
+---
+
+### Simulation / Scenario Contracts (v1)
+
+New file:
+
+- src/types/simulationScenario.ts
+
+#### Capabilities
+
+Pertti can now:
+
+- represent simulation scenarios as structured objects
+- create multiple scenario branches
+- attach:
+  - assumptions
+  - constraints
+  - signals
+  - expected outcomes
+
+- compare branches (advisory only)
+- explicitly mark all outputs as hypothetical
+
+#### Critical Safety Property
+
+All scenarios include:
+
+- isHypothetical: true
+
+Rule:
+Simulation results must never be treated as production truth without explicit promotion.
+
+---
+
+### Intelligence Pipeline (v1)
+
+Pertti now supports the following upstream flow:
+
+1. Memory + Observations
+2. World Model reasoning
+3. Opportunity Discovery
+4. Simulation / Scenario modeling
+
+This pipeline is:
+
+- non-executing
+- non-authoritative
+- explainable
+- traceable
+- governance-safe
+
+---
+
+### Architectural Impact
+
+Pertti now operates as:
+
+- Supervisory OS (decisions, planning, routing)
+- Memory OS (knowledge, retrieval, promotion)
+- Discovery OS (opportunity identification)
+- Simulation OS (hypothetical modeling)
+
+This establishes a full pre-execution intelligence layer.
+
+---
+
+### Status
+
+- Supervisory Contracts: COMPLETE (v1)
+- Memory Contracts: COMPLETE (v1)
+- Opportunity Discovery: COMPLETE (v1)
+- Simulation / Scenario: COMPLETE (v1)
+- Canonical IDs: PARTIALLY APPLIED
+
+---
+
+### Next Steps
+
+1. GitHub checkpoint (this update)
+2. Next layer:
+   - Venture Proposal Contracts (recommended)
+
+Future (not yet):
+
+- simulation execution logic
+- memory retrieval refinement
+- learning loop activation
