@@ -580,3 +580,27 @@ This is the point where Pertti becomes capable, at architecture level, of connec
 ### Next recommended layer
 
 - Portfolio Gate / Investment Committee Contracts
+
+## Portfolio Governance Layer Complete
+
+Pertti now includes an explicit portfolio governance layer consisting of:
+
+- Portfolio Gate / Investment Committee
+- Portfolio Decision Record / Investment Ledger
+
+### What this enables
+
+Pertti can now:
+
+- formally gate portfolio initiatives and proposals
+- record portfolio decisions in an append-oriented ledger model
+- preserve strategic decision history over time
+- connect governance decisions to proposals, initiatives, and allocations
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of governed portfolio decision-making rather than only strategic suggestion and framing.
+
+### Next recommended layer
+
+- Planning → Execution Surface Bridge
