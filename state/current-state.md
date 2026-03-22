@@ -594,3 +594,135 @@ Simulation evaluation refinement
 Memory retrieval optimization layer
 
 Execution integration (OpenClaw / external adapters)
+
+## 2026-03-22 — Venture Intelligence Chain Complete
+
+### Summary
+
+Pertti has now completed a full venture intelligence contract chain on top of the previously defined supervisory and memory architecture.
+
+New layers added in this phase:
+
+- Opportunity Discovery Contracts
+- Simulation / Scenario Contracts
+- Venture Proposal Contracts
+- Proposal → Recommendation Bridge Contracts
+
+This means Pertti can now model the full upstream path from observed patterns to formal recommendation candidates.
+
+---
+
+### Completed Venture Intelligence Layers
+
+#### 1. Opportunity Discovery
+File:
+- `src/types/opportunityDiscovery.ts`
+
+Purpose:
+- represent new opportunities as structured candidates
+- link opportunities to memory, reasoning, and signals
+- preserve scope, evidence, and uncertainty
+
+#### 2. Simulation / Scenario
+File:
+- `src/types/simulationScenario.ts`
+
+Purpose:
+- represent hypothetical branches and scenarios
+- attach assumptions, constraints, signals, and modeled outcomes
+- keep all scenario outputs explicitly hypothetical
+
+#### 3. Venture Proposal
+File:
+- `src/types/ventureProposal.ts`
+
+Purpose:
+- formalize opportunities and simulations into reviewable venture proposals
+- capture rationale, dependencies, options, expected outcomes, and uncertainties
+- remain non-executing and policy-neutral
+
+#### 4. Proposal → Recommendation Bridge
+File:
+- `src/types/proposalToRecommendation.ts`
+
+Purpose:
+- convert proposals into recommendation candidates
+- preserve traceability and explicit conversion records
+- support selective conversion, rejection, or deferral
+
+---
+
+### New End-to-End Intelligence Path
+
+Pertti now supports the following structural path:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Recommendation
+→ Decision Policy
+→ Planning / Routing / Dispatch
+→ External Execution
+→ Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti is no longer only a supervisory operations architecture.
+
+It now includes a formal venture intelligence stack capable of:
+
+- detecting opportunities
+- modeling alternative futures
+- shaping candidate ventures
+- converting them into policy-ready recommendations
+
+This enables later development toward:
+
+- systematic venture generation
+- market-entry simulation
+- cross-project opportunity comparison
+- portfolio-level strategic intelligence
+
+---
+
+### Safety / Governance Properties Preserved
+
+These new layers remain:
+
+- deterministic at the contract layer
+- non-executing
+- non-authoritative by default
+- uncertainty-aware
+- traceable to evidence
+- compatible with governance review and policy gating
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- runtime logic
+- storage / retrieval engines
+- execution integrations
+- strategic thesis layer
+- portfolio prioritization layer
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Portfolio Thesis / Strategic Themes Contracts
+
+Rationale:
+Now that Pertti can generate opportunity and proposal candidates, it needs a strategic layer that can group, frame, and evaluate them against broader portfolio direction.
