@@ -604,3 +604,32 @@ This is the point where Pertti becomes capable, at architecture level, of govern
 ### Next recommended layer
 
 - Planning → Execution Surface Bridge
+
+## Memory Promotion / Trust Workflow Complete
+
+Pertti now includes a formal trust workflow layer for memory.
+
+This adds:
+
+- explicit promotion review records
+- explicit trust decisions
+- explicit lifecycle transitions
+- evidence-linked promotion logic
+- governance-aware memory trust boundaries
+
+### What this enables
+
+Pertti can now:
+
+- treat trust as an explicit workflow, not an implicit property
+- connect memory promotion to outcomes, feedback, and governance review
+- preserve historical knowledge without silent overwrite
+- support reviewed/trusted memory in a controlled way
+
+### Strategic significance
+
+This is the point where Pertti’s memory system becomes not only structured and retrievable, but governable as a trust pipeline.
+
+### Next recommended layer
+
+- Cross-Layer Traceability / Evidence Graph Contracts
