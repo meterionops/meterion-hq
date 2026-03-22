@@ -1496,3 +1496,144 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can generate, prioritize, allocate, group, and decompose initiatives, it needs a governed portfolio-level gate for formal approval, rejection, deferral, or investment-style decisions across higher-order work.
+
+## 2026-03-22 — Portfolio Governance Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a portfolio governance layer that formalizes portfolio-level gating and persistent decision recording.
+
+New layers added in this phase:
+
+- Portfolio Gate / Investment Committee Contracts
+- Portfolio Decision Record / Investment Ledger Contracts
+
+This completes the governance side of the strategic venture pipeline.
+
+---
+
+### New Layers Added
+
+#### 1. Portfolio Gate / Investment Committee
+File:
+- `src/types/portfolioGate.ts`
+
+Purpose:
+- represent portfolio-level gate decisions
+- support proposal-level and initiative-level gating
+- model:
+  - explicit gate targets
+  - committee references
+  - gate rationale
+  - constraints
+  - conditions
+- preserve explainability and human/governance visibility
+
+Capabilities introduced:
+- gate status
+- gate decision
+- gate target reference
+- committee reference
+- rationale / constraints / conditions
+- review notes
+
+#### 2. Portfolio Decision Record / Investment Ledger
+File:
+- `src/types/portfolioDecisionLedger.ts`
+
+Purpose:
+- persist portfolio-level decisions as explicit, audit-safe ledger records
+- preserve temporal decision history
+- connect decisions to:
+  - gates
+  - proposals
+  - initiatives
+  - allocation references
+
+Capabilities introduced:
+- decision record status
+- decision record type
+- decision snapshot
+- decision temporal metadata
+- ledger envelope and ledger boundary
+
+---
+
+### Strategic Governance Path (Current)
+
+Pertti now supports the following strategic governance flow:
+
+Portfolio Thesis / Themes
+→ Prioritization
+→ Allocation / Capacity
+→ Portfolio Initiative / Program
+→ Portfolio Gate / Investment Committee
+→ Portfolio Decision Record / Investment Ledger
+→ Outcome / Feedback / Memory
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full portfolio governance structure at the contract level.
+
+This means Pertti can now:
+
+- gate higher-order strategic work explicitly
+- represent portfolio-level approval/reject/defer/escalate decisions
+- store these decisions in a durable, append-oriented ledger model
+- support traceable portfolio governance over time
+
+This removes the previous gap between:
+- strategic initiative shaping
+- and persistent portfolio decision history
+
+---
+
+### Safety / Governance Properties Preserved
+
+These governance layers remain:
+
+- non-executing
+- non-workflow-implementing
+- non-budget-engine
+- audit-first
+- explicit about decision rationale and conditions
+- free of silent overwrite semantics
+
+No hidden portfolio approval logic or execution behavior is introduced.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Strategic venture pipeline (v1)
+- Portfolio thesis / themes layer (v1)
+- Prioritization layer (v1)
+- Portfolio allocation / capacity planning layer (v1)
+- Strategic review / thesis revision loop (v1)
+- Portfolio initiative / program layer (v1)
+- Initiative → Recommendation / Planning bridge (v1)
+- Portfolio gate / investment committee layer (v1)
+- Portfolio decision record / investment ledger layer (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- planning → execution surface bridge
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+- memory trust/retrieval refinements
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Planning → Execution Surface Bridge
+
+Rationale:
+Now that Pertti can generate, govern, and persist portfolio decisions, it needs a controlled bridge from planning artifacts into concrete execution surfaces such as OpenClaw, Codex, human operators, and other adapters.
