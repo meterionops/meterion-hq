@@ -726,3 +726,117 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can generate opportunity and proposal candidates, it needs a strategic layer that can group, frame, and evaluate them against broader portfolio direction.
+
+## 2026-03-22 — Portfolio Thesis Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a strategic portfolio framing layer on top of the previously completed venture intelligence stack.
+
+New layer added in this phase:
+
+- Portfolio Thesis / Strategic Themes Contracts
+
+This gives Pertti the ability to organize opportunities and venture proposals under broader strategic direction instead of treating them as disconnected candidates.
+
+---
+
+### New Layer Added
+
+#### Portfolio Thesis / Strategic Themes
+File:
+- `src/types/portfolioThesis.ts`
+
+Purpose:
+- represent portfolio-level theses
+- represent strategic themes
+- link opportunities and venture proposals to broader strategy
+- provide a framing layer before prioritization and policy selection
+
+Capabilities introduced:
+- thesis status
+- strategic theme categories
+- portfolio scope
+- strategic rationale
+- thesis/theme grouping
+- explicit thesis → opportunity / proposal links
+
+---
+
+### Strategic Venture Intelligence Stack
+
+Pertti now supports the following full upstream intelligence path:
+
+Memory
+→ Opportunity Discovery
+→ Simulation / Scenario
+→ Venture Proposal
+→ Proposal → Recommendation Bridge
+→ Portfolio Thesis / Strategic Themes
+→ Recommendation
+→ Decision Policy
+→ Planning / Routing / Dispatch
+→ External Execution
+→ Outcome / Feedback
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete strategic intelligence chain capable of:
+
+- detecting opportunities
+- simulating alternative futures
+- formalizing venture candidates
+- converting proposals into recommendations
+- grouping opportunities and proposals under strategic portfolio theses
+
+This strengthens Pertti’s role as:
+
+- supervisory AI operating system
+- memory operating system
+- venture intelligence system
+- portfolio strategy system
+
+---
+
+### Safety / Governance Properties Preserved
+
+The new strategic layer remains:
+
+- non-executing
+- non-authoritative by default
+- explainable
+- scope-aware
+- evidence-compatible
+- review-friendly
+
+No policy decisions or prioritization logic are introduced in this layer.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture Intelligence chain (v1)
+- Portfolio Thesis / Strategic Themes layer (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- prioritization layer
+- portfolio allocation / capacity layer
+- runtime engines
+- storage/retrieval engines
+- execution integrations
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Opportunity / Proposal Prioritization Contracts
+
+Rationale:
+Now that Pertti can generate and strategically frame venture candidates, it needs an explicit prioritization layer to determine what should move forward first.
