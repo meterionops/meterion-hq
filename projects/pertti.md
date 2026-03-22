@@ -442,3 +442,32 @@ This is the point where Pertti becomes capable, at architecture level, of not on
 ### Next recommended layer
 
 - Opportunity / Proposal Prioritization Contracts
+
+## Strategic Venture Pipeline Complete
+
+Pertti now includes a complete strategic venture pipeline:
+
+- Opportunity Discovery
+- Simulation / Scenario
+- Venture Proposal
+- Proposal → Recommendation Bridge
+- Portfolio Thesis / Strategic Themes
+- Prioritization
+
+### What this enables
+
+Pertti can now:
+
+- discover opportunities
+- simulate alternative futures
+- shape ventures into formal proposals
+- connect them to strategic themes
+- prioritize them before decision policy
+
+### Strategic significance
+
+This is the point where Pertti becomes capable, at architecture level, of structured venture portfolio intelligence rather than only operational supervision.
+
+### Next recommended layer
+
+- Portfolio Allocation / Capacity Planning Contracts
