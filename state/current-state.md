@@ -1637,3 +1637,118 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti can generate, govern, and persist portfolio decisions, it needs a controlled bridge from planning artifacts into concrete execution surfaces such as OpenClaw, Codex, human operators, and other adapters.
+
+## 2026-03-22 — Memory Trust Workflow Complete
+
+### Summary
+
+Pertti architecture has been extended with a full trust-oriented memory workflow layer on top of the previously completed base memory and retrieval contracts.
+
+New layer added in this phase:
+
+- Memory Promotion / Trust Workflow Contracts
+
+This means Pertti now has an explicit contract-level model for how memory moves from candidate state toward reviewed or trusted state without silent mutation.
+
+---
+
+### New Layer Added
+
+#### Memory Promotion / Trust Workflow
+File:
+- `src/types/memoryPromotion.ts`
+
+Purpose:
+- represent memory promotion workflow states explicitly
+- represent trust/promotion review records
+- represent promotion decisions and target states
+- connect promotion to:
+  - evidence
+  - governance reviews
+  - outcomes
+  - feedback
+  - retrieval traces
+
+Capabilities introduced:
+- promotion workflow status
+- promotion decision
+- promotion target state
+- promotion evidence links
+- promotion conditions
+- promotion rationale
+- explicit promotion transition records
+
+---
+
+### Memory OS (Current)
+
+Pertti now supports the following memory path:
+
+Memory
+→ Memory Retrieval Refinement
+→ Memory Promotion / Trust Workflow
+→ reviewed / trusted memory use in reasoning, planning, audit, simulation, and strategy
+
+This means memory is now structured not only as stored knowledge, but as a governed trust system.
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete contract-level memory trust pipeline:
+
+- base memory envelope
+- refined retrieval boundary
+- promotion / trust workflow boundary
+
+This enables future development toward:
+
+- explicit trust transitions
+- evidence-backed promotion
+- governance-linked memory review
+- safe handling of supersession and rejection
+- stronger auditability for long-lived system knowledge
+
+---
+
+### Safety / Governance Properties Preserved
+
+The promotion layer remains:
+
+- non-executing
+- non-storage-implementing
+- non-workflow-engine
+- explicit about trust transitions
+- free of silent mutation semantics
+
+Historical memory remains preserved through explicit transitions rather than overwrite behavior.
+
+---
+
+### Current Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (base + retrieval + promotion) (v1)
+- Strategic venture pipeline (v1)
+- Portfolio governance layer (v1)
+- Execution surface bridge (v1)
+- Canonical identity foundation (partially normalized)
+
+Still not implemented:
+- memory ingestion refinement
+- execution surface package refinement
+- cross-layer traceability / evidence graph layer
+- runtime engines
+- storage / retrieval engines
+- execution integrations
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Cross-Layer Traceability / Evidence Graph Contracts
+
+Rationale:
+Now that Pertti contains many structured artifacts across memory, strategy, governance, planning, and execution boundaries, it needs an explicit graph/traceability layer that can represent relationships and evidence paths across the full system.
