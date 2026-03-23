@@ -1898,59 +1898,6 @@ Next recommended architecture layer:
 Rationale:
 Now that Pertti can describe a run before orchestration begins, it needs a small pure validation layer to check run-definition integrity before any future simulated runtime is introduced.
 
-## Orchestration Boundary + Run Definition Layer Complete
-
-Pertti now includes a full pre-runtime orchestration boundary layer consisting of:
-
-- `src/types/perttiOrchestrator.ts`
-- `src/types/perttiStageCatalog.ts`
-- `src/types/perttiStageValidation.ts`
-- `src/types/perttiStageConfig.ts`
-- `src/types/perttiRunDefinition.ts`
-
-### What this adds
-
-This layer defines:
-
-- orchestration stage graph contracts
-- stage categories and run modes
-- artifact flow expectations across stages
-- static catalog structure
-- pure validation for catalog integrity
-- build/test-level validation entrypoint
-- run intent / run definition modeling before runtime exists
-
-### What this does not add
-
-This layer does not implement:
-
-- runtime orchestration
-- stage execution
-- policy logic
-- governance logic
-- routing logic
-- service-style orchestration objects
-
-### Architectural significance
-
-This is the missing boundary between:
-
-- session framing
-- orchestration contracts
-- future runtime behavior
-
-Pertti can now describe:
-- what a run is
-- what stages exist
-- what structure is valid
-- what pre-runtime orchestration shape is allowed
-
-without introducing execution semantics.
-
-### Next recommended layer
-
-- Run Definition Validation
-
 ## 2026-03-23 — Run Definition Validation Layer Complete
 
 ### Summary
