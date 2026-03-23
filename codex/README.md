@@ -69,3 +69,7 @@ Unless intentionally overridden, Codex prompts in this pack should enforce:
 - Define exact deliverables.
 - Define acceptance criteria.
 - Prefer explicit boundaries over inferred behavior.
+
+## Prompt Rules
+
+See PROMPT_LINT_RULES.md for writing guidelines and anti-patterns.
