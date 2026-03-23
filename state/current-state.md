@@ -2010,3 +2010,117 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now describe and validate both stage structure and run intent. The next step is a small, non-executing assembly layer that can combine these contracts into a first simulated run flow without becoming a real runtime orchestrator.
+
+## 2026-03-23 — Minimal Non-Executing Simulated Run Assembly Complete
+
+### Summary
+
+Pertti architecture has been extended with a first minimal simulated run assembly layer.
+
+New file added:
+
+- `src/types/perttiSimulatedRun.ts`
+
+This layer assembles existing pre-runtime contracts into one typed simulated run shape suitable for build/test/simulation preparation.
+
+---
+
+### New Layer Added
+
+#### Minimal Non-Executing Simulated Run Assembly
+File:
+- `src/types/perttiSimulatedRun.ts`
+
+Purpose:
+- assemble a single simulated run from:
+  - run definition
+  - run definition validation
+  - stage catalog validation
+  - requested / required / excluded stages
+  - seed artifacts
+- expose explicit orchestration readiness state
+- expose blocking issues before any runtime exists
+
+Key property:
+- non-executing
+- deterministic
+- side-effect free
+- pre-runtime only
+- no service object
+- no stage invocation
+
+---
+
+### Assembly Coverage
+
+The simulated run assembly now includes:
+
+- `definition`
+- `definitionValidation`
+- `stageCatalogValidation`
+- `runMode`
+- requested stages
+- required stages
+- excluded stages
+- seed artifacts
+- initial artifacts
+- `readyForOrchestration`
+- blocking issues
+
+The assembly function reuses existing validators and does not introduce new orchestration behavior.
+
+---
+
+### Architectural Impact
+
+Pertti now includes the following pre-runtime orchestration-side layers:
+
+- orchestration contracts
+- static stage catalog
+- stage validation layer
+- stage config / build-test entry
+- run definition / run intent boundary
+- run definition validation layer
+- minimal simulated run assembly layer
+
+This means Pertti can now:
+- define a run
+- validate a run definition
+- validate orchestration structure
+- assemble a first simulated run package
+- determine readiness for future orchestration
+
+without introducing runtime execution or orchestration behavior.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+
+Still not implemented:
+- runtime orchestrator
+- stage invocation runtime
+- storage / retrieval engines
+- execution integrations
+- simulated run fixture / sample-case layer
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Simulated Run Fixture / Sample Case Layer
+
+Rationale:
+Pertti can now assemble a validated simulated run, but it still needs a small fixture/test layer that can generate example runs for different run modes and verify readiness behavior without introducing runtime orchestration.
