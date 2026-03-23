@@ -1950,3 +1950,116 @@ without introducing execution semantics.
 ### Next recommended layer
 
 - Run Definition Validation
+
+## 2026-03-23 — Run Definition Validation Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a pure validation layer for pre-runtime run definitions.
+
+New file added:
+
+- `src/types/perttiRunDefinitionValidation.ts`
+
+This layer validates a single `PerttiRunDefinition` before any future orchestration runtime exists.
+
+---
+
+### New Layer Added
+
+#### Run Definition Validation
+File:
+- `src/types/perttiRunDefinitionValidation.ts`
+
+Purpose:
+- validate structural integrity of a single run definition
+- validate run scope presence
+- validate trigger presence and trigger summary
+- validate requested stage selection consistency
+- validate run-mode and intent compatibility
+- validate expected seed-artifact presence
+- validate attached stage-catalog validation state
+
+Key property:
+- pure validation only
+- deterministic
+- side-effect free
+- no runtime orchestration behavior
+- no service object
+
+---
+
+### Validation Coverage
+
+The run definition validator now checks:
+
+- missing scope
+- missing trigger
+- invalid stage selection:
+  - included + excluded conflict
+  - required + excluded conflict
+  - duplicate stage ids
+- incompatible run mode vs intent
+- missing required seed artifacts
+- unresolved stage catalog validation state
+
+Issue codes used:
+- `MISSING_SCOPE`
+- `MISSING_TRIGGER`
+- `INVALID_STAGE_SELECTION`
+- `INCOMPATIBLE_RUN_MODE`
+- `MISSING_REQUIRED_SEED_ARTIFACT`
+- `CATALOG_VALIDATION_UNRESOLVED`
+
+---
+
+### Architectural Impact
+
+Pertti now includes the following pre-runtime orchestration-side layers:
+
+- orchestration contracts
+- static stage catalog
+- stage validation layer
+- stage config / build-test entry
+- run definition / run intent boundary
+- run definition validation layer
+
+This means Pertti can now:
+- define what a run is
+- define what orchestration shape exists
+- validate stage-catalog structure
+- validate run-definition structure
+
+without introducing runtime orchestration or stage execution.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+
+Still not implemented:
+- runtime orchestrator
+- simulated run assembly
+- stage invocation runtime
+- storage / retrieval engines
+- execution integrations
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Minimal Non-Executing Simulated Run Assembly
+
+Rationale:
+Pertti can now describe and validate both stage structure and run intent. The next step is a small, non-executing assembly layer that can combine these contracts into a first simulated run flow without becoming a real runtime orchestrator.
