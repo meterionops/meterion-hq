@@ -93,3 +93,7 @@ Use starter prompts to initialize a new chat:
 ## Failure Recovery
 
 See CODEX_FAILURE_RECOVERY.md for fixing bad Codex outputs.
+
+## Workflow
+
+See CODEX_WORKFLOW_LOOP.md for the standard Codex workflow.
