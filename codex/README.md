@@ -89,3 +89,7 @@ Use starter prompts to initialize a new chat:
 - PROJECT_STARTER_PROMPT.md
 - CODEX_STARTER_PROMPT.md
 - ARCHITECTURE_STARTER_PROMPT.md
+
+## Failure Recovery
+
+See CODEX_FAILURE_RECOVERY.md for fixing bad Codex outputs.
