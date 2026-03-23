@@ -731,3 +731,55 @@ before any simulated or actual runtime behavior exists.
 ### Next recommended layer
 
 - Minimal Non-Executing Simulated Run Assembly
+
+## Minimal Non-Executing Simulated Run Assembly Complete
+
+Pertti now includes a first minimal simulated run assembly layer:
+
+- `src/types/perttiSimulatedRun.ts`
+
+### What this adds
+
+This layer assembles:
+
+- run definition
+- run definition validation
+- stage catalog validation
+- requested / required / excluded stages
+- seed artifacts
+- initial artifact registry
+- readiness state
+- blocking issues
+
+into a single typed simulated run structure.
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- transition coordination
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration behavior
+
+### Architectural significance
+
+This is the first point where Pertti can assemble a run-shaped structure from validated pre-runtime components.
+
+Pertti can now:
+
+- define a run
+- validate the run definition
+- validate orchestration structure
+- assemble a simulated run package
+- expose readiness for future orchestration
+
+without executing anything.
+
+### Next recommended layer
+
+- Simulated Run Fixture / Sample Case Layer
