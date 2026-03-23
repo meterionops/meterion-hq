@@ -81,3 +81,11 @@ See PROMPT_SCORING_SYSTEM.md for pre-flight prompt evaluation.
 ## Template Selection
 
 See AUTO_TEMPLATE_SELECTOR.md for choosing the correct prompt template.
+
+## Starters
+
+Use starter prompts to initialize a new chat:
+
+- PROJECT_STARTER_PROMPT.md
+- CODEX_STARTER_PROMPT.md
+- ARCHITECTURE_STARTER_PROMPT.md
