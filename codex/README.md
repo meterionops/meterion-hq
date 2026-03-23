@@ -77,3 +77,7 @@ See PROMPT_LINT_RULES.md for writing guidelines and anti-patterns.
 ## Prompt Quality
 
 See PROMPT_SCORING_SYSTEM.md for pre-flight prompt evaluation.
+
+## Template Selection
+
+See AUTO_TEMPLATE_SELECTOR.md for choosing the correct prompt template.
