@@ -633,3 +633,101 @@ This is the point where Pertti’s memory system becomes not only structured and
 ### Next recommended layer
 
 - Cross-Layer Traceability / Evidence Graph Contracts
+
+## Orchestration Boundary + Run Definition Layer Complete
+
+Pertti now includes a full pre-runtime orchestration boundary layer consisting of:
+
+- `src/types/perttiOrchestrator.ts`
+- `src/types/perttiStageCatalog.ts`
+- `src/types/perttiStageValidation.ts`
+- `src/types/perttiStageConfig.ts`
+- `src/types/perttiRunDefinition.ts`
+
+### What this adds
+
+This layer defines:
+
+- orchestration stage graph contracts
+- stage categories and run modes
+- artifact flow expectations across stages
+- static catalog structure
+- pure validation for catalog integrity
+- build/test-level validation entrypoint
+- run intent / run definition modeling before runtime exists
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration objects
+
+### Architectural significance
+
+This is the missing boundary between:
+
+- session framing
+- orchestration contracts
+- future runtime behavior
+
+Pertti can now describe:
+- what a run is
+- what stages exist
+- what structure is valid
+- what pre-runtime orchestration shape is allowed
+
+without introducing execution semantics.
+
+### Next recommended layer
+
+- Run Definition Validation
+
+## Run Definition Validation Layer Complete
+
+Pertti now includes a pure validation layer for pre-runtime run definitions:
+
+- `src/types/perttiRunDefinitionValidation.ts`
+
+### What this adds
+
+This layer validates:
+
+- run scope presence
+- trigger presence and trigger summary
+- requested stage selection consistency
+- run-mode and intent compatibility
+- expected seed-artifact presence
+- unresolved stage-catalog validation state
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- service-style orchestration
+- policy logic
+- governance logic
+- routing logic
+
+### Architectural significance
+
+This completes the pre-runtime validation side of the orchestration boundary.
+
+Pertti can now:
+
+- define runs
+- define orchestration structure
+- validate catalog integrity
+- validate individual run definitions
+
+before any simulated or actual runtime behavior exists.
+
+### Next recommended layer
+
+- Minimal Non-Executing Simulated Run Assembly
