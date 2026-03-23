@@ -1752,3 +1752,148 @@ Next recommended architecture layer:
 
 Rationale:
 Now that Pertti contains many structured artifacts across memory, strategy, governance, planning, and execution boundaries, it needs an explicit graph/traceability layer that can represent relationships and evidence paths across the full system.
+
+## 2026-03-23 — Orchestration Boundary + Run Definition Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a full pre-runtime orchestration boundary layer.
+
+New files added:
+
+- `src/types/perttiOrchestrator.ts`
+- `src/types/perttiStageCatalog.ts`
+- `src/types/perttiStageValidation.ts`
+- `src/types/perttiStageConfig.ts`
+- `src/types/perttiRunDefinition.ts`
+
+These complete the missing orchestration-side contract structure between session framing and any future runtime orchestration.
+
+---
+
+### New Layers Added
+
+#### 1. Orchestrator Contracts
+File:
+- `src/types/perttiOrchestrator.ts`
+
+Purpose:
+- define run modes
+- define orchestration stages and categories
+- define artifact flow contracts
+- define completion states
+- define invariant violation model
+
+Key property:
+- contracts-only
+- no runtime behavior
+- no service object
+- no execution logic
+
+#### 2. Static Stage Catalog
+File:
+- `src/types/perttiStageCatalog.ts`
+
+Purpose:
+- define the static stage graph
+- define stage metadata
+- define allowed transitions
+- define required and optional modes per stage
+- define required and emitted artifacts
+
+Key property:
+- static orchestration structure only
+- no runtime coordination
+
+#### 3. Stage Validation Layer
+File:
+- `src/types/perttiStageValidation.ts`
+
+Purpose:
+- validate stage catalog integrity
+- validate transitions
+- validate mode consistency
+- validate artifact declaration consistency
+- validate invariant alignment
+
+Key property:
+- pure validation only
+- deterministic
+- no stage execution
+
+#### 4. Stage Config / Build-Test Entry
+File:
+- `src/types/perttiStageConfig.ts`
+
+Purpose:
+- provide a tiny typed entry point for validating the default stage catalog
+- connect catalog + validation for build/test usage
+
+Key property:
+- not a runtime orchestrator
+- no service semantics
+- no stateful coordination
+
+#### 5. Run Definition / Run Intent Layer
+File:
+- `src/types/perttiRunDefinition.ts`
+
+Purpose:
+- define why a run exists
+- define run intent, trigger, scope, requested stages, seed artifacts, and expectations
+- model one run before orchestration execution exists
+
+Key property:
+- pre-runtime boundary only
+- separate from session frame
+- separate from stage coordination
+
+---
+
+### Architectural Impact
+
+Pertti now includes:
+
+- supervisory contracts
+- memory contracts
+- venture intelligence chain
+- portfolio strategy + governance layers
+- execution surface boundary
+- orchestration boundary contracts
+- static orchestration catalog
+- orchestration validation layer
+- run definition / intent layer
+
+This means the missing runtime-side contract boundary is now defined without introducing runtime behavior.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+
+Still not implemented:
+- runtime orchestrator
+- stage invocation runtime
+- run definition validation layer
+- simulated end-to-end run
+- storage / retrieval engines
+- execution integrations
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Run Definition Validation
+
+Rationale:
+Now that Pertti can describe a run before orchestration begins, it needs a small pure validation layer to check run-definition integrity before any future simulated runtime is introduced.
