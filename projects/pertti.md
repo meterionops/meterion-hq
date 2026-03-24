@@ -1204,3 +1204,46 @@ without executing anything.
 ### Next recommended layer
 
 - Orchestration Snapshot / Export Layer
+## Orchestration Snapshot / Export Layer Complete
+
+Pertti now includes a unified snapshot/export layer:
+
+- `src/types/perttiSnapshot.ts`
+
+### What this adds
+
+This layer provides:
+
+- one exportable orchestration artifact
+- combined:
+  - orchestration cycle
+  - decision trace
+  - creation timestamp
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration behavior
+
+### Architectural significance
+
+This completes the first exportable dry-run orchestrator artifact.
+
+Pertti can now:
+
+- compute orchestration state
+- explain its decision path
+- package the result into one portable snapshot
+
+for CI, audit, debugging, and UI usage without executing anything.
+
+### Next recommended layer
+
+- Snapshot Diff / Comparison Layer
