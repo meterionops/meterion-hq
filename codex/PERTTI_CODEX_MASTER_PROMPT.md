@@ -138,3 +138,13 @@ Do not include:
 - explanations
 - diff headers
 - extra files
+--------------------------------
+OUTPUT STYLE ENFORCEMENT
+--------------------------------
+
+- Output must be minimal
+- Output must contain code only
+- No explanations allowed
+
+If output contains anything other than code:
+→ it is invalid
