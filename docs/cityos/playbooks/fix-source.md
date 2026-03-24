@@ -1,17 +1,9 @@
-# Docs Authoring Guide
 ---
 title: Fix Source Playbook
 doc_type: playbook
 project_key: cityos
 domain_key: operations
 status: active
-tags:
-  - sources
-  - fix
-  - playbook
-summary: Step-by-step process for diagnosing and fixing broken sources.
-priority: 100
-is_featured: true
 ---
 
 # Fix Source Playbook
