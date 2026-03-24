@@ -4004,3 +4004,27 @@ Notes:
 - Current implementation is strict about dashboard/legality stage field equality
 - Dashboard ↔ decision trace alignment currently focuses on summary alignment
 - Recommendation ↔ legality alignment currently validates legality-state compatibility rather than semantic action-to-stage mapping
+## Unified Verification Entry Layer (v1)
+
+Added a deterministic unified verification entry layer.
+
+Location:
+- src/types/perttiUnifiedVerification.ts
+
+Capabilities:
+- Aggregates dashboard verification
+- Aggregates recommendation verification
+- Aggregates recommendation legality verification
+- Aggregates recommendation alignment verification
+- Aggregates cross-layer consistency verification
+- Produces unified suite-level summaries
+- Produces deterministic top-level success and suite counts
+- CI-ready verification entry output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
