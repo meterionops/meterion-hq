@@ -202,3 +202,10 @@ If a prompt feels "easy to misunderstand",
 it is a bad prompt.
 
 Make it more explicit.
+11. VERBOSE OUTPUT
+
+❌ Bad:
+Codex includes explanations, reasoning, or commentary
+
+✅ Good:
+Output contains only code
