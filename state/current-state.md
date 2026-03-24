@@ -4049,3 +4049,29 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Operator Approval / Control Surface (v1)
+
+Added a deterministic operator-facing control surface.
+
+Location:
+- src/types/perttiOperatorControl.ts
+
+Capabilities:
+- Maps verification dashboard status into operator control status
+- Produces recommended operator action
+- Produces allowed actions
+- Produces blocked actions
+- Produces deterministic operator-facing reason text
+
+Control model:
+- HEALTHY -> SAFE -> PROCEED
+- DEGRADED -> REVIEW_REQUIRED -> REVIEW
+- FAILING -> BLOCKED -> BLOCK
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
