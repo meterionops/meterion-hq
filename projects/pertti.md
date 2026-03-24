@@ -1070,3 +1070,47 @@ without executing anything.
 ### Next recommended layer
 
 - Next Stage Selection View
+## Next Stage Selection View Complete
+
+Pertti now includes a deterministic next-stage selection layer:
+
+- `src/types/perttiStageSelection.ts`
+
+### What this adds
+
+This layer enables:
+
+- selecting the next stage from eligible candidates
+- returning:
+  - a recommended stage
+  - all candidate stages
+  - explicit reasoning
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- prioritization or scoring logic
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This completes the core decision surface of the orchestrator.
+
+Pertti can now:
+
+- determine which stages are possible
+- determine which stages are allowed
+- select the next stage deterministically
+
+without executing anything.
+
+### Next recommended layer
+
+- Orchestration Cycle View
