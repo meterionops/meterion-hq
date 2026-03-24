@@ -1657,3 +1657,26 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Operator Approval / Control Surface
+
+Pertti now includes an operator-facing control surface.
+
+Module:
+- src/types/perttiOperatorControl.ts
+
+Responsibilities:
+- transform verification dashboard state into operator control decisions
+- expose overall control status
+- expose recommended operator action
+- expose allowed and blocked actions
+- provide deterministic reason text for operator visibility
+
+Architecture position:
+- downstream of verification dashboard projection
+- upstream of future approval / execution / CityOS integration
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
