@@ -1702,3 +1702,26 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Execution Intent / Handoff Projection Layer
+
+Pertti now includes an execution intent / handoff projection layer.
+
+Module:
+- src/types/perttiExecutionIntent.ts
+
+Responsibilities:
+- transform approval records into execution-intent structures
+- preserve decision and allowed state
+- expose target and payload for future handoff surfaces
+- provide deterministic handoff readiness status
+- provide deterministic reason text
+
+Architecture position:
+- downstream of approval record
+- upstream of future CityOS / OpenClaw / Codex execution adapter layers
+
+Constraints:
+- read-only supervisory projection only
+- no execution
+- pure deterministic functions
+- compact implementation
