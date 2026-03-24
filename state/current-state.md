@@ -4075,3 +4075,24 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Approval Intent / Review Decision Record Layer (v1)
+
+Added a deterministic approval record layer.
+
+Location:
+- src/types/perttiApprovalRecord.ts
+
+Capabilities:
+- builds a structured approval / review record from operator control state
+- supports system-recommended decisions
+- supports operator-selected decisions
+- validates whether the chosen decision is allowed
+- provides deterministic decision reason text
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
