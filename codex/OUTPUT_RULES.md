@@ -29,6 +29,18 @@ Codex output must NOT contain:
 - extra files
 - comments that are not part of the existing file style
 
+## Output Style Enforcement
+
+Default rule for Pertti Codex work:
+
+- output code only
+- no prose
+- no explanations
+- no markdown fences
+- no extra files unless explicitly requested
+
+See OUTPUT_RULES.md for the required output style.
+
 ## Style Rules
 
 Codex output should be:
