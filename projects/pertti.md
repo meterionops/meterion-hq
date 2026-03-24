@@ -829,3 +829,57 @@ without executing anything.
 ### Next recommended layer
 
 - Fixture Verification / Test Assertion Layer
+
+## Simulated Run Assertion Layer Complete
+
+Pertti now includes a deterministic assertion and verification layer:
+
+- `src/types/perttiSimulatedRunAssertions.ts`
+
+### What this adds
+
+This layer enables verification of:
+
+- simulated run readiness
+- blocking issue presence
+- run-mode correctness
+- expected validation issue codes
+
+It also provides grouped verification for:
+
+- valid simulated runs
+- invalid simulated runs
+- simulation-mode runs
+- portfolio-review runs
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- transition coordination
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This completes the pre-runtime verification stack.
+
+Pertti can now:
+
+- define runs
+- validate definitions
+- validate orchestration structure
+- assemble simulated runs
+- generate fixtures
+- verify correctness of those fixtures
+
+without executing anything.
+
+### Next recommended layer
+
+- Test Harness / Verification Entry Layer
