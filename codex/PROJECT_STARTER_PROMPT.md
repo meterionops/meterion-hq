@@ -45,6 +45,6 @@ Current task:
 
 Codex output must always be:
 
-- minimal
-- code-only
-- no explanations
+- smallest readable solution
+- minimal helper usage
+- no unnecessary abstraction layers
