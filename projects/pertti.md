@@ -1489,3 +1489,34 @@ Constraints:
 - read-only
 - no execution
 - pure deterministic functions
+### Recommendation / Decision Verification Harness
+
+Pertti now includes a verification layer for recommendation / decision outputs.
+
+Module:
+- src/types/perttiRecommendationVerification.ts
+
+Responsibilities:
+- validate recommendation structural correctness
+- validate recommendation outputs against fixture expectations
+- support multiple scenarios:
+  - valid recommendations
+  - invalid recommendations
+  - simulation-derived recommendations
+  - portfolio / strategic recommendations
+
+Verification model:
+- assertion-based (structured results)
+- expectation-aware (fixture.expected contract)
+- deterministic summaries
+- CI-consumable output
+
+Architecture position:
+- downstream of recommendation / decision outputs
+- upstream of CI / validation / verification systems
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
