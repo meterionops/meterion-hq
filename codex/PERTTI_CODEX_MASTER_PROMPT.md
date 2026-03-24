@@ -105,6 +105,19 @@ DESIGN RULES
 - Keep the implementation minimal but extensible
 
 --------------------------------
+IMPLEMENTATION SIZE
+--------------------------------
+
+- prefer the smallest readable correct implementation
+- minimize helper functions
+- avoid unnecessary abstraction
+- avoid multi-layer helper structures unless clearly required
+- prefer flat logic when readability is preserved
+
+If multiple valid implementations exist:
+→ choose the smaller one
+
+--------------------------------
 REQUIRED IMPLEMENTATION
 --------------------------------
 
