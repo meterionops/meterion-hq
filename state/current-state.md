@@ -2459,3 +2459,119 @@ Next recommended architecture layer:
 
 Rationale:
 All contracts, validation, simulation, and verification layers are now complete. The system is ready for a first minimal runtime layer that executes a single run safely using existing boundaries.
+
+## 2026-03-23 — Runtime v0 (Minimal Orchestrator Runner) Complete
+
+### Summary
+
+Pertti architecture has been extended with the first runtime entry point (v0), enabling safe run preparation and readiness evaluation without executing any stages.
+
+New file added:
+
+- `src/types/perttiRuntimeV0.ts`
+
+This layer connects run definition, validation, and simulated run assembly into a single runtime-adjacent entry point.
+
+---
+
+### New Layer Added
+
+#### Runtime v0 — Minimal Orchestrator Runner
+File:
+- `src/types/perttiRuntimeV0.ts`
+
+Purpose:
+- accept a `PerttiRunDefinition`
+- validate run definition
+- validate stage catalog
+- assemble simulated run
+- expose readiness state and blocking issues
+
+Key property:
+- non-executing
+- deterministic
+- side-effect free
+- no stage execution
+- no orchestration loop
+- no async behavior
+- no service object
+
+---
+
+### Runtime Behavior
+
+Runtime v0 performs:
+
+1. run definition validation  
+2. stage catalog validation  
+3. simulated run assembly  
+4. readiness evaluation  
+
+It returns a structured result containing:
+
+- run definition
+- validation results
+- simulated run
+- readiness flag
+- blocking issues
+
+---
+
+### Architectural Impact
+
+Pertti now includes a runnable (safe-mode) entry point built on top of the full pre-runtime stack:
+
+- run definition
+- validation layers
+- stage catalog
+- simulated run assembly
+- fixtures
+- assertions
+- verification harness
+- runtime v0 entry
+
+This means Pertti can now:
+
+- accept a run definition
+- validate it
+- assemble a run
+- determine readiness for orchestration
+
+without executing any system logic.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+
+Still not implemented:
+- stage execution engine
+- orchestration loop
+- planner/policy runtime integration
+- execution adapters
+- persistent storage layers
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Stage Progression / Runtime State View
+
+Rationale:
+Pertti can now prepare and evaluate runs, but lacks a structured view of stage progression — what stages are ready, blocked, or pending — without executing them.
