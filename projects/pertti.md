@@ -1329,3 +1329,48 @@ Pertti can now:
 ### Next recommended layer
 
 - Snapshot Report Layer
+## Snapshot Report Layer Complete
+
+Pertti now includes a snapshot report layer:
+
+- `src/types/perttiReport.ts`
+
+### What this adds
+
+This layer enables:
+
+- transforming orchestration outputs into a stable report format
+- combining:
+  - orchestration snapshot
+  - decision trace
+  - optional diff
+  - optional harness summary
+
+### What this does not add
+
+This layer does not implement:
+
+- orchestration execution
+- orchestration loops
+- planner or policy logic
+- runtime mutation
+- UI rendering logic
+
+### Architectural significance
+
+This completes the observable and exportable orchestration stack.
+
+Pertti can now:
+
+- simulate orchestration
+- explain decisions
+- export results
+- compare snapshots
+- validate behavior
+- generate stable reports
+
+This makes the system ready for UI, CI, and audit integration.
+
+### Next recommended layer
+
+- Dashboard / Visualization Layer
