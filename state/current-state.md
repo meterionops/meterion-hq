@@ -4173,3 +4173,25 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Country Ownership / Authority Model (v1)
+
+Added an explicit country ownership and authority layer.
+
+Location:
+- src/types/perttiCountryAuthority.ts
+
+Capabilities:
+- defines country lead records
+- defines country authority records
+- defines country assignment ownership
+- defines country escalation ownership
+- defines decision authority rules
+- provides compact authority helper logic
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
