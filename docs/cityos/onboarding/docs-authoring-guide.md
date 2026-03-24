@@ -1,4 +1,14 @@
 ---
+title:
+doc_type:
+project_key: cityos
+domain_key:
+status: active
+tags: []
+summary:
+priority: 50
+is_featured: false
+---
 title: Docs Authoring Guide
 doc_type: guide
 project_key: cityos
