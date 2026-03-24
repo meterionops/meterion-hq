@@ -1159,3 +1159,48 @@ without executing anything.
 ### Next recommended layer
 
 - Orchestration Decision Trace Layer
+## Orchestration Decision Trace Layer Complete
+
+Pertti now includes a deterministic decision trace layer:
+
+- `src/types/perttiDecisionTrace.ts`
+
+### What this adds
+
+This layer enables:
+
+- explaining the orchestration cycle
+- tracing:
+  - stage progression
+  - stage eligibility
+  - stage selection
+- generating a concise summary of system decision state
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- decision-making logic
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This introduces explainability into the orchestrator pipeline.
+
+Pertti can now:
+
+- simulate decisions
+- understand decision outcomes
+- explain system state step-by-step
+
+without executing anything.
+
+### Next recommended layer
+
+- Orchestration Snapshot / Export Layer
