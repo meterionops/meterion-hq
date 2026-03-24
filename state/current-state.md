@@ -3891,3 +3891,37 @@ Notes:
   - nextAction.recommendedStage
   - nextAction.eligibleStages
 - May require alignment if dashboard view model evolves
+## Recommendation / Decision Verification Harness (v1)
+
+Added a deterministic recommendation verification layer.
+
+Location:
+- src/types/perttiRecommendationVerification.ts
+
+Capabilities:
+- Structural recommendation validation:
+  - status
+  - rationale
+  - actions
+  - priority
+- Scenario-aware verification using fixtures
+- Support for both valid and intentionally invalid recommendation cases
+- Assertion-level results (not boolean-only)
+- Deterministic verification summary (total / passed / failed)
+- CI-ready suite output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
+
+Notes:
+- Current implementation assumes recommendation shape:
+  - status
+  - rationale
+  - actions
+  - priority
+- May require alignment if recommendation output contracts evolve
