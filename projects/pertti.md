@@ -1548,3 +1548,32 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Recommendation Alignment Verification Harness
+
+Pertti now includes an alignment verification layer for recommendation outputs and decision trace reasoning.
+
+Module:
+- src/types/perttiRecommendationAlignmentVerification.ts
+
+Responsibilities:
+- validate recommendation and decision trace structural correctness
+- verify rationale alignment against decision trace summary / reasoning
+- verify recommendation actions align with decision trace suggested actions
+- support valid and invalid alignment scenarios
+- provide deterministic verification summaries
+
+Verification model:
+- assertion-based
+- alignment-aware
+- expectation-aware
+- CI-consumable output
+
+Architecture position:
+- downstream of recommendation and decision trace outputs
+- upstream of CI / validation / consistency checks
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
