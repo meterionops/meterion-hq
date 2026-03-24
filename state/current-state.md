@@ -2899,3 +2899,111 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now determine and select the next stage, but lacks a unified snapshot that combines runtime state, eligibility, and selection into a single orchestration view.
+## 2026-03-23 — Orchestration Cycle View Complete
+
+### Summary
+
+Pertti architecture has been extended with a unified orchestration cycle view that composes all runtime-adjacent layers into a single deterministic snapshot.
+
+New file added:
+
+- `src/types/perttiOrchestrationCycle.ts`
+
+This layer provides a complete read-only view of one orchestration cycle without executing any stages.
+
+---
+
+### New Layer Added
+
+#### Orchestration Cycle View
+File:
+- `src/types/perttiOrchestrationCycle.ts`
+
+Purpose:
+- combine runtime, progression, eligibility, and selection into one snapshot
+- provide a full view of system decision state for a single run
+- enable inspection and debugging of orchestration logic
+
+Key property:
+- read-only
+- deterministic
+- side-effect free
+- no orchestration loop
+- no stage execution
+- no mutation
+- no async behavior
+
+---
+
+### Composition Model
+
+The cycle view is constructed as:
+
+1. runtime v0 → run validation and simulated run assembly  
+2. progression → stage readiness state  
+3. eligibility → allowed transitions  
+4. selection → next stage decision  
+
+All layers are composed without modifying any state.
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full dry-run orchestrator:
+
+- runtime entry
+- state evaluation
+- transition constraints
+- decision selection
+- unified orchestration snapshot
+
+This means Pertti can now:
+
+- fully simulate one orchestration cycle
+- inspect system state end-to-end
+- understand decision flow
+- debug orchestration logic safely
+
+without executing anything.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+- Orchestration cycle view (v1)
+
+Still not implemented:
+- decision trace layer
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Orchestration Decision Trace Layer
+
+Rationale:
+Pertti can now compute decisions, but lacks explainability — a structured way to trace and explain why each stage reached its status and why a specific stage was selected.
