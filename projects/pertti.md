@@ -1680,3 +1680,25 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Approval Intent / Review Decision Record Layer
+
+Pertti now includes an approval / review decision record layer.
+
+Module:
+- src/types/perttiApprovalRecord.ts
+
+Responsibilities:
+- convert operator control output into a structured approval decision record
+- distinguish system-recommended vs operator-selected decisions
+- indicate whether the selected decision is allowed
+- provide deterministic reason text
+
+Architecture position:
+- downstream of operator control surface
+- upstream of future audit / execution / CityOS integration layers
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
