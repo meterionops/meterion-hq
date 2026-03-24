@@ -1,16 +1,9 @@
-# Docs Authoring Guide
 ---
 title: CityOS System Invariants
 doc_type: guide
 project_key: cityos
 domain_key: system
 status: active
-tags:
-  - invariants
-  - safety
-summary: Rules that must never be broken in CityOS.
-priority: 100
-is_featured: true
 ---
 
 # CityOS System Invariants
