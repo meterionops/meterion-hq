@@ -1520,3 +1520,31 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Recommendation Legality Verification Harness
+
+Pertti now includes a legality verification layer for stage-transition recommendations.
+
+Module:
+- src/types/perttiRecommendationLegalityVerification.ts
+
+Responsibilities:
+- validate recommendation legality relative to readiness and eligible stages
+- ensure recommended stage is consistent with eligible stage set
+- support valid and invalid legality scenarios
+- provide deterministic verification summaries
+
+Verification model:
+- assertion-based
+- legality-aware
+- expectation-aware
+- CI-consumable output
+
+Architecture position:
+- downstream of stage progression / eligibility / selection outputs
+- upstream of CI / validation / legality checks
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
