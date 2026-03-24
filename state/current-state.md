@@ -3239,3 +3239,120 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now export a full orchestration snapshot, but still lacks a deterministic comparison layer for regression checks, audit diffs, and state-change inspection across snapshots.
+## 2026-03-23 — Snapshot Diff / Comparison Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a deterministic snapshot diff layer that compares orchestration outputs across runs.
+
+New file added:
+
+- `src/types/perttiSnapshotDiff.ts`
+
+This layer enables explicit comparison of orchestration state without introducing execution or recomputation.
+
+---
+
+### New Layer Added
+
+#### Snapshot Diff / Comparison Layer
+File:
+- `src/types/perttiSnapshotDiff.ts`
+
+Purpose:
+- compare two PerttiSnapshot objects
+- detect changes in orchestration-relevant fields
+- support regression testing, audit inspection, and UI diffing
+
+Key property:
+- deterministic
+- read-only
+- side-effect free
+- no execution
+- no orchestration loop
+- no recomputation of state
+
+---
+
+### Diff Model
+
+Two core structures:
+
+- `PerttiSnapshotChange<T>`
+  - before / after / changed
+
+- `PerttiSnapshotListChange<T>`
+  - before / after
+  - added / removed
+  - changed
+
+Compared fields:
+
+- runtime readiness
+- recommended stage
+- eligible stages
+- ready stages
+- blocked stages
+- unreachable stages
+- decision trace summary
+
+---
+
+### Architectural Impact
+
+Pertti now supports:
+
+- full orchestration simulation
+- explainability of decisions
+- export of orchestration state
+- deterministic comparison between runs
+
+This enables:
+
+- regression testing
+- audit trails
+- debugging changes in orchestration behavior
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+- Orchestration cycle view (v1)
+- Orchestration decision trace layer (v1)
+- Orchestration snapshot / export layer (v1)
+- Snapshot diff / comparison layer (v1)
+
+Still not implemented:
+- snapshot diff harness
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Snapshot Diff Harness
+
+Rationale:
+Pertti can now compare snapshots, but lacks a standardized harness for running deterministic before/after comparisons in CI and regression testing.
