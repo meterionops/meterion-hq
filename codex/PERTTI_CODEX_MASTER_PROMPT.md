@@ -143,8 +143,10 @@ OUTPUT STYLE ENFORCEMENT
 --------------------------------
 
 - Output must be minimal
-- Output must contain code only
-- No explanations allowed
+- Output must contain code only unless explicitly requested otherwise
+- Do not include explanations
+- Do not include reasoning
+- Do not include markdown fences
+- Do not include commentary before or after the code
 
-If output contains anything other than code:
-→ it is invalid
+If you include anything other than the requested code, your answer is invalid.
