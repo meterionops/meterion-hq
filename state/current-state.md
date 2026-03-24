@@ -2789,3 +2789,113 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now determine which stages are eligible, but still lacks a mechanism to select or recommend the next stage(s) from eligible candidates.
+## 2026-03-23 — Next Stage Selection View Complete
+
+### Summary
+
+Pertti architecture has been extended with a deterministic next-stage selection layer that chooses a recommended stage from eligible candidates.
+
+New file added:
+
+- `src/types/perttiStageSelection.ts`
+
+This layer provides a minimal decision surface on top of stage eligibility without introducing orchestration or execution.
+
+---
+
+### New Layer Added
+
+#### Next Stage Selection View
+File:
+- `src/types/perttiStageSelection.ts`
+
+Purpose:
+- select the next stage from eligible stages
+- provide:
+  - recommended stage
+  - candidate stages
+  - reasoning for selection
+
+Key property:
+- deterministic
+- non-executing
+- side-effect free
+- no orchestration loop
+- no prioritization logic
+- no scoring logic
+
+---
+
+### Selection Model
+
+Selection works as follows:
+
+- if no eligible stages:
+  - no recommended stage
+
+- if one eligible stage:
+  - that stage is selected
+
+- if multiple eligible stages:
+  - first stage in deterministic order is selected
+  - all eligible stages are returned as candidates
+
+Reasoning is explicitly returned for transparency.
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full decision surface for stage progression:
+
+- progression → what is possible
+- eligibility → what is allowed
+- selection → what is chosen next
+
+This means Pertti can now:
+
+- evaluate runtime state
+- determine allowed transitions
+- select the next stage deterministically
+
+without executing any stage or introducing orchestration loops.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+
+Still not implemented:
+- orchestration cycle view
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Orchestration Cycle View
+
+Rationale:
+Pertti can now determine and select the next stage, but lacks a unified snapshot that combines runtime state, eligibility, and selection into a single orchestration view.
