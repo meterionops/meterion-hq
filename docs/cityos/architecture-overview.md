@@ -1,16 +1,9 @@
-# Docs Authoring Guide
 ---
 title: CityOS Architecture Overview
 doc_type: architecture
 project_key: cityos
 domain_key: architecture
 status: active
-tags:
-  - architecture
-  - overview
-summary: High-level overview of CityOS system architecture.
-priority: 90
-is_featured: true
 ---
 
 # CityOS Architecture Overview
