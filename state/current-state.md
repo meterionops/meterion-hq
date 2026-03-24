@@ -4149,3 +4149,27 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Dry-Run Execution Adapter (v1)
+
+Added a deterministic dry-run execution adapter.
+
+Location:
+- src/types/perttiExecutionDryRun.ts
+
+Capabilities:
+- evaluates whether execution would be triggered
+- preserves target, decision, allowed state, and payload
+- produces deterministic dry-run execution status
+- produces deterministic dry-run message text
+
+Status model:
+- WOULD_EXECUTE -> allowed and status = READY and decision = PROCEED
+- BLOCKED -> otherwise
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
