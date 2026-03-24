@@ -1769,3 +1769,26 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Country Ownership / Authority Model
+
+Pertti now includes an explicit country ownership and authority model.
+
+Module:
+- src/types/perttiCountryAuthority.ts
+
+Responsibilities:
+- represent country operational ownership explicitly
+- represent country lead identity and authority level
+- represent assignment ownership
+- represent escalation ownership
+- represent decision authority rules across country and HQ levels
+
+Architecture position:
+- complements the dashboard hierarchy and escalation model
+- provides the missing ownership / authority layer for production-shaped operator dashboards
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
