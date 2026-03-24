@@ -3858,3 +3858,36 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now generate deterministic dashboard preview states, but still needs a verification layer that checks expected readiness, next-action, and summary values across preview scenarios.
+## Dashboard Verification Harness (v1)
+
+Added a deterministic dashboard verification layer.
+
+Location:
+- src/types/perttiDashboardVerification.ts
+
+Capabilities:
+- Structural dashboard validation:
+  - readiness
+  - recommendedStage
+  - eligibleStages
+  - summary
+- Scenario-aware verification using fixtures
+- Support for both valid and intentionally invalid dashboards
+- Assertion-level results (not boolean-only)
+- Deterministic verification summary (total / passed / failed)
+- CI-ready suite output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- minimal surface area
+
+Notes:
+- Current implementation assumes dashboard shape:
+  - header.readiness
+  - header.summary
+  - nextAction.recommendedStage
+  - nextAction.eligibleStages
+- May require alignment if dashboard view model evolves
