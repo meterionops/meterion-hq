@@ -4096,3 +4096,29 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Execution Intent / Handoff Projection Layer (v1)
+
+Added a deterministic execution intent / handoff projection layer.
+
+Location:
+- src/types/perttiExecutionIntent.ts
+
+Capabilities:
+- builds execution intent from approval record
+- preserves approval decision and allowed state
+- projects optional target
+- projects optional payload
+- produces deterministic handoff readiness status
+- produces deterministic handoff reason text
+
+Status model:
+- READY -> allowed and decision = PROCEED
+- BLOCKED -> otherwise
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
