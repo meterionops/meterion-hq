@@ -75,3 +75,32 @@ Add this when output discipline must be strict:
 
 ```text
 If you include anything other than the requested code, your answer is invalid.utput contains anything other than code, it is invalid.
+## Implementation Size Rules
+
+Codex must prefer the smallest readable correct implementation.
+
+### Required
+
+- keep implementations compact
+- prefer flat logic over unnecessary indirection
+- minimize number of helper functions
+- reuse existing patterns instead of introducing new abstractions
+
+### Avoid
+
+- unnecessary helper functions
+- layered wrappers without clear benefit
+- “clean architecture” abstractions without immediate need
+- over-generalization
+- abstraction for hypothetical future use
+
+### Decision rule
+
+If two implementations are both correct:
+
+- choose the smaller one
+- unless it significantly harms readability
+
+### Golden rule
+
+Smallest readable production-grade implementation wins.
