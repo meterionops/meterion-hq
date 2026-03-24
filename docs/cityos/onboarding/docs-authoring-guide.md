@@ -1,17 +1,9 @@
-# Docs Authoring Guide
 ---
 title: Docs Authoring Guide
 doc_type: guide
 project_key: cityos
 domain_key: onboarding
 status: active
-tags:
-  - docs
-  - standards
-  - writing
-summary: How to write, structure and maintain CityOS documentation.
-priority: 90
-is_featured: true
 ---
 
 # Docs Authoring Guide
