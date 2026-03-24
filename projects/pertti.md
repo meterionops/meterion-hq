@@ -1374,3 +1374,44 @@ This makes the system ready for UI, CI, and audit integration.
 ### Next recommended layer
 
 - Dashboard / Visualization Layer
+## Dashboard / Visualization Layer Complete
+
+Pertti now includes a dashboard view-model layer:
+
+- `src/types/perttiDashboard.ts`
+
+### What this adds
+
+This layer enables:
+
+- transforming reports into UI-ready structures
+- grouping orchestration data into logical UI sections
+- simplifying frontend rendering
+
+### What this does not add
+
+This layer does not implement:
+
+- rendering logic
+- orchestration execution
+- orchestration loops
+- planner or policy logic
+- runtime mutation
+
+### Architectural significance
+
+This introduces a clean separation between system logic and UI representation.
+
+Pertti can now:
+
+- simulate orchestration
+- explain decisions
+- export results
+- generate reports
+- provide UI-ready view models
+
+This makes the system directly usable in dashboards and visualization tools.
+
+### Next recommended layer
+
+- Dashboard Preview / Fixture Layer
