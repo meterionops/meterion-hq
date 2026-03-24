@@ -209,3 +209,14 @@ Codex includes explanations, reasoning, or commentary
 
 ✅ Good:
 Output contains only code
+12. OVER-ENGINEERING
+
+❌ Bad:
+- unnecessary helper functions
+- excessive abstraction layers
+- splitting simple logic into multiple wrappers
+
+✅ Good:
+- compact, direct implementation
+- minimal helper usage
+- flat and readable logic
