@@ -1247,3 +1247,46 @@ for CI, audit, debugging, and UI usage without executing anything.
 ### Next recommended layer
 
 - Snapshot Diff / Comparison Layer
+## Snapshot Diff / Comparison Layer Complete
+
+Pertti now includes a snapshot diff layer:
+
+- `src/types/perttiSnapshotDiff.ts`
+
+### What this adds
+
+This layer enables:
+
+- deterministic comparison between orchestration snapshots
+- detection of:
+  - readiness changes
+  - next stage changes
+  - stage list changes
+  - summary changes
+
+### What this does not add
+
+This layer does not implement:
+
+- orchestration execution
+- orchestration loop
+- planner or policy logic
+- runtime mutation
+- generic deep diff engine
+
+### Architectural significance
+
+This completes the comparison capability of the dry-run orchestrator.
+
+Pertti can now:
+
+- simulate orchestration
+- explain decisions
+- export results
+- compare outcomes across runs
+
+This is critical for regression testing and auditability.
+
+### Next recommended layer
+
+- Snapshot Diff Harness
