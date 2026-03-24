@@ -2575,3 +2575,111 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now prepare and evaluate runs, but lacks a structured view of stage progression — what stages are ready, blocked, or pending — without executing them.
+## 2026-03-23 — Stage Progression / Runtime State View Complete
+
+### Summary
+
+Pertti architecture has been extended with a first runtime-state view over stage progression without introducing execution logic.
+
+New file added:
+
+- `src/types/perttiStageProgression.ts`
+
+This layer provides visibility into which stages are ready, blocked, unreachable, or still pending for a simulated run.
+
+---
+
+### New Layer Added
+
+#### Stage Progression / Runtime State View
+File:
+- `src/types/perttiStageProgression.ts`
+
+Purpose:
+- derive runtime-state visibility from:
+  - simulated run
+  - stage catalog
+- determine stage status for each stage
+- produce stage-level progression summaries
+
+Key property:
+- non-executing
+- deterministic
+- side-effect free
+- no orchestration loop
+- no stage transitions
+- no service object
+
+---
+
+### Stage Status Model
+
+The progression view now supports:
+
+- `READY`
+- `BLOCKED`
+- `UNREACHABLE`
+- `PENDING`
+
+These are derived using:
+
+- excluded stage visibility
+- blocking issue visibility
+- required artifact availability
+- simulated run readiness
+
+---
+
+### Architectural Impact
+
+Pertti now includes a runtime-state visibility layer on top of the safe runtime entry point.
+
+This means Pertti can now:
+
+- prepare a run
+- evaluate readiness
+- inspect stage-level runtime state
+- see which stages are blocked
+- see which stages are unreachable
+- see which stages are potentially ready
+
+without executing any stage logic.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+
+Still not implemented:
+- stage transition eligibility layer
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+- persistent storage layers
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Stage Transition Eligibility Layer
+
+Rationale:
+Pertti can now see stage-level runtime state, but still lacks a rule-based way to determine which ready stages are actually eligible to be the next stage based on transition constraints.
