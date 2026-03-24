@@ -1725,3 +1725,25 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Execution Surface Adapter Contract
+
+Pertti now includes an execution surface adapter contract.
+
+Module:
+- src/types/perttiExecutionAdapter.ts
+
+Responsibilities:
+- convert execution intent into a normalized adapter envelope
+- normalize external execution targets
+- preserve supervisory decision/status/allowed state for downstream systems
+- provide a stable handoff contract for future CityOS / OpenClaw / Codex adapters
+
+Architecture position:
+- downstream of execution intent / handoff projection
+- upstream of future execution adapter implementations
+
+Constraints:
+- type/boundary focused
+- no execution
+- pure deterministic functions
+- compact implementation
