@@ -3925,3 +3925,29 @@ Notes:
   - actions
   - priority
 - May require alignment if recommendation output contracts evolve
+## Recommendation Legality Verification Harness (v1)
+
+Added a deterministic legality verification layer for stage-transition recommendations.
+
+Location:
+- src/types/perttiRecommendationLegalityVerification.ts
+
+Capabilities:
+- Structural validation:
+  - readiness
+  - recommendedStage
+  - eligibleStages
+- Recommendation legality validation against stage-transition rules
+- Scenario-aware verification using fixtures
+- Support for both valid and intentionally invalid legality cases
+- Assertion-level results
+- Deterministic verification summary
+- CI-ready suite output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
