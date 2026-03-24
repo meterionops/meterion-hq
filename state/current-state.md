@@ -3723,3 +3723,138 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now generate UI-ready data, but lacks predefined preview states for UI development, demos, and regression validation of dashboard output.
+## 2026-03-24 — Dashboard Preview / Fixture Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a deterministic dashboard preview / fixture layer for UI development, demos, and regression-safe preview usage.
+
+New file added:
+
+- `src/types/perttiDashboardFixtures.ts`
+
+This layer provides stable dashboard preview states built on top of the existing run, snapshot, report, and dashboard pipeline.
+
+---
+
+### New Layer Added
+
+#### Dashboard Preview / Fixture Layer
+File:
+- `src/types/perttiDashboardFixtures.ts`
+
+Purpose:
+- generate deterministic dashboard preview states
+- support UI development without runtime orchestration
+- provide reusable preview data for:
+  - valid run
+  - invalid run
+  - simulation run
+  - portfolio review run
+
+Key property:
+- deterministic
+- read-only
+- side-effect free
+- no execution
+- no orchestration loop
+- no rendering logic
+
+---
+
+### Preview Model
+
+The fixture layer now provides stable dashboard views for:
+
+- valid dashboard state
+- invalid dashboard state
+- simulation dashboard state
+- portfolio review dashboard state
+
+Each fixture is built through the full dry-run pipeline:
+
+Run Definition
+→ Snapshot
+→ Report
+→ Dashboard View
+
+This ensures preview output stays aligned with actual system behavior.
+
+---
+
+### Determinism Constraint
+
+Dashboard previews use a fixed fixture timestamp to avoid time-based instability in UI previews and regression checks.
+
+This keeps preview output stable across:
+
+- local UI development
+- preview environments
+- deterministic tests
+- regression comparisons
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete UI-ready dry-run pipeline:
+
+- run fixtures
+- snapshot export
+- report projection
+- dashboard view model
+- dashboard preview fixtures
+
+This means Pertti can now:
+
+- generate orchestration previews
+- expose deterministic UI-ready states
+- support dashboard development without runtime dependencies
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+- Orchestration cycle view (v1)
+- Orchestration decision trace layer (v1)
+- Orchestration snapshot / export layer (v1)
+- Snapshot diff / comparison layer (v1)
+- Snapshot diff harness (v1)
+- Snapshot report layer (v1)
+- Dashboard / visualization layer (v1)
+- Dashboard preview / fixture layer (v1)
+
+Still not implemented:
+- dashboard verification harness
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Dashboard Verification Harness
+
+Rationale:
+Pertti can now generate deterministic dashboard preview states, but still needs a verification layer that checks expected readiness, next-action, and summary values across preview scenarios.
