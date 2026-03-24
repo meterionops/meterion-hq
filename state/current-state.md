@@ -3121,3 +3121,121 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti can now compute and explain decisions, but lacks a structured export format that combines orchestration cycle and decision trace into a single portable artifact for audit, CI, and UI usage.
+## 2026-03-23 — Orchestration Snapshot / Export Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a unified snapshot/export layer that packages the orchestration cycle and decision trace into a single portable artifact.
+
+New file added:
+
+- `src/types/perttiSnapshot.ts`
+
+This layer provides an exportable, read-only snapshot of one Pertti run state for CI, audit, debugging, and UI usage.
+
+---
+
+### New Layer Added
+
+#### Orchestration Snapshot / Export Layer
+File:
+- `src/types/perttiSnapshot.ts`
+
+Purpose:
+- combine orchestration cycle view and decision trace
+- attach creation timestamp
+- provide one portable artifact for external consumption
+
+Key property:
+- read-only
+- deterministic except for timestamp generation
+- side-effect free
+- no execution
+- no orchestration loop
+- no mutation of runtime state
+
+---
+
+### Snapshot Model
+
+The snapshot now includes:
+
+- `cycle`
+  - runtime view
+  - progression view
+  - eligibility view
+  - selection view
+
+- `trace`
+  - progression trace
+  - eligibility trace
+  - selection trace
+  - decision summary
+
+- `createdAt`
+  - export timestamp
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete dry-run orchestration stack with explainable export:
+
+- runtime entry
+- progression
+- eligibility
+- selection
+- orchestration cycle
+- decision trace
+- snapshot/export layer
+
+This means Pertti can now:
+
+- compute a full orchestration cycle
+- explain its decision path
+- export the entire result as one artifact
+
+without executing any stage or introducing orchestration loops.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+- Orchestration cycle view (v1)
+- Orchestration decision trace layer (v1)
+- Orchestration snapshot / export layer (v1)
+
+Still not implemented:
+- snapshot diff/comparison layer
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Snapshot Diff / Comparison Layer
+
+Rationale:
+Pertti can now export a full orchestration snapshot, but still lacks a deterministic comparison layer for regression checks, audit diffs, and state-change inspection across snapshots.
