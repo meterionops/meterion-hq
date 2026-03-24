@@ -2234,3 +2234,117 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti now has reusable simulated-run fixtures, but it still needs a small deterministic verification layer that asserts readiness states, issue visibility, and run-mode correctness for those fixtures before any future runtime orchestration is introduced.
+
+## 2026-03-23 — Simulated Run Assertion Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a deterministic assertion and verification layer for simulated runs.
+
+New file added:
+
+- `src/types/perttiSimulatedRunAssertions.ts`
+
+This layer verifies readiness state, validation correctness, and run-mode behavior for simulated run fixtures without introducing runtime execution.
+
+---
+
+### New Layer Added
+
+#### Simulated Run Assertion / Verification Layer
+File:
+- `src/types/perttiSimulatedRunAssertions.ts`
+
+Purpose:
+- verify correctness of simulated runs
+- verify readiness state (`readyForOrchestration`)
+- verify presence or absence of blocking issues
+- verify run-mode correctness
+- verify expected validation issue codes
+
+Key property:
+- pure
+- deterministic
+- side-effect free
+- no runtime orchestration
+- no test framework dependency
+- no service object
+
+---
+
+### Assertion Coverage
+
+The assertion layer now supports checks for:
+
+- simulated run readiness
+- simulated run non-readiness
+- presence of blocking issues
+- absence of blocking issues
+- run mode correctness
+- presence of specific validation issue codes
+
+It also provides grouped fixture verifications:
+
+- valid simulated run
+- invalid simulated run (stage selection conflict)
+- simulation-mode run
+- portfolio-review run
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full pre-runtime verification path:
+
+- run definition
+- run definition validation
+- stage-catalog validation
+- simulated run assembly
+- simulated run fixtures
+- simulated run assertions
+
+This means Pertti can now:
+
+- define runs
+- validate run definitions
+- validate orchestration structure
+- assemble simulated runs
+- generate reusable fixtures
+- verify fixture correctness and readiness
+
+without executing any runtime logic.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+
+Still not implemented:
+- runtime orchestrator
+- stage invocation runtime
+- storage / retrieval engines
+- execution integrations
+- formal test harness (Jest/Vitest or equivalent)
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Test Harness / Verification Entry Layer
+
+Rationale:
+Pertti now has fixtures and assertions, but lacks a single entry point that runs all verification checks and produces a unified result (e.g. CI/build usage).
