@@ -1415,3 +1415,47 @@ This makes the system directly usable in dashboards and visualization tools.
 ### Next recommended layer
 
 - Dashboard Preview / Fixture Layer
+## Dashboard Preview / Fixture Layer Complete
+
+Pertti now includes a deterministic dashboard preview / fixture layer:
+
+- `src/types/perttiDashboardFixtures.ts`
+
+### What this adds
+
+This layer enables:
+
+- generating stable dashboard preview states
+- supporting UI development without runtime dependencies
+- previewing multiple orchestration scenarios:
+  - valid
+  - invalid
+  - simulation
+  - portfolio review
+
+### What this does not add
+
+This layer does not implement:
+
+- rendering logic
+- orchestration execution
+- orchestration loops
+- planner or policy logic
+- runtime mutation
+
+### Architectural significance
+
+This completes the preview side of the dashboard pipeline.
+
+Pertti can now:
+
+- simulate orchestration
+- export reports
+- build dashboard views
+- generate deterministic preview states for UI work
+
+This makes the system directly usable for demo, preview, and frontend iteration workflows.
+
+### Next recommended layer
+
+- Dashboard Verification Harness
