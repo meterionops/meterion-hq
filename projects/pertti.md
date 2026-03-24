@@ -1459,3 +1459,33 @@ This makes the system directly usable for demo, preview, and frontend iteration 
 ### Next recommended layer
 
 - Dashboard Verification Harness
+### Dashboard Verification Harness
+
+Pertti now includes a verification layer for dashboard outputs.
+
+Module:
+- src/types/perttiDashboardVerification.ts
+
+Responsibilities:
+- validate dashboard structural correctness
+- validate dashboard outputs against fixture expectations
+- support multiple scenarios:
+  - valid dashboards
+  - invalid dashboards
+  - simulation dashboards
+  - portfolio dashboards
+
+Verification model:
+- assertion-based (structured results)
+- expectation-aware (fixture.expected contract)
+- deterministic summaries
+- CI-consumable output
+
+Architecture position:
+- downstream of dashboard view model
+- upstream of CI / validation / verification systems
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
