@@ -1577,3 +1577,32 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Cross-Layer Consistency Verification Harness
+
+Pertti now includes a cross-layer consistency verification layer.
+
+Module:
+- src/types/perttiCrossLayerConsistencyVerification.ts
+
+Responsibilities:
+- verify dashboard and legality outputs stay aligned
+- verify dashboard summary aligns with decision trace summary
+- verify recommendation rationale/actions align with decision trace outputs
+- verify recommendation remains compatible with legality outputs
+- provide deterministic cross-layer verification summaries
+
+Verification model:
+- assertion-based
+- cross-layer consistency-aware
+- expectation-aware
+- CI-consumable output
+
+Architecture position:
+- downstream of dashboard, recommendation, legality, and decision trace outputs
+- upstream of CI / regression / consistency checks
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
