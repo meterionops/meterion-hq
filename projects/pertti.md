@@ -783,3 +783,49 @@ without executing anything.
 ### Next recommended layer
 
 - Simulated Run Fixture / Sample Case Layer
+
+## Simulated Run Fixture Layer Complete
+
+Pertti now includes a deterministic simulated run fixture layer:
+
+- `src/types/perttiSimulatedRunFixtures.ts`
+
+### What this adds
+
+This layer provides reusable example cases for:
+
+- valid run definitions
+- invalid run definitions
+- simulation-mode runs
+- portfolio-review runs
+- assembled simulated runs based on those definitions
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- transition coordination
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration behavior
+
+### Architectural significance
+
+This is the first point where Pertti has reusable example run cases on top of the pre-runtime orchestration stack.
+
+Pertti can now:
+
+- define runs
+- validate run definitions
+- validate orchestration structure
+- assemble simulated runs
+- generate reusable sample cases for testing and simulation preparation
+
+without executing anything.
+
+### Next recommended layer
+
+- Fixture Verification / Test Assertion Layer
