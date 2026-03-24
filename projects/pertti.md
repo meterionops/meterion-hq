@@ -1747,3 +1747,25 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Dry-Run Execution Adapter
+
+Pertti now includes a dry-run execution adapter.
+
+Module:
+- src/types/perttiExecutionDryRun.ts
+
+Responsibilities:
+- simulate execution handoff outcomes without calling external systems
+- determine whether execution would be triggered
+- preserve target, decision, allowed state, and payload
+- provide deterministic dry-run message text
+
+Architecture position:
+- downstream of execution adapter envelope
+- upstream of future real execution adapters
+
+Constraints:
+- safe simulation only
+- no execution
+- pure deterministic functions
+- compact implementation
