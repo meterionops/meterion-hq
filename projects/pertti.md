@@ -934,3 +934,52 @@ without executing anything.
 ### Next recommended layer
 
 - Runtime v0 — Minimal Orchestrator Runner
+## Runtime v0 Complete
+
+Pertti now includes a first runtime entry point:
+
+- `src/types/perttiRuntimeV0.ts`
+
+### What this adds
+
+This layer enables:
+
+- accepting a run definition
+- validating the run definition
+- validating orchestration structure
+- assembling a simulated run
+- exposing readiness for orchestration
+- exposing blocking issues
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- transition coordination
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- adapter execution
+- async runtime behavior
+
+### Architectural significance
+
+This is the first runnable entry point for Pertti.
+
+Pertti can now:
+
+- take a run definition as input
+- validate it
+- assemble a run structure
+- determine if it is ready for orchestration
+
+without executing anything.
+
+This marks the transition from static architecture to a controlled runtime boundary.
+
+### Next recommended layer
+
+- Stage Progression / Runtime State View
