@@ -1634,3 +1634,26 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Verification Dashboard Projection Layer
+
+Pertti now includes a verification dashboard projection layer.
+
+Module:
+- src/types/perttiVerificationDashboard.ts
+
+Responsibilities:
+- transform unified verification results into operator-facing dashboard data
+- provide overall verification health status
+- provide suite-level verification cards
+- expose failing suite names
+- provide deterministic summary text for dashboard/operator visibility
+
+Architecture position:
+- downstream of the unified verification entry layer
+- upstream of operator-facing dashboard visibility surfaces
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
