@@ -2348,3 +2348,114 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti now has fixtures and assertions, but lacks a single entry point that runs all verification checks and produces a unified result (e.g. CI/build usage).
+
+## 2026-03-23 — Verification Harness Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a deterministic verification harness layer that aggregates all simulated run assertions into a single build/CI-ready result.
+
+New file added:
+
+- `src/types/perttiVerificationHarness.ts`
+
+This layer provides a single entry point for verifying the entire pre-runtime orchestration pipeline.
+
+---
+
+### New Layer Added
+
+#### Verification Harness / Entry Layer
+File:
+- `src/types/perttiVerificationHarness.ts`
+
+Purpose:
+- execute all simulated run fixture verifications
+- aggregate assertion results into a unified structure
+- compute summary metrics:
+  - total assertions
+  - passed assertions
+  - failed assertions
+  - overall success
+
+Key property:
+- pure
+- deterministic
+- side-effect free
+- no runtime orchestration
+- no logging
+- no test framework dependency
+
+---
+
+### Verification Coverage
+
+The harness aggregates:
+
+- valid simulated run verification
+- invalid simulated run verification
+- simulation-mode verification
+- portfolio-review verification
+
+Each verification reuses the assertion layer and returns structured results.
+
+---
+
+### Architectural Impact
+
+Pertti now includes a complete pre-runtime validation and verification pipeline:
+
+- run definition
+- run definition validation
+- stage-catalog validation
+- simulated run assembly
+- simulated run fixtures
+- simulated run assertions
+- verification harness entry
+
+This means Pertti can now:
+
+- define runs
+- validate run definitions
+- validate orchestration structure
+- assemble simulated runs
+- generate reusable fixtures
+- verify correctness of those fixtures
+- run full-system checks via a single entry point
+
+without executing any runtime logic.
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+
+Still not implemented:
+- runtime orchestrator
+- stage invocation runtime
+- storage / retrieval engines
+- execution integrations
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Runtime v0 — Minimal Orchestrator Runner
+
+Rationale:
+All contracts, validation, simulation, and verification layers are now complete. The system is ready for a first minimal runtime layer that executes a single run safely using existing boundaries.
