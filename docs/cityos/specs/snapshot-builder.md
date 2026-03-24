@@ -1,4 +1,14 @@
 ---
+title:
+doc_type:
+project_key: cityos
+domain_key:
+status: active
+tags: []
+summary:
+priority: 50
+is_featured: false
+---
 title: Snapshot Builder Spec
 doc_type: spec
 project_key: cityos
