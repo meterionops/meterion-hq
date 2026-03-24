@@ -3975,3 +3975,32 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Cross-Layer Consistency Verification Harness (v1)
+
+Added a deterministic cross-layer consistency verification layer.
+
+Location:
+- src/types/perttiCrossLayerConsistencyVerification.ts
+
+Capabilities:
+- Dashboard ↔ legality alignment verification
+- Dashboard ↔ decision trace summary alignment verification
+- Recommendation ↔ decision trace alignment verification
+- Recommendation ↔ legality alignment verification
+- Scenario-aware verification using fixtures
+- Assertion-level results
+- Deterministic verification summary
+- CI-ready suite output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
+
+Notes:
+- Current implementation is strict about dashboard/legality stage field equality
+- Dashboard ↔ decision trace alignment currently focuses on summary alignment
+- Recommendation ↔ legality alignment currently validates legality-state compatibility rather than semantic action-to-stage mapping
