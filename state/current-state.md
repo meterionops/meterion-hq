@@ -3601,3 +3601,125 @@ Next recommended architecture layer:
 
 Rationale:
 Pertti now produces a complete, explainable, and exportable orchestration state, which can be directly visualized for debugging, monitoring, and user interaction.
+## 2026-03-23 — Dashboard / Visualization Layer Complete
+
+### Summary
+
+Pertti architecture has been extended with a dashboard view-model layer that transforms reports into UI-ready structures.
+
+New file added:
+
+- `src/types/perttiDashboard.ts`
+
+This layer provides a clean separation between orchestration logic and UI representation.
+
+---
+
+### New Layer Added
+
+#### Dashboard / Visualization Layer
+File:
+- `src/types/perttiDashboard.ts`
+
+Purpose:
+- convert PerttiReport into UI-friendly structure
+- group data into logical UI sections
+- enable direct rendering without knowledge of underlying orchestration structures
+
+Key property:
+- read-only
+- deterministic
+- side-effect free
+- no execution
+- no orchestration logic
+- no rendering logic
+
+---
+
+### View Model Structure
+
+The dashboard view includes:
+
+- header:
+  - summary
+  - timestamp
+  - readiness
+
+- nextAction:
+  - recommended stage
+  - eligible stages
+
+- changes (optional):
+  - hasChanges
+  - changedFields
+
+- validation (optional):
+  - harness success
+  - failed comparisons
+
+---
+
+### Architectural Impact
+
+Pertti now includes a full visualization-ready pipeline:
+
+- orchestration cycle
+- decision trace
+- snapshot
+- diff
+- harness
+- report
+- dashboard view model
+
+This enables:
+
+- direct UI integration
+- simplified frontend logic
+- clear separation of system vs presentation
+
+---
+
+### Status
+
+Completed:
+- Supervisory OS contracts (v1)
+- Memory OS contracts (v1)
+- Venture intelligence chain (v1)
+- Portfolio strategy + governance layers (v1)
+- Execution surface boundary (v1)
+- Orchestration boundary contracts (v1)
+- Stage catalog + validation layer (v1)
+- Run definition / intent layer (v1)
+- Run definition validation layer (v1)
+- Minimal simulated run assembly layer (v1)
+- Simulated run fixture layer (v1)
+- Simulated run assertion layer (v1)
+- Verification harness layer (v1)
+- Runtime v0 (minimal runner) (v1)
+- Stage progression / runtime state view (v1)
+- Stage transition eligibility layer (v1)
+- Next stage selection view (v1)
+- Orchestration cycle view (v1)
+- Orchestration decision trace layer (v1)
+- Orchestration snapshot / export layer (v1)
+- Snapshot diff / comparison layer (v1)
+- Snapshot diff harness (v1)
+- Snapshot report layer (v1)
+- Dashboard / visualization layer (v1)
+
+Still not implemented:
+- dashboard preview / fixture layer
+- orchestration loop
+- stage execution engine
+- planner/policy runtime integration
+- execution adapters
+
+---
+
+### Recommended Next Step
+
+Next recommended architecture layer:
+- Dashboard Preview / Fixture Layer
+
+Rationale:
+Pertti can now generate UI-ready data, but lacks predefined preview states for UI development, demos, and regression validation of dashboard output.
