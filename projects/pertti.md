@@ -1114,3 +1114,48 @@ without executing anything.
 ### Next recommended layer
 
 - Orchestration Cycle View
+## Orchestration Cycle View Complete
+
+Pertti now includes a unified orchestration cycle view:
+
+- `src/types/perttiOrchestrationCycle.ts`
+
+### What this adds
+
+This layer provides:
+
+- a complete snapshot of one orchestration cycle
+- composed views of:
+  - runtime state
+  - stage progression
+  - stage eligibility
+  - next stage selection
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- transition sequencing
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This is the first complete “dry-run orchestrator”.
+
+Pertti can now:
+
+- simulate a full orchestration cycle
+- inspect decision-making end-to-end
+- debug orchestration behavior safely
+
+without executing anything.
+
+### Next recommended layer
+
+- Orchestration Decision Trace Layer
