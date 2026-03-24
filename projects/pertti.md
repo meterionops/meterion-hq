@@ -883,3 +883,54 @@ without executing anything.
 ### Next recommended layer
 
 - Test Harness / Verification Entry Layer
+
+## Verification Harness Layer Complete
+
+Pertti now includes a deterministic verification harness layer:
+
+- `src/types/perttiVerificationHarness.ts`
+
+### What this adds
+
+This layer provides:
+
+- a single entry point to run all fixture verifications
+- aggregated assertion results
+- summary metrics:
+  - total assertions
+  - passed assertions
+  - failed assertions
+  - overall success
+
+### What this does not add
+
+This layer does not implement:
+
+- runtime orchestration
+- stage execution
+- transition coordination
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This completes the full pre-runtime system validation stack.
+
+Pertti can now:
+
+- define runs
+- validate definitions
+- validate orchestration structure
+- assemble simulated runs
+- generate fixtures
+- verify correctness of fixtures
+- run full-system verification via a single entry point
+
+without executing anything.
+
+### Next recommended layer
+
+- Runtime v0 — Minimal Orchestrator Runner
