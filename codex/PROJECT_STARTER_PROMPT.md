@@ -42,3 +42,9 @@ If I ask for architecture help:
 
 Current task:
 {PASTE TASK HERE}
+
+Codex output must always be:
+
+- minimal
+- code-only
+- no explanations
