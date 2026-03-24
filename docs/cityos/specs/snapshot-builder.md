@@ -1,13 +1,19 @@
 ---
-title:
-doc_type:
+title: Docs Authoring Guide
+doc_type: guide
 project_key: cityos
-domain_key:
+domain_key: onboarding
 status: active
-tags: []
-summary:
-priority: 50
-is_featured: false
+tags:
+  - docs
+  - standards
+  - writing
+summary: How to write, structure and maintain CityOS documentation.
+priority: 90
+is_featured: true
+---
+
+# Docs Authoring Guide
 ---
 title: Snapshot Builder Spec
 doc_type: spec
