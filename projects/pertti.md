@@ -1027,3 +1027,46 @@ without introducing execution semantics.
 ### Next recommended layer
 
 - Stage Transition Eligibility Layer
+## Stage Transition Eligibility Layer Complete
+
+Pertti now includes a deterministic stage eligibility layer:
+
+- `src/types/perttiStageEligibility.ts`
+
+### What this adds
+
+This layer enables:
+
+- determining which stages are eligible to be next
+- separating stage readiness from transition eligibility
+- validating transition constraints using allowedPreviousStages
+- producing explicit eligibility reasoning per stage
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- orchestration loops
+- transition sequencing
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration
+
+### Architectural significance
+
+This is the first true decision surface in the runtime pipeline.
+
+Pertti can now:
+
+- see which stages are READY
+- determine which stages are actually allowed next
+- explain why a stage is not eligible
+
+without executing anything.
+
+### Next recommended layer
+
+- Next Stage Selection View
