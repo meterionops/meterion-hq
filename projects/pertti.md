@@ -983,3 +983,47 @@ This marks the transition from static architecture to a controlled runtime bound
 ### Next recommended layer
 
 - Stage Progression / Runtime State View
+## Stage Progression / Runtime State View Complete
+
+Pertti now includes a first runtime-state view layer:
+
+- `src/types/perttiStageProgression.ts`
+
+### What this adds
+
+This layer provides stage-level visibility for a simulated run, including:
+
+- ready stages
+- blocked stages
+- unreachable stages
+- pending stages
+
+### What this does not add
+
+This layer does not implement:
+
+- stage execution
+- transition coordination
+- orchestration loops
+- planner logic
+- policy logic
+- governance logic
+- routing logic
+- service-style orchestration behavior
+
+### Architectural significance
+
+This is the first point where Pertti can inspect stage-level runtime state without executing anything.
+
+Pertti can now:
+
+- prepare a run
+- evaluate readiness
+- inspect stage progression state
+- determine what is blocked or excluded
+
+without introducing execution semantics.
+
+### Next recommended layer
+
+- Stage Transition Eligibility Layer
