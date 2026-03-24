@@ -3951,3 +3951,27 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Recommendation Alignment Verification Harness (v1)
+
+Added a deterministic alignment verification layer for recommendation outputs and decision trace reasoning.
+
+Location:
+- src/types/perttiRecommendationAlignmentVerification.ts
+
+Capabilities:
+- Structural validation for recommendation and decision trace inputs
+- Rationale alignment verification
+- Actions alignment verification
+- Scenario-aware verification using fixtures
+- Support for both valid and intentionally invalid alignment cases
+- Assertion-level results
+- Deterministic verification summary
+- CI-ready suite output
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
