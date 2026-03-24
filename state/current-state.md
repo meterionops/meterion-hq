@@ -4122,3 +4122,30 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Execution Surface Adapter Contract (v1)
+
+Added a deterministic execution surface adapter contract.
+
+Location:
+- src/types/perttiExecutionAdapter.ts
+
+Capabilities:
+- normalizes execution target
+- wraps execution intent into adapter envelope
+- preserves decision, status, allowed state, and payload
+- attaches deterministic adapter metadata
+- provides a safe supervisory-to-execution boundary shape
+
+Supported targets:
+- CITYOS
+- OPENCLAW
+- CODEX
+- UNKNOWN
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
