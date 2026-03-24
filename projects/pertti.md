@@ -1290,3 +1290,42 @@ This is critical for regression testing and auditability.
 ### Next recommended layer
 
 - Snapshot Diff Harness
+## Snapshot Diff Harness Complete
+
+Pertti now includes a snapshot diff harness:
+
+- `src/types/perttiSnapshotDiffHarness.ts`
+
+### What this adds
+
+This layer enables:
+
+- deterministic regression testing of orchestration snapshots
+- structured before/after comparisons
+- validation of expected system changes
+
+### What this does not add
+
+This layer does not implement:
+
+- orchestration execution
+- orchestration loops
+- planner or policy logic
+- runtime mutation
+- test framework integration
+
+### Architectural significance
+
+This completes the regression testing capability of the dry-run orchestrator.
+
+Pertti can now:
+
+- simulate orchestration
+- explain decisions
+- export results
+- compare snapshots
+- validate behavior through deterministic harness cases
+
+### Next recommended layer
+
+- Snapshot Report Layer
