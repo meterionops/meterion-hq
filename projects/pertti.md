@@ -1606,3 +1606,31 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Unified Verification Entry Layer
+
+Pertti now includes a unified verification entry layer.
+
+Module:
+- src/types/perttiUnifiedVerification.ts
+
+Responsibilities:
+- run all major verification harnesses through one entry point
+- aggregate suite-level success and summary counts
+- provide a single CI-ready verification surface
+
+Included verification layers:
+- dashboard
+- recommendation
+- recommendation legality
+- recommendation alignment
+- cross-layer consistency
+
+Architecture position:
+- downstream of all major read-only verification harnesses
+- upstream of CI / regression / operator visibility
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
