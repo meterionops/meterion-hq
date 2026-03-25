@@ -1,4 +1,12 @@
-CityOS Event Identity & Merge Engine Spec v1
+---
+title: CityOS Contract Registry v1
+doc_type: spec
+project_key: cityos
+domain_key: contracts
+status: active
+---
+
+# CityOS Event Identity & Merge Engine Spec v1
 Contract-level specification for event identity resolution, canonical event creation, and cross-source merge during snapshot projection.
 
 1 · Purpose
