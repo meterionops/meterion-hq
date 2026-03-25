@@ -4222,3 +4222,26 @@ Properties:
 Notes:
 - COUNTRY scope currently resolves country context from the first country record
 - executionEnvelope is included in the input shape for future use, but not yet projected
+## CityOS Read-only Adapter (v1)
+
+Added a deterministic CityOS read-only adapter.
+
+Location:
+- src/types/perttiCityOSReadAdapter.ts
+
+Capabilities:
+- maps CityOS city snapshots into city dashboard records
+- derives escalation records from findings
+- aggregates city data into country dashboard records
+- derives country risk records
+- derives minimal strategic signals from recurrence-based findings
+- computes HQ summary metrics
+- outputs a valid PerttiDashboardDataModel
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
