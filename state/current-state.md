@@ -4195,3 +4195,30 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Production-Shaped Operator Dashboard Model (v1)
+
+Added a production-shaped operator dashboard model.
+
+Location:
+- src/types/perttiOperatorDashboardModel.ts
+
+Capabilities:
+- combines verification dashboard state
+- combines hierarchy and escalation visibility
+- combines country ownership / authority visibility
+- combines operator control state
+- combines approval state
+- combines execution intent
+- combines dry-run execution result
+
+Properties:
+- pure composition only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
+
+Notes:
+- COUNTRY scope currently resolves country context from the first country record
+- executionEnvelope is included in the input shape for future use, but not yet projected
