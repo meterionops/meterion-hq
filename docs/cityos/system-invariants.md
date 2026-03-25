@@ -15,3 +15,12 @@ The following rules must always hold:
 - Snapshot builder must remain deterministic
 - No silent state changes allowed
 - Fixes should be source-local whenever possible
+## Documentation Invariant
+
+docs/cityos is the single source of truth for all CityOS contracts and specifications.
+
+CityOS Admin UI renders and uses these documents but does not define independent contract truth.
+
+If a conflict exists:
+→ docs/cityos is correct
+→ UI must be updated or deprecated
