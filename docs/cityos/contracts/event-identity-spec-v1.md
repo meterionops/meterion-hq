@@ -2,7 +2,7 @@
 title: CityOS Contract Registry v1
 doc_type: spec
 project_key: cityos
-domain_key: contracts
+domain_key: Event Identity
 status: active
 ---
 
