@@ -1,4 +1,13 @@
-CityOS — Master Strategy Map
+---
+title: CityOS Architecture Overview
+doc_type: Master Strategy
+project_key: cityos
+domain_key: Master Strategy Map
+status: active
+---
+
+# CityOS — Master Strategy Map
+
 A complete overview of the CityOS platform architecture, growth model, and strategic priorities.
 
 Platform Layers
