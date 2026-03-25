@@ -1815,3 +1815,26 @@ Constraints:
 - no execution
 - pure deterministic composition
 - compact implementation
+### CityOS Read-only Adapter
+
+Pertti now includes a CityOS read-only adapter.
+
+Module:
+- src/types/perttiCityOSReadAdapter.ts
+
+Responsibilities:
+- read CityOS-style snapshot inputs
+- derive Pertti dashboard data structures from execution-side system state
+- preserve hierarchy from city to country to HQ
+- derive escalations and country risks in a deterministic way
+- provide the first real bridge from CityOS into Pertti supervisory models
+
+Architecture position:
+- downstream of CityOS read-model snapshots
+- upstream of Pertti dashboard data model and operator dashboard model
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic functions
+- compact implementation
