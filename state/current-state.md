@@ -4245,3 +4245,27 @@ Properties:
 - no async
 - compact implementation
 - minimal surface area
+## Read-Only Control Center Composition (v1)
+
+Added a deterministic end-to-end read-only Pertti control center composition layer.
+
+Location:
+- src/types/perttiReadOnlyControlCenter.ts
+
+Capabilities:
+- composes CityOS read-only adapter output into Pertti dashboard data
+- composes verification dashboard, operator control, approval, execution intent, adapter envelope, and dry-run layers
+- produces a single end-to-end read-only control center result
+- uses explicit CityOS snapshot input typing
+
+Properties:
+- pure functions only
+- no side effects
+- no execution
+- no async
+- compact implementation
+- minimal surface area
+
+Notes:
+- unified verification is currently used in safe-default mode
+- verification is not yet derived from CityOS-backed control center state
