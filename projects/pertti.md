@@ -1792,3 +1792,26 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Production-Shaped Operator Dashboard Model
+
+Pertti now includes a production-shaped operator dashboard model.
+
+Module:
+- src/types/perttiOperatorDashboardModel.ts
+
+Responsibilities:
+- unify major Pertti layers into a single operator-facing dashboard model
+- expose verification state
+- expose hierarchy and escalation state
+- expose country ownership / authority context
+- expose control, approval, execution-intent, and dry-run state
+
+Architecture position:
+- downstream of dashboard data model, country authority, verification, control, approval, execution intent, and dry-run layers
+- upstream of the real operator UI
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic composition
+- compact implementation
