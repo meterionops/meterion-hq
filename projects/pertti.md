@@ -1838,3 +1838,24 @@ Constraints:
 - no execution
 - pure deterministic functions
 - compact implementation
+### Read-Only Control Center Composition
+
+Pertti now includes a read-only control center composition layer.
+
+Module:
+- src/types/perttiReadOnlyControlCenter.ts
+
+Responsibilities:
+- connect CityOS snapshot inputs to Pertti dashboard data
+- connect dashboard data into the verification / control / approval / execution chain
+- produce a single end-to-end supervisory output for the operator dashboard
+
+Architecture position:
+- downstream of the CityOS read-only adapter
+- upstream of the Pertti operator dashboard UI
+
+Constraints:
+- read-only
+- no execution
+- pure deterministic composition
+- compact implementation
