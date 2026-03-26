@@ -12,7 +12,9 @@ status: active
 
 This index lists operational playbooks used for investigation, diagnosis, and safe repair workflows.
 
-Use playbooks for step-by-step operator procedures.
+Playbooks are step-by-step guides for operators — not theory, but execution.
+
+This repository is the source of truth for playbook logic used in CityOS.
 
 ---
 
@@ -26,26 +28,27 @@ Playbooks should define:
 - operator checklists
 - validation steps after changes
 
+Focus on **practical actions and decisions**, not explanations.
+
 ---
 
 ## Current documents
 
-### 1. Fix Source Playbook
-Path: `docs/cityos/playbooks/fix-source.md`
-
-Defines:
-- how to inspect a broken source
-- how to identify the failure pattern
-- how to apply the smallest safe fix
-- how to validate the outcome
+- [Source Fix Playbook v2](./source-fix-playbook-v2.md)
+- [Pattern Registry](./pattern-registry.md)
+- [Guardrails & Checklist](./guardrails-checklist.md)
+- [Correction Rules](./correction-rules.md)
+- [Examples](./examples.md)
 
 ---
 
-## Reading order
+## Recommended reading order
 
-Recommended order:
-
-1. `fix-source.md`
+1. Start with: `source-fix-playbook-v2.md`
+2. Use: `pattern-registry.md` to identify the issue
+3. Follow: `guardrails-checklist.md` before applying fixes
+4. Validate using: `correction-rules.md`
+5. Reference: `examples.md` for real cases
 
 ---
 
