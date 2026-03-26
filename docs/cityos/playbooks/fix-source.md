@@ -8,6 +8,8 @@ status: active
 
 # Fix Source Playbook
 
+> DEPRECATED: Use source-fix-playbook-v2.md instead.
+
 ## Goal
 Fix a broken source safely without breaking the ingest pipeline.
 
