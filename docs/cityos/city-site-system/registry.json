@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "templates": [
+    "city-guide",
+    "event-list",
+    "event-page",
+    "venue-page",
+    "area-page",
+    "category-guide",
+    "weekend-guide"
+  ]
+}
