@@ -80,3 +80,20 @@ It is composed of:
 - Canonical Model → [models.md](./models.md)
 - Fix Source → [playbooks/fix-source.md](./playbooks/fix-source.md)
 - Authoring Guide → [onboarding/docs-authoring-guide.md](./onboarding/docs-authoring-guide.md)
+## City Site System
+
+City Site System määrittelee miten kaupunkisivut rakennetaan, skaalataan ja personoidaan.
+
+Se toimii:
+- Frontendin rakenteellisena lähteenä (layout + routing)
+- Pertin ohjeistuksena uusien kaupunkien luontiin
+- SEO-sivujen generoinnin perustana
+
+### Sisältö
+
+- Base Template System → määrittelee yhteisen rungon
+- City Profile System → määrittelee kaupungin persoonallisuuden
+- Brand Family Rules → varmistaa yhtenäisen brändin
+- Page Templates → yksittäisten sivujen rakenteet
+
+→ Katso: `docs/cityos/city-site-system/index.md`
