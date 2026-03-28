@@ -219,3 +219,4 @@ export type OperatorGuidance = {
 export type SourceOperatorGuidanceSurface = {
   guidance: OperatorGuidance | null;
 };
+basedOn?: string[];
