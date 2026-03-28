@@ -1,3 +1,6 @@
+import { OperatorGuidanceCard } from "@/components/source-detail/OperatorGuidanceCard";
+import { mockOperatorGuidance } from "@/dev/mockOperatorGuidance";
+
 import React from "react";
 
 import { EvidenceSummaryCard } from "../components/source-detail/EvidenceSummaryCard";
