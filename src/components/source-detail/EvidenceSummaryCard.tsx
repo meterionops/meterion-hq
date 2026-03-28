@@ -1,28 +1,9 @@
-import { EvidenceSummary } from "./decisionSurfaceTypes";
-  fetchStatus?: string;
-  eventsFound?: number;
-  datesFound?: number;
-  mappedEventsFound?: number;
-  analyzerConfidence?: string | number;
-  patternLabel?: string;
-  patternConfidence?: string;
-  candidateSetCount?: number;
-  candidateQuality?: string;
-  rawHtmlVerdict?: string;
-  renderedDomVerdict?: string;
-  notes?: string[];
-};
+import React from "react";
+import { EvidenceSummary, formatLabel } from "./decisionSurfaceTypes";
 
 type Props = {
   summary?: EvidenceSummary | null;
 };
-
-function formatLabel(value?: string | number | null): string {
-  if (value === null || value === undefined || value === "") return "—";
-  return String(value)
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 function ValueRow({
   label,
