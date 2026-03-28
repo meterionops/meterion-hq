@@ -49,7 +49,7 @@ const SourceDetailPage: React.FC = () => {
   const { sourceId = "" } = useParams<{ sourceId: string }>();
 
   // TODO: replace this with your actual admin secret source if needed
-  const adminSecret =
+  const adminSecret = "dev";
     typeof window !== "undefined"
       ? window.localStorage.getItem("CITYOS_ADMIN_SECRET")
       : null;
