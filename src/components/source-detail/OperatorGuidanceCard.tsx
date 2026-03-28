@@ -61,6 +61,18 @@ export const OperatorGuidanceCard: React.FC<Props> = ({ guidance }) => {
 
       {/* Rationale */}
       {guidance.rationale && (
+      {guidance.basedOn && guidance.basedOn.length > 0 && (
+  <div>
+    <div className="text-xs text-gray-500 mb-1">
+      Based on
+    </div>
+    <ul className="text-sm text-gray-600 list-disc ml-5">
+      {guidance.basedOn.map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </ul>
+  </div>
+)}
         <div>
           <div className="text-xs text-gray-500 mb-1">
             Why this
