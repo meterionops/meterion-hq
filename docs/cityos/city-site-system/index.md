@@ -30,3 +30,10 @@ Generation is automated
 - Page Templates
 - Design Contract
 - Composition Rules
+## Renderer Contract Layer
+
+- Template UI Renderer Contract v1
+- Template Slot Contract v1
+- City Profile Renderer Contract v1
+- Renderer Boundaries v1
+- Renderer Fallback Rules v1
