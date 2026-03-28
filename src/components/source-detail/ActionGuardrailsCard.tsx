@@ -1,6 +1,5 @@
-import React from "react";
+import { ActionGuardrails } from "./decisionSurfaceTypes";
 
-type ActionGuardrails = {
   safeActions?: string[];
   approvalRequired?: string[];
   blockedActions?: string[];
