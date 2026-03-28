@@ -1,21 +1,9 @@
-import { ActionGuardrails } from "./decisionSurfaceTypes";
-
-  safeActions?: string[];
-  approvalRequired?: string[];
-  blockedActions?: string[];
-  notes?: string[];
-};
+import React from "react";
+import { ActionGuardrails, formatLabel } from "./decisionSurfaceTypes";
 
 type Props = {
   guardrails?: ActionGuardrails | null;
 };
-
-function formatLabel(value?: string): string {
-  if (!value) return "—";
-  return value
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 function GuardrailList({
   title,
