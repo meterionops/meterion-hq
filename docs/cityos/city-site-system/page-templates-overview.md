@@ -21,3 +21,10 @@ status: active
 ## Määritelmä
 
 Template = route + data + modules
+## Renderer Contracts
+
+Templates are executed through:
+
+- template-ui-renderer-contract-v1.md
+- template-slot-contract-v1.md
+- city-profile-renderer-contract-v1.md
