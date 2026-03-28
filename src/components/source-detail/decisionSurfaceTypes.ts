@@ -205,3 +205,17 @@ export function getDecisionStatusIndex(status?: DecisionStatus): number {
   const index = DECISION_STATUS_ORDER.indexOf(status);
   return index >= 0 ? index : 0;
 }
+// --- Operator Guidance (non-authoritative, local hint layer) ---
+
+export type OperatorGuidance = {
+  status?: "none" | "available";
+  summary?: string;
+  suggestedCheck?: string;
+  rationale?: string;
+  doNotChangeYet?: string[];
+  confidence?: "low" | "medium" | "high";
+};
+
+export type SourceOperatorGuidanceSurface = {
+  guidance: OperatorGuidance | null;
+};
