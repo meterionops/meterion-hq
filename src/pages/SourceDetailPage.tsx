@@ -1,10 +1,8 @@
-import { OperatorGuidanceCard } from "@/components/source-detail/OperatorGuidanceCard";
-import { mockOperatorGuidance } from "@/dev/mockOperatorGuidance";
-
 import React from "react";
 
 import { EvidenceSummaryCard } from "../components/source-detail/EvidenceSummaryCard";
 import { PerttiDecisionCard } from "../components/source-detail/PerttiDecisionCard";
+import { OperatorGuidanceCard } from "../components/source-detail/OperatorGuidanceCard";
 import { ExecutionStatusCard } from "../components/source-detail/ExecutionStatusCard";
 import { ActionGuardrailsCard } from "../components/source-detail/ActionGuardrailsCard";
 import { DecisionHistoryCard } from "../components/source-detail/DecisionHistoryCard";
@@ -14,12 +12,13 @@ import { CaseTimelineCard } from "../components/source-detail/CaseTimelineCard";
 import mockEvidenceSummary from "../dev/mockEvidenceSummary";
 import mockActionGuardrails from "../dev/mockActionGuardrails";
 import mockDecisionSurface from "../dev/mockDecisionSurface";
+import { mockOperatorGuidance } from "../dev/mockOperatorGuidance";
 import { mockExecutionSurface } from "../dev/mockExecutionSurface";
 import mockDecisionHistorySurface from "../dev/mockDecisionHistorySurface";
 import mockExecutionHistorySurface from "../dev/mockExecutionHistorySurface";
 import mockCaseTimelineSurface from "../dev/mockCaseTimelineSurface";
 
-import {
+import type {
   EvidenceSummary,
   ActionGuardrails,
   SourceDecisionSurface,
@@ -27,23 +26,24 @@ import {
   SourceDecisionHistoryItem,
   SourceExecutionHistoryItem,
   SourceCaseTimelineItem,
+  OperatorGuidance,
 } from "../components/source-detail/decisionSurfaceTypes";
 
 /**
  * Local preview toggles only.
- * Keep false by default if you want a production-safe passive host state.
+ * Keep false by default for a production-safe passive host state.
  */
 const USE_MOCK_EVIDENCE = true;
 const USE_MOCK_GUARDRAILS = true;
 const USE_MOCK_DECISION = false;
+const USE_MOCK_GUIDANCE = true;
 const USE_MOCK_EXECUTION = false;
 const USE_MOCK_HISTORY = false;
 
 const SourceDetailPage: React.FC = () => {
   /**
-   * Phase 1–4 host surfaces.
    * CityOS must not generate decisions internally.
-   * Null means: no external/injected surface available yet.
+   * Null means no external/injected surface is available yet.
    */
   const evidenceSummary: EvidenceSummary | null = USE_MOCK_EVIDENCE
     ? mockEvidenceSummary
@@ -55,6 +55,10 @@ const SourceDetailPage: React.FC = () => {
 
   const decisionSurface: SourceDecisionSurface | null = USE_MOCK_DECISION
     ? mockDecisionSurface
+    : null;
+
+  const operatorGuidance: OperatorGuidance | null = USE_MOCK_GUIDANCE
+    ? mockOperatorGuidance
     : null;
 
   const executionSurface: SourceExecutionSurface | null = USE_MOCK_EXECUTION
@@ -78,8 +82,8 @@ const SourceDetailPage: React.FC = () => {
       <header className="space-y-1">
         <h1 className="text-2xl font-bold text-slate-900">Source Detail</h1>
         <p className="text-sm text-slate-500">
-          Case-level operational view for source evidence, decision, execution,
-          history, and deep debug details.
+          Case-level operational view for source evidence, decision, guidance,
+          execution, history, and deep debug details.
         </p>
       </header>
 
@@ -89,22 +93,25 @@ const SourceDetailPage: React.FC = () => {
       {/* 2. Decision */}
       <PerttiDecisionCard decision={decisionSurface} />
 
-      {/* 3. Execution */}
+      {/* 3. Operator Guidance */}
+      <OperatorGuidanceCard guidance={operatorGuidance} />
+
+      {/* 4. Execution */}
       <ExecutionStatusCard execution={executionSurface} />
 
-      {/* 4. Guardrails */}
+      {/* 5. Guardrails */}
       <ActionGuardrailsCard guardrails={actionGuardrails} />
 
-      {/* 5. Decision History */}
+      {/* 6. Decision History */}
       <DecisionHistoryCard items={decisionHistory} />
 
-      {/* 6. Execution History */}
+      {/* 7. Execution History */}
       <ExecutionHistoryCard items={executionHistory} />
 
-      {/* 7. Case Timeline */}
+      {/* 8. Case Timeline */}
       <CaseTimelineCard items={caseTimeline} />
 
-      {/* 8. Debug */}
+      {/* 9. Debug */}
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h3 className="text-lg font-semibold text-slate-900">Debug</h3>
         <p className="mt-2 text-sm text-slate-500">
