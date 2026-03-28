@@ -214,9 +214,10 @@ export type OperatorGuidance = {
   rationale?: string;
   doNotChangeYet?: string[];
   confidence?: "low" | "medium" | "high";
+  basedOn?: string[];
 };
 
 export type SourceOperatorGuidanceSurface = {
   guidance: OperatorGuidance | null;
 };
-basedOn?: string[];
+
