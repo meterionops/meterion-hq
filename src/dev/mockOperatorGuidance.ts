@@ -13,4 +13,9 @@ export const mockOperatorGuidance: OperatorGuidance = {
     "global config",
   ],
   confidence: "low",
+  basedOn: [
+  "no extractable dates",
+  "analyzer confidence 0%",
+  "1 candidate only",
+],
 };
