@@ -8,6 +8,8 @@ import { DecisionHistoryCard } from "../components/source-detail/DecisionHistory
 import { ExecutionHistoryCard } from "../components/source-detail/ExecutionHistoryCard";
 import { CaseTimelineCard } from "../components/source-detail/CaseTimelineCard";
 
+import mockEvidenceSummary from "../dev/mockEvidenceSummary";
+import mockActionGuardrails from "../dev/mockActionGuardrails";
 import mockDecisionSurface from "../dev/mockDecisionSurface";
 import { mockExecutionSurface } from "../dev/mockExecutionSurface";
 import mockDecisionHistorySurface from "../dev/mockDecisionHistorySurface";
@@ -15,6 +17,8 @@ import mockExecutionHistorySurface from "../dev/mockExecutionHistorySurface";
 import mockCaseTimelineSurface from "../dev/mockCaseTimelineSurface";
 
 import {
+  EvidenceSummary,
+  ActionGuardrails,
   SourceDecisionSurface,
   SourceExecutionSurface,
   SourceDecisionHistoryItem,
@@ -23,36 +27,37 @@ import {
 } from "../components/source-detail/decisionSurfaceTypes";
 
 /**
- * Phase 2 / 3 / 4 mock toggles
- *
- * Keep all false by default in production-oriented state.
- * These are only for local preview/testing.
+ * Local preview toggles only.
+ * Keep false by default if you want a production-safe passive host state.
  */
+const USE_MOCK_EVIDENCE = true;
+const USE_MOCK_GUARDRAILS = true;
 const USE_MOCK_DECISION = false;
 const USE_MOCK_EXECUTION = false;
 const USE_MOCK_HISTORY = false;
 
 const SourceDetailPage: React.FC = () => {
   /**
+   * Phase 1–4 host surfaces.
    * CityOS must not generate decisions internally.
-   * If no external decision exists, keep this null.
+   * Null means: no external/injected surface available yet.
    */
+  const evidenceSummary: EvidenceSummary | null = USE_MOCK_EVIDENCE
+    ? mockEvidenceSummary
+    : null;
+
+  const actionGuardrails: ActionGuardrails | null = USE_MOCK_GUARDRAILS
+    ? mockActionGuardrails
+    : null;
+
   const decisionSurface: SourceDecisionSurface | null = USE_MOCK_DECISION
     ? mockDecisionSurface
     : null;
 
-  /**
-   * Passive execution surface only.
-   * If no execution object exists, keep this null.
-   */
   const executionSurface: SourceExecutionSurface | null = USE_MOCK_EXECUTION
     ? mockExecutionSurface
     : null;
 
-  /**
-   * Phase 4 history/timeline placeholders.
-   * Null-safe and passive.
-   */
   const decisionHistory: SourceDecisionHistoryItem[] = USE_MOCK_HISTORY
     ? mockDecisionHistorySurface
     : [];
@@ -64,15 +69,6 @@ const SourceDetailPage: React.FC = () => {
   const caseTimeline: SourceCaseTimelineItem[] = USE_MOCK_HISTORY
     ? mockCaseTimelineSurface
     : [];
-
-  /**
-   * These remain placeholders here unless you already have
-   * an existing source-detail view model in your project.
-   *
-   * Replace these later with real read-only source data.
-   */
-  const evidenceSummary = null;
-  const actionGuardrails = null;
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6">
