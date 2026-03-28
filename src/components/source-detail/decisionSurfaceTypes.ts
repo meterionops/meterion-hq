@@ -23,6 +23,40 @@ export type ExecutionStatus =
   | "failed"
   | "inconclusive";
 
+/**
+ * Evidence surface
+ * What is currently known from source evidence and signal-level observations.
+ */
+export type EvidenceSummary = {
+  fetchStatus?: string;
+  eventsFound?: number;
+  datesFound?: number;
+  mappedEventsFound?: number;
+  analyzerConfidence?: string | number;
+  patternLabel?: string;
+  patternConfidence?: string;
+  candidateSetCount?: number;
+  candidateQuality?: string;
+  rawHtmlVerdict?: string;
+  renderedDomVerdict?: string;
+  notes?: string[];
+};
+
+/**
+ * Guardrail surface
+ * What is safe, what requires approval, and what is blocked.
+ */
+export type ActionGuardrails = {
+  safeActions?: string[];
+  approvalRequired?: string[];
+  blockedActions?: string[];
+  notes?: string[];
+};
+
+/**
+ * Current supervisory decision surface.
+ * CityOS displays this if present, but does not generate it internally.
+ */
 export type SourceDecisionSurface = {
   status?: DecisionStatus;
   decisionId?: string;
@@ -65,6 +99,10 @@ export type SourceDecisionSurface = {
   };
 };
 
+/**
+ * Passive execution surface.
+ * Displays the latest execution state if available.
+ */
 export type SourceExecutionSurface = {
   executor?: Executor;
   executionStatus?: ExecutionStatus;
@@ -81,6 +119,9 @@ export type SourceExecutionSurface = {
   };
 };
 
+/**
+ * Decision history item.
+ */
 export type SourceDecisionHistoryItem = {
   decisionId?: string;
   status?: Exclude<DecisionStatus, "none">;
@@ -90,6 +131,9 @@ export type SourceDecisionHistoryItem = {
   decisionSource?: DecisionSource;
 };
 
+/**
+ * Execution history item.
+ */
 export type SourceExecutionHistoryItem = {
   taskId?: string;
   executor?: Executor;
@@ -100,6 +144,9 @@ export type SourceExecutionHistoryItem = {
   updatedAt?: string;
 };
 
+/**
+ * Timeline item for source/case-level recent activity.
+ */
 export type SourceCaseTimelineItem = {
   kind?: "decision" | "execution" | "verification" | "note";
   label: string;
@@ -109,8 +156,8 @@ export type SourceCaseTimelineItem = {
 };
 
 /**
- * Optional surface wrappers if you later want to standardize card props
- * or backend payloads.
+ * Optional wrapper surfaces.
+ * Useful later if backend payloads or adapters are standardized.
  */
 export type SourceDecisionHistorySurface = {
   items?: SourceDecisionHistoryItem[];
@@ -127,9 +174,6 @@ export type SourceCaseTimelineSurface = {
   totalCount?: number;
 };
 
-/**
- * Small helper formatters for UI components.
- */
 export const DECISION_STATUS_ORDER: DecisionStatus[] = [
   "none",
   "pending",
@@ -142,9 +186,10 @@ export const DECISION_STATUS_ORDER: DecisionStatus[] = [
   "regressed",
 ];
 
-export function formatLabel(value?: string): string {
-  if (!value) return "—";
-  return value
+export function formatLabel(value?: string | number | null): string {
+  if (value === null || value === undefined || value === "") return "—";
+
+  return String(value)
     .replace(/_/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
