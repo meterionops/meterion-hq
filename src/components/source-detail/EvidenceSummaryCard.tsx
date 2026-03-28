@@ -1,6 +1,4 @@
-import React from "react";
-
-type EvidenceSummary = {
+import { EvidenceSummary } from "./decisionSurfaceTypes";
   fetchStatus?: string;
   eventsFound?: number;
   datesFound?: number;
