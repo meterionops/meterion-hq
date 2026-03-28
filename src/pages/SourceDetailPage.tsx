@@ -5,6 +5,12 @@ const USE_MOCK_EXECUTION = false;
 
 const execution = USE_MOCK_EXECUTION ? mockExecutionSurface : null;
 <ExecutionStatusCard execution={execution} />
+const USE_MOCK_HISTORY = false;
+
+const decisionHistory = USE_MOCK_HISTORY ? mockDecisionHistorySurface : [];
+const executionHistory = USE_MOCK_HISTORY ? mockExecutionHistorySurface : [];
+const caseTimeline = USE_MOCK_HISTORY ? mockCaseTimelineSurface : [];
+
 import { DecisionHistoryCard } from "../components/source-detail/DecisionHistoryCard";
 import { ExecutionHistoryCard } from "../components/source-detail/ExecutionHistoryCard";
 import { CaseTimelineCard } from "../components/source-detail/CaseTimelineCard";
@@ -12,3 +18,6 @@ import { CaseTimelineCard } from "../components/source-detail/CaseTimelineCard";
 import { mockDecisionHistorySurface } from "../dev/mockDecisionHistorySurface";
 import { mockExecutionHistorySurface } from "../dev/mockExecutionHistorySurface";
 import { mockCaseTimelineSurface } from "../dev/mockCaseTimelineSurface";
+<DecisionHistoryCard items={decisionHistory} />
+<ExecutionHistoryCard items={executionHistory} />
+<CaseTimelineCard items={caseTimeline} />
