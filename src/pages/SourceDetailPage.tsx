@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { EvidenceSummaryCard } from "../components/source-detail/EvidenceSummaryCard";
@@ -10,16 +10,7 @@ import { DecisionHistoryCard } from "../components/source-detail/DecisionHistory
 import { ExecutionHistoryCard } from "../components/source-detail/ExecutionHistoryCard";
 import { CaseTimelineCard } from "../components/source-detail/CaseTimelineCard";
 
-import mockEvidenceSummary from "../dev/mockEvidenceSummary";
-import mockActionGuardrails from "../dev/mockActionGuardrails";
-import mockDecisionSurface from "../dev/mockDecisionSurface";
-import { mockOperatorGuidance } from "../dev/mockOperatorGuidance";
-import { mockExecutionSurface } from "../dev/mockExecutionSurface";
-import mockDecisionHistorySurface from "../dev/mockDecisionHistorySurface";
-import mockExecutionHistorySurface from "../dev/mockExecutionHistorySurface";
-import mockCaseTimelineSurface from "../dev/mockCaseTimelineSurface";
-
-import type {
+import {
   EvidenceSummary,
   ActionGuardrails,
   SourceDecisionSurface,
@@ -33,17 +24,17 @@ import type {
 import { cityosFetch } from "../lib/cityosFetch";
 
 /**
- * Config
+ * SourceDetailPage
+ * - Single source of truth for /admin/sources/detail
+ * - Uses query params (?id=, ?from_advisory=)
+ * - Safe, deterministic rendering
  */
-const USE_MOCKS = true;
 
 const SourceDetailPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
-  // ✅ OIKEIN: id query param
+  // ✅ Query params (correct)
   const sourceId = searchParams.get("id") || "";
-
-  // ✅ Pertti context
   const fromAdvisory = searchParams.get("from_advisory");
 
   const adminSecret =
@@ -55,7 +46,7 @@ const SourceDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   /**
-   * FETCH decision surface
+   * Fetch decision surface
    */
   useEffect(() => {
     if (!sourceId || !adminSecret) return;
@@ -78,7 +69,7 @@ const SourceDetailPage: React.FC = () => {
 
         setDecision(data);
       } catch (e) {
-        console.error("decision fetch failed", e);
+        console.error("Failed to fetch decision surface", e);
       } finally {
         setLoading(false);
       }
@@ -88,49 +79,18 @@ const SourceDetailPage: React.FC = () => {
   }, [sourceId, adminSecret]);
 
   /**
-   * MOCK / fallback data
+   * Advisory banner (pure + deterministic)
    */
-  const evidence: EvidenceSummary | null = USE_MOCKS
-    ? mockEvidenceSummary
-    : null;
-
-  const guardrails: ActionGuardrails | null = USE_MOCKS
-    ? mockActionGuardrails
-    : null;
-
-  const guidance: OperatorGuidance | null = USE_MOCKS
-    ? mockOperatorGuidance
-    : null;
-
-  const execution: SourceExecutionSurface | null = USE_MOCKS
-    ? mockExecutionSurface
-    : null;
-
-  const decisionHistory: SourceDecisionHistoryItem[] = USE_MOCKS
-    ? mockDecisionHistorySurface
-    : [];
-
-  const executionHistory: SourceExecutionHistoryItem[] = USE_MOCKS
-    ? mockExecutionHistorySurface
-    : [];
-
-  const timeline: SourceCaseTimelineItem[] = USE_MOCKS
-    ? mockCaseTimelineSurface
-    : [];
-
-  /**
-   * ✅ BANNER — ALWAYS VISIBLE
-   */
-  const advisoryBanner = (() => {
+  const advisoryBanner = useMemo(() => {
     if (!fromAdvisory) return null;
 
-    const map: Record<string, string> = {
+    const messages: Record<string, string> = {
       missing_city: "Pertti: tämä lähde on ilman kaupunkia",
-      city_inactive: "Pertti: tämä kaupunki ei ole aktiivinen",
-      no_sources: "Pertti: tällä kaupungilla ei ole lähteitä",
+      city_inactive: "Pertti: tämän kaupungin lähteet eivät ole aktiivisia",
+      no_sources: "Pertti: tällä kaupungilla ei ole aktiivisia lähteitä",
     };
 
-    const text = map[fromAdvisory];
+    const text = messages[fromAdvisory];
     if (!text) return null;
 
     return (
@@ -138,14 +98,23 @@ const SourceDetailPage: React.FC = () => {
         {text}
       </div>
     );
-  })();
+  }, [fromAdvisory]);
 
   /**
-   * RENDER
+   * Mock placeholders (safe fallback)
+   * → nämä voi myöhemmin korvata oikealla datalla
    */
+  const evidence: EvidenceSummary | null = null;
+  const guardrails: ActionGuardrails | null = null;
+  const guidance: OperatorGuidance | null = null;
+  const execution: SourceExecutionSurface | null = null;
+  const decisionHistory: SourceDecisionHistoryItem[] = [];
+  const executionHistory: SourceExecutionHistoryItem[] = [];
+  const timeline: SourceCaseTimelineItem[] = [];
+
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-      {/* ✅ HEADER + BANNER */}
+      {/* HEADER */}
       <header className="space-y-3">
         {advisoryBanner}
 
@@ -158,22 +127,21 @@ const SourceDetailPage: React.FC = () => {
         </p>
       </header>
 
-      {/* LOADING */}
-      {loading && (
-        <div className="text-sm text-slate-400">Loading…</div>
-      )}
-
-      {/* DATA */}
+      {/* STATE */}
       {!adminSecret && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           Aseta admin secret
         </div>
       )}
 
+      {loading && (
+        <div className="text-sm text-slate-400">Loading…</div>
+      )}
+
       {/* CONTENT */}
       <EvidenceSummaryCard summary={evidence} />
 
-      <PerttiDecisionCard decision={decision ?? mockDecisionSurface} />
+      <PerttiDecisionCard decision={decision} />
 
       <OperatorGuidanceCard guidance={guidance} />
 
