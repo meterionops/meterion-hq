@@ -345,6 +345,3 @@ const SourceDetailPage: React.FC = () => {
 
 export default SourceDetailPage;
 
-<div className="bg-red-600 text-white p-4 text-lg font-bold">
-  SOURCE DETAIL BANNER TEST
-</div>
