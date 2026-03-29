@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { EvidenceSummaryCard } from "../components/source-detail/EvidenceSummaryCard";
 import { PerttiDecisionCard } from "../components/source-detail/PerttiDecisionCard";
@@ -30,285 +30,162 @@ import type {
   OperatorGuidance,
 } from "../components/source-detail/decisionSurfaceTypes";
 
-// TODO: adjust this import to your actual project helper location
 import { cityosFetch } from "../lib/cityosFetch";
 
 /**
- * Local preview toggles only.
- * Keep false by default for a production-safe passive host state.
+ * Config
  */
-const USE_MOCK_EVIDENCE = true;
-const USE_MOCK_GUARDRAILS = true;
-const USE_MOCK_DECISION = false;
-const USE_MOCK_GUIDANCE = true;
-const USE_MOCK_EXECUTION = false;
-const USE_MOCK_HISTORY = false;
-const ENABLE_TEST_DECISION_INJECTION = true;
+const USE_MOCKS = true;
 
 const SourceDetailPage: React.FC = () => {
-  const { sourceId = "" } = useParams<{ sourceId: string }>();
+  const [searchParams] = useSearchParams();
 
-  // TODO: replace this with your actual admin secret source if needed
-  const adminSecret = "dev";
+  // ✅ OIKEIN: id query param
+  const sourceId = searchParams.get("id") || "";
+
+  // ✅ Pertti context
+  const fromAdvisory = searchParams.get("from_advisory");
+
+  const adminSecret =
     typeof window !== "undefined"
       ? window.localStorage.getItem("CITYOS_ADMIN_SECRET")
       : null;
 
-  const [persistedDecision, setPersistedDecision] =
-    useState<SourceDecisionSurface | null>(null);
-  const [decisionLoading, setDecisionLoading] = useState(false);
-  const [injecting, setInjecting] = useState(false);
-  const [injectError, setInjectError] = useState<string | null>(null);
+  const [decision, setDecision] = useState<SourceDecisionSurface | null>(null);
+  const [loading, setLoading] = useState(false);
 
   /**
-   * Phase 1–4 host surfaces.
-   * CityOS must not generate decisions internally.
+   * FETCH decision surface
    */
-  const evidenceSummary: EvidenceSummary | null = USE_MOCK_EVIDENCE
+  useEffect(() => {
+    if (!sourceId || !adminSecret) return;
+
+    const run = async () => {
+      try {
+        setLoading(true);
+
+        const result = await cityosFetch({
+          adminSecret,
+          action: "get_source_decision_surface",
+          payload: { source_id: sourceId },
+        });
+
+        const data =
+          result?.decision_json ??
+          result?.decision ??
+          result?.data?.decision_json ??
+          null;
+
+        setDecision(data);
+      } catch (e) {
+        console.error("decision fetch failed", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    run();
+  }, [sourceId, adminSecret]);
+
+  /**
+   * MOCK / fallback data
+   */
+  const evidence: EvidenceSummary | null = USE_MOCKS
     ? mockEvidenceSummary
     : null;
 
-  const actionGuardrails: ActionGuardrails | null = USE_MOCK_GUARDRAILS
+  const guardrails: ActionGuardrails | null = USE_MOCKS
     ? mockActionGuardrails
     : null;
 
-  const operatorGuidance: OperatorGuidance | null = USE_MOCK_GUIDANCE
+  const guidance: OperatorGuidance | null = USE_MOCKS
     ? mockOperatorGuidance
     : null;
 
-  const executionSurface: SourceExecutionSurface | null = USE_MOCK_EXECUTION
+  const execution: SourceExecutionSurface | null = USE_MOCKS
     ? mockExecutionSurface
     : null;
 
-  const decisionHistory: SourceDecisionHistoryItem[] = USE_MOCK_HISTORY
+  const decisionHistory: SourceDecisionHistoryItem[] = USE_MOCKS
     ? mockDecisionHistorySurface
     : [];
 
-  const executionHistory: SourceExecutionHistoryItem[] = USE_MOCK_HISTORY
+  const executionHistory: SourceExecutionHistoryItem[] = USE_MOCKS
     ? mockExecutionHistorySurface
     : [];
 
-  const caseTimeline: SourceCaseTimelineItem[] = USE_MOCK_HISTORY
+  const timeline: SourceCaseTimelineItem[] = USE_MOCKS
     ? mockCaseTimelineSurface
     : [];
 
-  const refetchDecisionSurface = useCallback(async () => {
-    if (!sourceId || !adminSecret) {
-      setPersistedDecision(null);
-      return;
-    }
+  /**
+   * ✅ BANNER — ALWAYS VISIBLE
+   */
+  const advisoryBanner = (() => {
+    if (!fromAdvisory) return null;
 
-    try {
-      setDecisionLoading(true);
-      setInjectError(null);
+    const map: Record<string, string> = {
+      missing_city: "Pertti: tämä lähde on ilman kaupunkia",
+      city_inactive: "Pertti: tämä kaupunki ei ole aktiivinen",
+      no_sources: "Pertti: tällä kaupungilla ei ole lähteitä",
+    };
 
-      const result = await cityosFetch({
-        adminSecret,
-        action: "get_source_decision_surface",
-        payload: {
-          source_id: sourceId,
-        },
-      });
+    const text = map[fromAdvisory];
+    if (!text) return null;
 
-      const decision =
-        result?.decision_json ??
-        result?.decision ??
-        result?.data?.decision_json ??
-        null;
+    return (
+      <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+        {text}
+      </div>
+    );
+  })();
 
-      setPersistedDecision(decision);
-    } catch (error) {
-      console.error("Failed to fetch decision surface", error);
-      setPersistedDecision(null);
-    } finally {
-      setDecisionLoading(false);
-    }
-  }, [sourceId, adminSecret]);
-
-  useEffect(() => {
-    void refetchDecisionSurface();
-  }, [refetchDecisionSurface]);
-
-  const decisionSurface: SourceDecisionSurface | null =
-    persistedDecision ?? (USE_MOCK_DECISION ? mockDecisionSurface : null);
-
-  const injectTestDecision = async () => {
-    if (!sourceId || !adminSecret) return;
-
-    try {
-      setInjecting(true);
-      setInjectError(null);
-
-      await cityosFetch({
-        adminSecret,
-        action: "upsert_source_decision_surface",
-        payload: {
-          source_id: sourceId,
-          decision_json: {
-            status: "proposed",
-            decisionId: `test-${sourceId}`,
-            updatedAt: new Date().toISOString(),
-            decisionSource: "external",
-            requestedBy: "ui-test",
-            diagnosis: {
-              primaryHypothesis: "rendering_not_confirmed",
-              secondaryHypothesis: "parser_mismatch",
-              confidence: "medium",
-              rationaleSummary:
-                "Current evidence does not yet distinguish missing rendered content from parsing failure.",
-            },
-            nextStep: {
-              actionType: "investigate_rendering",
-              actionLabel: "check_html_vs_js",
-              executor: "openclaw",
-              whyThisNow: "Highest information gain with minimal system risk.",
-            },
-            constraints: {
-              doNotTouch: ["parser", "runner", "global configs"],
-              mustPreserve: ["audit_trail", "source_local_scope"],
-            },
-            verification: {
-              successCriteria: ["HTML vs DOM verdict produced"],
-              regressionChecks: ["no config mutation", "no runner mutation"],
-            },
-            approval: {
-              required: false,
-              reason: "Investigation only",
-            },
-            uncertainty: {
-              evidenceGaps: [
-                "raw_html_verdict_missing",
-                "rendered_dom_verdict_missing",
-              ],
-              notes: "JS rendering remains unconfirmed.",
-            },
-          },
-          decision_status: "proposed",
-          source: "external",
-          updated_by: "ui-test",
-        },
-      });
-
-      await refetchDecisionSurface();
-    } catch (error) {
-      console.error("Failed to inject test decision", error);
-      setInjectError("Failed to inject test decision.");
-    } finally {
-      setInjecting(false);
-    }
-  };
-
-  const clearDecision = async () => {
-    if (!sourceId || !adminSecret) return;
-
-    try {
-      setInjecting(true);
-      setInjectError(null);
-
-      await cityosFetch({
-        adminSecret,
-        action: "upsert_source_decision_surface",
-        payload: {
-          source_id: sourceId,
-          decision_json: null,
-          decision_status: "none",
-          source: "external",
-          updated_by: "ui-test-clear",
-        },
-      });
-
-      await refetchDecisionSurface();
-    } catch (error) {
-      console.error("Failed to clear decision", error);
-      setInjectError("Failed to clear injected decision.");
-    } finally {
-      setInjecting(false);
-    }
-  };
-
+  /**
+   * RENDER
+   */
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-900">Source Detail</h1>
+      {/* ✅ HEADER + BANNER */}
+      <header className="space-y-3">
+        {advisoryBanner}
+
+        <h1 className="text-2xl font-bold text-slate-900">
+          Source Detail
+        </h1>
+
         <p className="text-sm text-slate-500">
-          Case-level operational view for source evidence, decision, guidance,
-          execution, history, and deep debug details.
+          Source ID: {sourceId || "missing"}
         </p>
       </header>
 
-      {/* 1. Evidence */}
-      <EvidenceSummaryCard summary={evidenceSummary} />
+      {/* LOADING */}
+      {loading && (
+        <div className="text-sm text-slate-400">Loading…</div>
+      )}
 
-      {/* 2. Decision */}
-      <div className="space-y-2">
-        {ENABLE_TEST_DECISION_INJECTION && adminSecret ? (
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={injectTestDecision}
-              disabled={injecting || decisionLoading}
-              className="text-xs text-slate-500 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {injecting ? "Injecting..." : "Inject test decision"}
-            </button>
+      {/* DATA */}
+      {!adminSecret && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Aseta admin secret
+        </div>
+      )}
 
-            {persistedDecision ? (
-              <button
-                type="button"
-                onClick={clearDecision}
-                disabled={injecting || decisionLoading}
-                className="text-xs text-slate-400 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Clear
-              </button>
-            ) : null}
+      {/* CONTENT */}
+      <EvidenceSummaryCard summary={evidence} />
 
-            {decisionLoading ? (
-              <span className="text-xs text-slate-400">Refreshing…</span>
-            ) : null}
-          </div>
-        ) : null}
+      <PerttiDecisionCard decision={decision ?? mockDecisionSurface} />
 
-        {injectError ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-            {injectError}
-          </div>
-        ) : null}
+      <OperatorGuidanceCard guidance={guidance} />
 
-        <PerttiDecisionCard decision={decisionSurface} />
-      </div>
+      <ExecutionStatusCard execution={execution} />
 
-      {/* 3. Operator Guidance */}
-      <OperatorGuidanceCard guidance={operatorGuidance} />
+      <ActionGuardrailsCard guardrails={guardrails} />
 
-      {/* 4. Execution */}
-      <ExecutionStatusCard execution={executionSurface} />
-
-      {/* 5. Guardrails */}
-      <ActionGuardrailsCard guardrails={actionGuardrails} />
-
-      {/* 6. Decision History */}
       <DecisionHistoryCard items={decisionHistory} />
 
-      {/* 7. Execution History */}
       <ExecutionHistoryCard items={executionHistory} />
 
-      {/* 8. Case Timeline */}
-      <CaseTimelineCard items={caseTimeline} />
-
-      {/* 9. Debug */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h3 className="text-lg font-semibold text-slate-900">Debug</h3>
-        <p className="mt-2 text-sm text-slate-500">
-          Existing deep debug sections remain below the operational summary
-          surfaces.
-        </p>
-
-        <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-          Keep current source debug panels, analyzer output, candidate sets,
-          runtime configuration, and other detailed observability sections here.
-        </div>
-      </section>
+      <CaseTimelineCard items={timeline} />
     </div>
   );
 };
