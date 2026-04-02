@@ -10,17 +10,22 @@ status: active
 
 ## Purpose
 
-The Snapshot Builder is responsible for transforming canonical events into a deterministic, curated, and API-ready snapshot.
+The Snapshot Builder transforms canonical events into a **deterministic, curated, and API-ready snapshot**.
 
 It is the final stage between:
-- Canonical data (ingest layer)
-- Public API (frontend consumption)
+- canonical data (ingest layer)
+- public API (frontend consumption)
+
+The Snapshot Builder is a **pure transformation layer**:
+- no side effects
+- no mutation of source data
+- no decision logic beyond defined rules
 
 ---
 
 ## Responsibilities
 
-The Snapshot Builder must:
+The Snapshot Builder MUST:
 
 1. Select relevant events within a defined time window
 2. Apply visibility and quality filters
@@ -33,13 +38,16 @@ The Snapshot Builder must:
 
 ## Inputs
 
-### Source
+### Source tables
 
-- `canonical_events` (source-scoped)
-- Optional:
-  - `item_overrides`
-  - `manual events`
-  - `source metadata`
+- `canonical_events` (source-scoped, primary input)
+
+Optional:
+- `item_overrides`
+- manual events
+- source metadata
+
+---
 
 ### Required fields per event
 
@@ -47,7 +55,10 @@ The Snapshot Builder must:
 - `title`
 - `starts_at`
 - `source_id`
-- `location` (if available)
+
+Optional but recommended:
+- `location`
+- `ticket_url`
 
 ---
 
@@ -56,9 +67,9 @@ The Snapshot Builder must:
 Default window:
 
 - Start: `now`
-- End: `now + N days` (configurable per module)
+- End: `now + N days` (module-specific)
 
-Examples:
+### Examples
 
 - today → same day
 - weekend → next Sat–Sun
@@ -69,49 +80,56 @@ Examples:
 
 ## Filtering Rules
 
-Events must pass all:
+All events MUST pass:
 
 ### 1. Time validity
+
 - `starts_at >= now`
 - within module window
 
+---
+
 ### 2. Visibility
+
 - `visibility = allowed`
-- exclude:
-  - blocked
-  - hidden
-  - invalid
+
+Exclude:
+- blocked
+- hidden
+- invalid
+
+---
 
 ### 3. Data completeness
+
 Minimum required:
 
 - title exists
-- valid date
-- (optional but preferred)
-  - location
-  - ticket_url
+- valid `starts_at`
+
+Optional but preferred:
+- location
+- ticket_url
 
 ---
 
 ## Deduplication
 
-Deduplication occurs AFTER filtering.
+Deduplication occurs **after filtering**.
 
-### Rule
-
-Group by:
+### Grouping key
 
 - `canonical_key`
 
-Within each group:
+---
 
-- Keep highest priority event
+### Selection rule
 
-### Priority order
+Within each group, keep **one event only** based on priority:
 
-1. Manual override
-2. Higher quality source
-3. Earliest ingest (stable fallback)
+1. manual override
+2. higher quality source
+3. earliest ingest (stable fallback)
 
 ---
 
@@ -126,12 +144,13 @@ Each module defines:
 - limits
 - sorting
 
+---
+
 ### Supported module types (v1)
 
 #### 1. time_bucket
 
 Examples:
-
 - today
 - weekend
 - next7days
@@ -143,112 +162,3 @@ Config:
   "window_days": 7,
   "limit": 20
 }
-2. keyword_query
-
-Examples:
-
-nightlife
-family
-free
-
-Config:
-
-{
-  "keywords": ["club", "dj", "party"],
-  "limit": 10
-}
-3. newest
-newest events first
-{
-  "limit": 10
-}
-4. static
-manual selection only
-Sorting
-
-Sorting must be deterministic.
-
-Default:
-
-starts_at ASC
-canonical_key ASC
-
-No randomness allowed.
-
-Limits
-
-Each module defines:
-
-limit (max items)
-
-Global safety caps:
-
-max events per module: 50
-max total snapshot size: bounded
-Output Structure
-{
-  "generated_at": "...",
-  "modules": {
-    "today": [...],
-    "weekend": [...],
-    "next7days": [...],
-    "sportsPicks": [...]
-  }
-}
-
-Each event must include:
-
-id (canonical_key)
-title
-starts_at
-location (if available)
-ticket_url (if available)
-Determinism (CRITICAL)
-
-Given same input → must produce identical output.
-
-No:
-
-randomness
-unstable sorting
-time-dependent drift inside same run
-Error Handling
-
-If module fails:
-
-skip module
-log error
-continue snapshot
-
-If no events:
-
-return empty array (never null)
-Observability
-
-Snapshot Builder must expose:
-
-input count
-filtered count
-deduped count
-final count
-
-Optional debug:
-
-dropped reasons
-duplicate groups
-Constraints
-Must NOT modify ingest pipeline
-Must NOT mutate canonical data
-Must remain pure transformation layer
-Invariants
-Deterministic output
-Stable ordering
-No silent data mutation
-Source-scoped canonical model respected
-Future Extensions (NOT v1)
-personalization
-ranking ML
-cross-city merging
-dynamic scoring
-
-These are explicitly out of scope for v1.
