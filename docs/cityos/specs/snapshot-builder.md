@@ -162,3 +162,131 @@ Config:
   "window_days": 7,
   "limit": 20
 }
+2. keyword_query
+
+Examples:
+
+nightlife
+family
+free
+
+Config:
+
+{
+  "keywords": ["club", "dj", "party"],
+  "limit": 10
+}
+3. newest
+
+Newest events first.
+
+Config:
+
+{
+  "limit": 10
+}
+4. static
+
+Manual selection only.
+
+Sorting
+
+Sorting MUST be deterministic.
+
+Default order:
+
+starts_at ASC
+canonical_key ASC
+
+Rules:
+
+no randomness allowed
+no unstable sorting
+identical input → identical output
+Limits
+
+Each module defines:
+
+limit (max items)
+
+Global caps:
+
+max events per module: 50
+total snapshot size: bounded
+Output Structure
+{
+  "generated_at": "...",
+  "modules": {
+    "today": [...],
+    "weekend": [...],
+    "next7days": [...],
+    "sportsPicks": [...]
+  }
+}
+Event shape
+
+Each event MUST include:
+
+id (canonical_key)
+title
+starts_at
+
+Optional:
+
+location
+ticket_url
+Determinism (CRITICAL)
+
+Given identical input, output MUST be identical.
+
+Forbidden:
+
+randomness
+time-based drift within same run
+non-deterministic sorting
+Error Handling
+
+If a module fails:
+
+skip module
+log error
+continue snapshot generation
+
+If no events:
+
+return empty array ([])
+never return null
+Observability
+
+Snapshot Builder MUST expose:
+
+input count
+filtered count
+deduped count
+final count
+
+Optional debug:
+
+dropped reasons
+duplicate groups
+Constraints
+
+Snapshot Builder MUST NOT:
+
+modify ingest pipeline
+mutate canonical data
+introduce side effects
+depend on UI logic
+Invariants
+deterministic output
+stable ordering
+no silent data mutation
+source-scoped canonical model respected
+Future Extensions (NOT v1)
+
+Out of scope:
+
+personalization
+ML ranking
+cross-city merging
+dynamic scoring
