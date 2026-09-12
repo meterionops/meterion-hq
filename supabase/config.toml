@@ -1,0 +1,2 @@
+[functions.control-room-api-v1]
+verify_jwt = false
