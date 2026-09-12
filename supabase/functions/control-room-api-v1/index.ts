@@ -5,6 +5,7 @@ type JsonObject = Record<string, unknown>;
 type Action =
   | "get_project_state"
   | "list_projects"
+  | "get_today"
   | "get_owner_attention"
   | "update_project_state"
   | "append_project_event";
@@ -48,7 +49,9 @@ function classifyRpcError(message: string): { status: number; code: string } {
   if (
     message.includes("violates check constraint") ||
     message.includes("invalid input syntax") ||
-    message.includes("event_summary_required")
+    message.includes("event_summary_required") ||
+    message.includes("event_object_required") ||
+    message.includes("state_object_required")
   ) {
     return { status: 400, code: "invalid_payload" };
   }
@@ -113,6 +116,7 @@ export default {
     const allowedActions: Action[] = [
       "get_project_state",
       "list_projects",
+      "get_today",
       "get_owner_attention",
       "update_project_state",
       "append_project_event",
@@ -157,6 +161,11 @@ export default {
             p_portfolio_class: portfolioClass,
             p_lifecycle_status: lifecycleStatus,
           });
+          break;
+        }
+
+        case "get_today": {
+          result = await admin.rpc("control_room_get_today_v1");
           break;
         }
 
