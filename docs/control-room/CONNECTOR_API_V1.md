@@ -25,9 +25,7 @@ Authentication:
 
 No secret key is committed to GitHub or stored in Control Room tables.
 
-## Request shape
-
-All calls use `POST` with JSON.
+## Actions
 
 ### `get_project_state`
 
@@ -49,6 +47,16 @@ All calls use `POST` with JSON.
 ```
 
 Filters are optional.
+
+### `get_today`
+
+```json
+{
+  "action": "get_today"
+}
+```
+
+Returns the canonical Today read model. This is the operation behind questions such as `mitä minun pitää tehdä tänään?`.
 
 ### `get_owner_attention`
 
@@ -134,6 +142,10 @@ Important status mappings:
 
 Auth failures are rejected before business logic.
 
+## Defense in depth
+
+Input is validated both at the Edge Function boundary and in the state/event RPCs. The database rejects non-object state/event payloads, empty material-event summaries and stale state writes even if a future trusted caller bypasses the Edge Function and invokes RPCs directly through the service role.
+
 ## Security boundaries
 
 The connector deliberately does **not** expose:
@@ -163,10 +175,12 @@ For a request such as `jatka Maistiota`:
 4. call `update_project_state` with the version originally read;
 5. append a material event only if the result is useful for future orientation.
 
-If the update returns `409 state_version_conflict`, re-read current state and reconcile before writing.
+For `mitä minun pitää tehdä tänään?`, call `get_today` first rather than reconstructing portfolio priority from chat history.
+
+If an update returns `409 state_version_conflict`, re-read current state and reconcile before writing.
 
 ## External credential gate
 
-The function can be deployed and operated internally now. To wire an external ChatGPT plugin/connector or another external worker to this endpoint, configure a Supabase secret API key in that caller's secure credential store.
+The function is deployed and can be operated internally. To wire an external ChatGPT plugin/connector or another external worker to this endpoint, configure a Supabase secret API key in that caller's secure credential store.
 
 This is a credential/configuration step, not a data-model change. Never paste or commit the secret key into GitHub, prompts or Control Room state.
