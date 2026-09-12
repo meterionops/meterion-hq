@@ -1,20 +1,17 @@
 # Meterion Control Room — Project Registry v1
 
-Status: OWNER-CONFIRMED CORE SET / REMAINING SECONDARY CLASSIFICATIONS MAY STILL BE REFINED
+Status: OWNER-CONFIRMED BASELINE
 Date: 2026-09-12
 
 ## Purpose
 
-This registry defines the top-level Meterion work domains that may appear in Meterion Control Room.
+Define the top-level Meterion work domains that Control Room may track. This is not a task tracker and not the AI Company OS company registry.
 
-It is deliberately **not** a task tracker and **not** the AI Company OS company registry.
-
-Control Room answers:
+Control Room should know only what is needed to answer:
 
 - what are we building or operating?
 - why does it exist?
-- where does it live?
-- what is the current state?
+- where are we now?
 - what should happen next?
 - is Founder attention required?
 
@@ -23,316 +20,98 @@ Actual work remains in ChatGPT / Work, GitHub, Supabase, Lovable, production ser
 ## Hard boundaries
 
 1. AI Company OS remains a separate product and domain.
-2. Meterion projects created outside AI Company OS are **not imported as AI Companies**.
-3. AI Company OS is represented in Control Room as one connected project/system surface; its internally created AI Companies remain inside AI Company OS.
-4. A GitHub repository does not automatically equal a Control Room project.
-5. Recent activity does not automatically mean `active`.
-6. Portfolio class and lifecycle are Owner-controlled.
-7. Control Room must never infer certainty from chat volume, repo activity or telemetry alone.
-8. Pertti and CityOS are historical architecture/projects, not current Control Room portfolio projects unless explicitly reactivated later.
+2. Meterion projects created outside AI Company OS are not imported as AI Companies.
+3. AI Company OS appears in Control Room as one top-level system/project surface; its internal AI Companies remain inside AI Company OS.
+4. A GitHub repository is not automatically a Control Room project.
+5. Project identity, lifecycle and portfolio class are Owner-controlled.
+6. AI may update operational state, but may not silently change the project's goal, portfolio class, lifecycle or locked constraints.
+7. Meterion Control Room is system infrastructure and does not consume a portfolio slot.
+8. Pertti and CityOS are historical projects, not current portfolio projects, unless explicitly reactivated later.
 
-## Owner portfolio decision — 2026-09-12
+## Owner decisions — 2026-09-12
 
-The current CORE set is explicitly confirmed as five projects:
+### Confirmed CORE
 
-1. AI Company OS
-2. Maistio
-3. Cala Europe
-4. Sprinkler RFQ Platform
-5. Rail Atlas / Junamatkailusivusto
+- AI Company OS
+- Maistio
+- Cala Europe
+- Sprinkler RFQ Platform
+- Rail Atlas / Junamatkailusivusto
 
-This Owner decision supersedes the earlier `CORE max 3` assumption for Control Room classification. Control Room must not raise a conflict merely because CORE contains these five confirmed projects.
+The earlier `CORE max 3` rule is not a hard constraint for Control Room. The current Owner-confirmed CORE set contains five projects and is valid. Capacity rules may be advisory/configurable later, but may not override explicit Owner classification.
 
-Meterion Control Room itself is system infrastructure and does not consume a portfolio slot.
+### Historical / no longer current
 
----
+- Pertti
+- CityOS
 
-# A. Current top-level Control Room projects
-
-## meterion-control-room
-
-- Name: Meterion Control Room
-- Kind: `internal_system`
-- Goal: Keep a lightweight, reliable cross-project operating picture of Meterion and minimize Founder coordination overhead.
-- Portfolio class: `SYSTEM`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `meterionops/meterion-hq`
-- Constraint: Must remain a thin coordination layer; no Kanban, sprint system, CRM, general workflow builder or duplicate project database.
-- Constraint: Does not replace ChatGPT, Work, GitHub, Supabase, Lovable or project source systems.
-
-## ai-company-os
-
-- Name: AI Company OS
-- Kind: `internal_system`
-- Goal: Operating system for AI-native companies created and operated through the governed AI Company OS lifecycle.
-- Portfolio class: `CORE`
-- Lifecycle: `active`
-- State authority: `external_system`
-- Primary workspace: `meterionops/ai-company-os`
-- Constraint: External Meterion projects are not registered as AI Companies merely to make them visible in Control Room.
-- Constraint: Company Factory / Company Creation remains the canonical AI Company creation path.
-- Control Room role: Show summarized OS health, Founder attention and selected material changes; deep operation remains in AI Company OS.
-
-## maistio
-
-- Name: Maistio
-- Kind: `product`
-- Goal: Helsinki-first restaurant discovery product built on the Local Discovery Graph.
-- Portfolio class: `CORE`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + supabase + lovable`
-- Constraint: Restaurants are the first vertical.
-- Constraint: Bars, nightlife and events are later verticals and must not expand Maistio launch scope before restaurant launch.
-
-## cala-europe
-
-- Name: Cala Europe
-- Kind: `product`
-- Goal: Europe-first beach discovery and practical beach intelligence product.
-- Portfolio class: `CORE`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + supabase + lovable`
-- Constraint: Core product must not depend on paid APIs for images, maps, weather, beach data or content.
-
-## sprinkler-rfq-platform
-
-- Name: Sprinkler RFQ Platform
-- Kind: `product`
-- Goal: Discover and qualify European sprinkler / fire-protection opportunities and relevant buyers / suppliers for commercial RFQ activity.
-- Portfolio class: `CORE`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + github + data pipelines`
-- Known GitHub: `meterionops/fire-sprinkler-hub`
-- Constraint: Historical country activity must not permanently lock suppliers or buyers to specific countries.
-- Constraint: Respect permanent company exclusion rules maintained by the project.
-
-## rail-atlas
-
-- Name: Rail Atlas / Junamatkailusivusto
-- Kind: `product`
-- Goal: Global train-travel discovery product centered on memorable train experiences and journeys.
-- Portfolio class: `CORE`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + supabase + lovable`
-
-## folio
-
-- Name: Folio
-- Kind: `product`
-- Goal: Finnish-company intelligence / competitor monitoring and decision-support product using existing Meterion company data where appropriate.
-- Portfolio class: `EXPERIMENT`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + prototype + data sources`
-- Constraint: Reuse Yritystiedot company data where appropriate instead of creating a competing company master-data source.
-
-## calendar-platform
-
-- Name: Calendar Platform
-- Kind: `platform`
-- Goal: Country-localized calendar / week-number / holiday utility network, beginning from Kalenterissa.fi and expanding through country-standard clones.
-- Portfolio class: `AUTOPILOT`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + github + production sites`
-- Known GitHub family:
-  - `meterionops/paivasta-selva`
-  - `meterionops/kalenderklart`
-  - `meterionops/calendify-your-world`
-  - `meterionops/kalenderpunkt`
-- Constraint: Country sites are deployments/projects inside the Calendar Platform family, not separate top-level Control Room products by default.
-
-## yritystiedot
-
-- Name: Yritystiedot
-- Kind: `data_asset`
-- Goal: Maintain broad Finnish company data coverage and make it reusable by Meterion products.
-- Portfolio class: `AUTOPILOT`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `data pipeline / external`
-
-## nordic-bottle-index
-
-- Name: Nordic Bottle Index
-- Kind: `product`
-- Goal: Cross-Nordic alcohol product matching / indexing across national retail catalogs.
-- Portfolio class: `AUTOPILOT`
-- Lifecycle: `active`
-- State authority: `control_room`
-- Primary workspace: `github + data pipelines`
-- Known GitHub family:
-  - `meterionops/nordic-bottle-index`
-  - `meterionops/nordic-bottle-index-source`
-  - `meterionops/nordic-bottle-index-v2`
-  - `meterionops/nordic-bottle-compass`
-
-## namorada
-
-- Name: Namorada
-- Kind: `product`
-- Goal: Charter administration workflow for customers, cruises, communications and invoicing.
-- Portfolio class: `MAINTENANCE`
-- Lifecycle: `unconfirmed`
-- State authority: `control_room`
-- Primary workspace: `external / chatgpt`
-
-## tinku-latin-flavors
-
-- Name: Tinku Latin Flavors
-- Kind: `client_operation`
-- Goal: Restaurant website and reservation / marketing presence.
-- Portfolio class: `MAINTENANCE`
-- Lifecycle: `unconfirmed`
-- State authority: `control_room`
-- Primary workspace: `external`
-
-## house-of-flores
-
-- Name: House of Flores
-- Kind: `client_operation`
-- Goal: SEO website and Timma-linked bilingual online presence.
-- Portfolio class: `MAINTENANCE`
-- Lifecycle: `unconfirmed`
-- State authority: `control_room`
-- Primary workspace: `external`
-
-## volaire
-
-- Name: Volaire
-- Kind: `product`
-- Goal: Airport-specific discovery / SEO / affiliate platform.
-- Portfolio class: `VAULT`
-- Lifecycle: `paused`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + github`
-- Known GitHub: `meterionops/volairport`
-- Constraint: Volaire is distinct from Pelovio.
-
-## pelovio
-
-- Name: Pelovio
-- Kind: `product`
-- Goal: Country-manual / travel-guide platform explaining how countries work for visitors.
-- Portfolio class: `VAULT`
-- Lifecycle: `paused`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + github`
-- Possible legacy/related GitHub: `meterionops/chinamanual` — mapping must be explicitly verified before treated as canonical.
-- Constraint: Pelovio is distinct from Volaire.
-
-## avoinna
-
-- Name: Avoinna
-- Kind: `product`
-- Goal: Modern Finland-wide opening-hours discovery service.
-- Portfolio class: `VAULT`
-- Lifecycle: `paused`
-- State authority: `control_room`
-- Primary workspace: `chatgpt / external`
-
-## digiapu247
-
-- Name: Digiapu247
-- Kind: `product`
-- Goal: AI phone-agent / digital-help service.
-- Portfolio class: `VAULT`
-- Lifecycle: `paused`
-- State authority: `control_room`
-- Primary workspace: `github + external voice infrastructure`
-- Known GitHub: `meterionops/digiapu247`
-
-## sprinkler-water-tank-site
-
-- Name: Sprinkler Water Tank — site delivery / compliance
-- Kind: `client_operation`
-- Goal: Deliver and close the sprinkler tank installation / compliance work package safely and correctly.
-- Portfolio class: `MAINTENANCE`
-- Lifecycle: `completed_candidate`
-- State authority: `control_room`
-- Primary workspace: `chatgpt + email / site documentation`
-- Constraint: Do not mix this operational client job with the Sprinkler RFQ Platform product.
+Preserve their repositories and historical architecture. Do not surface them in Today or the active portfolio unless the Owner explicitly reactivates them.
 
 ---
 
-# B. Historical projects not in current Control Room portfolio
+# Current registry
 
-## pertti
+| Key | Name | Kind | Portfolio | Lifecycle | Notes |
+|---|---|---|---|---|---|
+| `meterion-control-room` | Meterion Control Room | internal_system | SYSTEM | active | Lightweight coordination layer; no task-manager expansion |
+| `ai-company-os` | AI Company OS | internal_system | CORE | active | Company Factory remains canonical AI Company creation path |
+| `maistio` | Maistio | product | CORE | active | Restaurant-first Local Discovery Graph; later verticals stay out of launch scope |
+| `cala-europe` | Cala Europe | product | CORE | active | Europe-first beach discovery; core must not depend on paid content/data APIs |
+| `sprinkler-rfq-platform` | Sprinkler RFQ Platform | product | CORE | active | Keep separate from individual sprinkler installation/client jobs |
+| `rail-atlas` | Rail Atlas / Junamatkailusivusto | product | CORE | active | Global train-travel discovery product |
+| `folio` | Folio | product | UNCONFIRMED | active | Active portfolio project; classification not confirmed here |
+| `calendar-platform` | Calendar Platform | platform | UNCONFIRMED | unconfirmed | Country sites stay inside the platform family by default |
+| `yritystiedot` | Yritystiedot | data_asset | UNCONFIRMED | unconfirmed | Shared Finnish company-data asset |
+| `nordic-bottle-index` | Nordic Bottle Index | product | UNCONFIRMED | unconfirmed | Cross-Nordic product matching/indexing |
+| `namorada` | Namorada | product | UNCONFIRMED | unconfirmed | Charter administration workflow |
+| `tinku-latin-flavors` | Tinku Latin Flavors | client_operation | UNCONFIRMED | unconfirmed | Client website/reservation presence |
+| `house-of-flores` | House of Flores | client_operation | UNCONFIRMED | unconfirmed | Client SEO/Timma presence |
+| `volaire` | Volaire | product | UNCONFIRMED | unconfirmed | Airport-specific discovery / SEO / affiliate product |
+| `pelovio` | Pelovio | product | UNCONFIRMED | unconfirmed | Country-manual/travel-guide product; distinct from Volaire |
+| `avoinna` | Avoinna | product | UNCONFIRMED | unconfirmed | Finland-wide opening-hours discovery |
+| `digiapu247` | Digiapu247 | product | UNCONFIRMED | unconfirmed | AI phone-agent / digital-help service |
+| `sprinkler-water-tank-site` | Sprinkler Water Tank — site delivery / compliance | client_operation | UNCONFIRMED | completed_candidate | Preserve closeout history; never merge with RFQ Platform |
 
-- Name: Pertti
-- Current Control Room validity: `historical_only`
-- Current lifecycle: `retired_candidate`
-- Source history: `meterionops/pertti` + `meterionops/meterion-hq`
-- Rule: Preserve existing code, architecture and state files for historical/reference value. Do not surface Pertti in Today or the active portfolio unless the Owner explicitly reactivates it.
+## Historical references only
 
-## cityos
+| Key | Name | Current validity |
+|---|---|---|
+| `pertti` | Pertti | historical_only / retired_candidate |
+| `cityos` | CityOS | historical_only / retired_candidate |
 
-- Name: CityOS
-- Current Control Room validity: `historical_only`
-- Current lifecycle: `retired_candidate`
-- Source history: `meterionops/meterion-hq`
-- Rule: Preserve existing architecture/state files for historical/reference value. Do not surface CityOS in Today or the active portfolio unless the Owner explicitly reactivates it.
+Historical files may contain older `Active` labels. The Owner decision dated 2026-09-12 is the current authority.
 
-Historical files may still describe these as active at the time they were written. Control Room must treat the newer Owner decision on 2026-09-12 as the current authority.
+## Known project connections
 
----
+- AI Company OS → `meterionops/ai-company-os`
+- Sprinkler RFQ Platform → `meterionops/fire-sprinkler-hub`
+- Volaire → `meterionops/volairport`
+- Digiapu247 → `meterionops/digiapu247`
+- Calendar Platform repo family → `meterionops/paivasta-selva`, `meterionops/kalenderklart`, `meterionops/calendify-your-world`, `meterionops/kalenderpunkt`
+- Nordic Bottle Index repo family → `meterionops/nordic-bottle-index`, `meterionops/nordic-bottle-index-source`, `meterionops/nordic-bottle-index-v2`, `meterionops/nordic-bottle-compass`
 
-# C. GitHub repository candidates — not automatically projects
+A connection is not a project identity. Multiple repositories may belong to one project.
 
-Repositories such as `jorm-operator-hub`, `antojo-refoundation`, `Lomakone`, `Lomakone-preview`, `aea-crv-rrv-validator`, `nextjs-boilerplate` and temporary probe repos do not become Control Room projects merely because they exist.
+## Not top-level projects by default
 
-Rules:
+Do not create separate top-level Control Room projects for:
 
-- boilerplates and temporary probes are not projects by default;
-- renamed products map to one canonical project identity rather than creating duplicates;
-- multiple repos may belong to one project;
-- one repo may support multiple projects only when the mapping is explicit.
-
----
-
-# D. Registry exclusions / not-yet-projects
-
-Do not create separate top-level projects for:
-
-- Maistio bars vertical
-- Maistio nightlife vertical
-- Maistio events vertical
+- Maistio bars/nightlife/events verticals before they are explicitly activated
 - individual Calendar Platform country sites
 - individual AI Company OS AI Companies
-- individual data-enrichment waves
-- one-off Work runs
-- one-off GitHub branches / pull requests
+- enrichment waves or other work batches
+- Work runs
+- GitHub branches or pull requests
+- one-off data jobs
 
-They may become top-level projects later only through an explicit Owner decision.
-
----
-
-# E. Control Room visibility rule
+## Visibility rule
 
 Today should default to:
 
-1. Owner-needed blockers / decisions
-2. CORE projects with material state changes
-3. active EXPERIMENT projects with material state changes
-4. AUTOPILOT only on anomaly, milestone or required action
-5. MAINTENANCE only when attention is required
-6. VAULT never unless explicitly opened or a reactivation proposal is reviewed
-7. historical-only projects never in normal portfolio views
+1. Owner-needed blockers and decisions
+2. CORE projects with meaningful state changes
+3. other active projects only when they have a material change or require attention
+4. background/autopilot systems only on anomaly, milestone or required action
+5. historical-only projects never in normal portfolio views
 
-This keeps Control Room quiet by default.
-
-## Next step
-
-Build the minimal persistence/read-model layer for:
-
-- project identity
-- current project state
-- material events
-- source-system connections
-
-Do not introduce task-management abstractions.
+Control Room should become quieter as the system works better.
