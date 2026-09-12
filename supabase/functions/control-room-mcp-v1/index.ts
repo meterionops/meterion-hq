@@ -15,7 +15,11 @@ const PROJECT_HOST = `${PROJECT_REF}.supabase.co`;
 const SUPABASE_URL = `https://${PROJECT_HOST}`;
 const AUTHORIZATION_SERVER = `${SUPABASE_URL}/auth/v1`;
 const MCP_URL = `${SUPABASE_URL}/functions/v1/control-room-mcp-v1`;
-const RESOURCE_METADATA_URL = `${MCP_URL}?oauth_resource_metadata=1`;
+
+// Important: use a path-based RFC 9728 resource metadata endpoint, not a
+// query-string endpoint. ChatGPT's MCP OAuth discovery expects a real
+// protected-resource surface and follows the WWW-Authenticate pointer here.
+const RESOURCE_METADATA_URL = `${MCP_URL}/oauth-protected-resource`;
 
 const PROJECT_KEY_RE = /^[a-z0-9][a-z0-9-]*$/;
 
@@ -28,23 +32,19 @@ function secretKey(): string {
         return parsed.default;
       }
     } catch {
-      // Fall through to legacy/single-key environment variables.
+      // Fall through.
     }
   }
 
   const key =
     Deno.env.get("SUPABASE_SECRET_KEY") ??
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-
   if (!key) throw new Error("missing_supabase_secret_key");
   return key;
 }
 
 const admin = createClient(SUPABASE_URL, secretKey(), {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
+  auth: { autoRefreshToken: false, persistSession: false },
 });
 
 function asObject(value: unknown): Record<string, unknown> {
@@ -55,12 +55,7 @@ function asObject(value: unknown): Record<string, unknown> {
 
 function toolResult(data: unknown) {
   return {
-    content: [
-      {
-        type: "text" as const,
-        text: JSON.stringify(data),
-      },
-    ],
+    content: [{ type: "text" as const, text: JSON.stringify(data) }],
   };
 }
 
@@ -80,11 +75,15 @@ function mapRpcError(message: string): { code: string; message: string } {
   if (message.includes("state_version_conflict")) {
     return {
       code: "state_version_conflict",
-      message: "Project state changed after it was read. Re-read current state and reconcile before writing.",
+      message:
+        "Project state changed after it was read. Re-read current state and reconcile before writing.",
     };
   }
   if (message.includes("project_not_found")) {
-    return { code: "project_not_found", message: "Unknown Control Room project." };
+    return {
+      code: "project_not_found",
+      message: "Unknown Control Room project.",
+    };
   }
   if (
     message.includes("state_object_required") ||
@@ -93,9 +92,15 @@ function mapRpcError(message: string): { code: string; message: string } {
     message.includes("violates check constraint") ||
     message.includes("invalid input syntax")
   ) {
-    return { code: "invalid_payload", message: "The proposed Control Room update is invalid." };
+    return {
+      code: "invalid_payload",
+      message: "The proposed Control Room update is invalid.",
+    };
   }
-  return { code: "control_room_rpc_error", message: "Control Room could not complete the operation." };
+  return {
+    code: "control_room_rpc_error",
+    message: "Control Room could not complete the operation.",
+  };
 }
 
 async function verifyAccessToken(token: string) {
@@ -161,7 +166,7 @@ const authGate = requireBearerAuth({
 function buildServer() {
   const server = new McpServer({
     name: "Meterion Control Room",
-    version: "1.0.0",
+    version: "1.0.1",
   });
 
   server.registerTool(
@@ -181,14 +186,17 @@ function buildServer() {
       },
     },
     async ({ project_key }) => {
-      const { data, error } = await admin.rpc("control_room_get_project_state_v1", {
-        p_project_key: project_key,
-      });
+      const { data, error } = await admin.rpc(
+        "control_room_get_project_state_v1",
+        { p_project_key: project_key },
+      );
       if (error) {
         const mapped = mapRpcError(error.message);
         return toolError(mapped.code, mapped.message);
       }
-      if (data === null) return toolError("project_not_found", "Unknown Control Room project.");
+      if (data === null) {
+        return toolError("project_not_found", "Unknown Control Room project.");
+      }
       return toolResult({ ok: true, project: data });
     },
   );
@@ -201,9 +209,19 @@ function buildServer() {
         "List Control Room project summaries, optionally filtered by portfolio class or lifecycle status.",
       inputSchema: z.object({
         portfolio_class: z
-          .enum(["CORE", "EXPERIMENT", "AUTOPILOT", "MAINTENANCE", "VAULT", "SYSTEM", "UNCONFIRMED"])
+          .enum([
+            "CORE",
+            "EXPERIMENT",
+            "AUTOPILOT",
+            "MAINTENANCE",
+            "VAULT",
+            "SYSTEM",
+            "UNCONFIRMED",
+          ])
           .optional(),
-        lifecycle_status: z.enum(["active", "paused", "completed", "archived", "unconfirmed"]).optional(),
+        lifecycle_status: z
+          .enum(["active", "paused", "completed", "archived", "unconfirmed"])
+          .optional(),
       }),
       annotations: {
         readOnlyHint: true,
@@ -264,7 +282,9 @@ function buildServer() {
       },
     },
     async () => {
-      const { data, error } = await admin.rpc("control_room_get_owner_attention_v1");
+      const { data, error } = await admin.rpc(
+        "control_room_get_owner_attention_v1",
+      );
       if (error) {
         const mapped = mapRpcError(error.message);
         return toolError(mapped.code, mapped.message);
@@ -290,7 +310,15 @@ function buildServer() {
             next_best_action: z.string().max(4000).optional(),
             blocked: z.boolean().optional(),
             blocker_summary: z.string().max(4000).nullable().optional(),
-            autonomy_state: z.enum(["working", "can_continue", "waiting", "owner_needed", "inactive"]).optional(),
+            autonomy_state: z
+              .enum([
+                "working",
+                "can_continue",
+                "waiting",
+                "owner_needed",
+                "inactive",
+              ])
+              .optional(),
             autonomy_reason: z.string().max(4000).nullable().optional(),
             founder_attention_required: z.boolean().optional(),
             founder_gate: z
@@ -307,8 +335,16 @@ function buildServer() {
                 "live_money",
               ])
               .optional(),
-            founder_attention_reason: z.string().max(4000).nullable().optional(),
-            founder_attention_unlocks: z.string().max(4000).nullable().optional(),
+            founder_attention_reason: z
+              .string()
+              .max(4000)
+              .nullable()
+              .optional(),
+            founder_attention_unlocks: z
+              .string()
+              .max(4000)
+              .nullable()
+              .optional(),
             confidence: z.enum(["low", "medium", "high"]).optional(),
             verified_at: z.string().max(100).optional(),
             source_type: z.string().max(100).optional(),
@@ -324,11 +360,14 @@ function buildServer() {
       },
     },
     async ({ project_key, expected_version, state }) => {
-      const { data, error } = await admin.rpc("control_room_append_project_state_v1", {
-        p_project_key: project_key,
-        p_expected_version: expected_version,
-        p_state: state,
-      });
+      const { data, error } = await admin.rpc(
+        "control_room_append_project_state_v1",
+        {
+          p_project_key: project_key,
+          p_expected_version: expected_version,
+          p_state: state,
+        },
+      );
       if (error) {
         const mapped = mapRpcError(error.message);
         return toolError(mapped.code, mapped.message);
@@ -349,7 +388,9 @@ function buildServer() {
           .object({
             event_type: z.string().min(1).max(100).optional(),
             summary: z.string().min(1).max(4000),
-            importance: z.enum(["low", "normal", "high", "critical"]).optional(),
+            importance: z
+              .enum(["low", "normal", "high", "critical"])
+              .optional(),
             occurred_at: z.string().max(100).optional(),
             source_type: z.string().max(100).optional(),
             source_ref: z.string().max(1000).nullable().optional(),
@@ -365,10 +406,13 @@ function buildServer() {
       },
     },
     async ({ project_key, event }) => {
-      const { data, error } = await admin.rpc("control_room_append_project_event_v1", {
-        p_project_key: project_key,
-        p_event: event,
-      });
+      const { data, error } = await admin.rpc(
+        "control_room_append_project_event_v1",
+        {
+          p_project_key: project_key,
+          p_event: event,
+        },
+      );
       if (error) {
         const mapped = mapRpcError(error.message);
         return toolError(mapped.code, mapped.message);
@@ -382,7 +426,19 @@ function buildServer() {
 
 const mcpHandler = createMcpHandler(buildServer);
 
-function resourceMetadataResponse(): Response {
+function resourceMetadataResponse(method: string): Response {
+  const headers = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, OPTIONS",
+    "access-control-allow-headers": "Authorization, Content-Type",
+    "cache-control": "public, max-age=300",
+    "content-type": "application/json; charset=utf-8",
+  };
+
+  if (method === "OPTIONS") {
+    return new Response(null, { status: 204, headers });
+  }
+
   return Response.json(
     {
       resource: MCP_URL,
@@ -391,13 +447,18 @@ function resourceMetadataResponse(): Response {
       bearer_methods_supported: ["header"],
       resource_name: "Meterion Control Room",
     },
-    {
-      headers: {
-        "cache-control": "public, max-age=300",
-        "content-type": "application/json; charset=utf-8",
-      },
-    },
+    { headers },
   );
+}
+
+function isProtectedResourceMetadataRequest(url: URL): boolean {
+  // Primary route matches Supabase's current OAuth protected-resource middleware.
+  if (url.pathname.endsWith("/oauth-protected-resource")) return true;
+
+  // Also answer path-local well-known probes used by some MCP clients.
+  if (url.pathname.includes("/.well-known/oauth-protected-resource")) return true;
+
+  return false;
 }
 
 export default {
@@ -406,8 +467,11 @@ export default {
     if (hostRejected) return hostRejected;
 
     const url = new URL(request.url);
-    if (request.method === "GET" && url.searchParams.get("oauth_resource_metadata") === "1") {
-      return resourceMetadataResponse();
+    if (
+      (request.method === "GET" || request.method === "OPTIONS") &&
+      isProtectedResourceMetadataRequest(url)
+    ) {
+      return resourceMetadataResponse(request.method);
     }
 
     const auth = await authGate(request);
