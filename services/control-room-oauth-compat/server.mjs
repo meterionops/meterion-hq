@@ -2,14 +2,24 @@ import http from "node:http";
 import { Readable } from "node:stream";
 
 const PORT = Number(process.env.PORT || 10000);
+const PUBLIC_ORIGIN = "https://meterion-control-room-oauth-compat.onrender.com";
 const SUPABASE_ORIGIN = "https://cavvdvxicadgfftbziao.supabase.co";
 const SUPABASE_AUTH = `${SUPABASE_ORIGIN}/auth/v1`;
 const SUPABASE_MCP = `${SUPABASE_ORIGIN}/functions/v1/control-room-mcp-v1`;
+const PUBLIC_HOST = new URL(PUBLIC_ORIGIN).host;
 
-function externalBase(req) {
-  const proto = (req.headers["x-forwarded-proto"] || "https").toString().split(",")[0].trim();
-  const host = req.headers["x-forwarded-host"] || req.headers.host;
-  return `${proto}://${host}`;
+const unauthenticatedBuckets = new Map();
+
+function externalBase() {
+  return PUBLIC_ORIGIN;
+}
+
+function securityHeaders() {
+  return {
+    "x-content-type-options": "nosniff",
+    "referrer-policy": "no-referrer",
+    "x-frame-options": "DENY",
+  };
 }
 
 function json(res, status, body, extraHeaders = {}) {
@@ -18,6 +28,7 @@ function json(res, status, body, extraHeaders = {}) {
     "content-type": "application/json; charset=utf-8",
     "content-length": Buffer.byteLength(payload),
     "cache-control": "no-store",
+    ...securityHeaders(),
     ...extraHeaders,
   });
   res.end(payload);
@@ -28,12 +39,11 @@ function oauthMetadata(base) {
     issuer: base,
     authorization_endpoint: `${base}/oauth/authorize`,
     token_endpoint: `${base}/oauth/token`,
-    registration_endpoint: `${base}/oauth/register`,
     scopes_supported: ["email"],
     response_types_supported: ["code"],
     response_modes_supported: ["query"],
     grant_types_supported: ["authorization_code", "refresh_token"],
-    token_endpoint_auth_methods_supported: ["none", "client_secret_basic", "client_secret_post"],
+    token_endpoint_auth_methods_supported: ["none"],
     code_challenge_methods_supported: ["S256"],
   };
 }
@@ -49,18 +59,27 @@ function resourceMetadata(base) {
 }
 
 function redirectTo(res, target) {
-  res.writeHead(302, { location: target, "cache-control": "no-store" });
+  res.writeHead(302, {
+    location: target,
+    "cache-control": "no-store",
+    ...securityHeaders(),
+  });
   res.end();
 }
 
 async function readBody(req) {
   const chunks = [];
-  for await (const chunk of req) chunks.push(chunk);
+  let total = 0;
+  for await (const chunk of req) {
+    total += chunk.length;
+    if (total > 128 * 1024) throw new Error("request_too_large");
+    chunks.push(chunk);
+  }
   return chunks.length ? Buffer.concat(chunks) : undefined;
 }
 
 function passthroughHeaders(sourceHeaders) {
-  const headers = {};
+  const headers = { ...securityHeaders() };
   const allow = [
     "content-type",
     "cache-control",
@@ -73,6 +92,28 @@ function passthroughHeaders(sourceHeaders) {
     if (value) headers[key] = value;
   }
   return headers;
+}
+
+function clientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
+function allowUnauthenticatedProbe(req) {
+  const now = Date.now();
+  const windowMs = 60_000;
+  const max = 90;
+  const key = clientIp(req);
+  const existing = unauthenticatedBuckets.get(key);
+  if (!existing || now - existing.startedAt >= windowMs) {
+    unauthenticatedBuckets.set(key, { startedAt: now, count: 1 });
+    return true;
+  }
+  existing.count += 1;
+  return existing.count <= max;
 }
 
 async function proxy(req, res, target, { interceptUnauthorized = false } = {}) {
@@ -91,11 +132,12 @@ async function proxy(req, res, target, { interceptUnauthorized = false } = {}) {
   });
 
   if (interceptUnauthorized && upstream.status === 401) {
-    const base = externalBase(req);
+    const base = externalBase();
     res.writeHead(401, {
       "content-type": "application/json; charset=utf-8",
       "www-authenticate": `Bearer resource_metadata="${base}/.well-known/oauth-protected-resource/mcp"`,
       "cache-control": "no-store",
+      ...securityHeaders(),
     });
     res.end(JSON.stringify({ error: "unauthorized" }));
     return;
@@ -113,8 +155,17 @@ async function proxy(req, res, target, { interceptUnauthorized = false } = {}) {
 
 const server = http.createServer(async (req, res) => {
   try {
-    const base = externalBase(req);
+    const base = externalBase();
     const url = new URL(req.url || "/", base);
+    const forwardedHost = (req.headers["x-forwarded-host"] || req.headers.host || "")
+      .toString()
+      .split(",")[0]
+      .trim()
+      .toLowerCase();
+
+    if (forwardedHost && forwardedHost !== PUBLIC_HOST) {
+      return json(res, 421, { error: "misdirected_request" });
+    }
 
     if (req.method === "GET" && url.pathname === "/healthz") {
       return json(res, 200, { ok: true, service: "meterion-control-room-oauth-compat" });
@@ -150,16 +201,23 @@ const server = http.createServer(async (req, res) => {
       return proxy(req, res, `${SUPABASE_AUTH}/oauth/token`);
     }
 
-    if (url.pathname === "/oauth/register" && req.method === "POST") {
-      return proxy(req, res, `${SUPABASE_AUTH}/oauth/clients/register`);
+    // Fail closed: this compatibility layer deliberately does not expose dynamic
+    // OAuth client registration. Control Room accepts only explicitly approved
+    // client IDs registered in Supabase and allow-listed by the MCP resource.
+    if (url.pathname === "/oauth/register") {
+      return json(res, 404, { error: "dynamic_registration_disabled" });
     }
 
     if (url.pathname === "/mcp") {
       if (!req.headers.authorization) {
+        if (!allowUnauthenticatedProbe(req)) {
+          return json(res, 429, { error: "rate_limited" }, { "retry-after": "60" });
+        }
         res.writeHead(401, {
           "content-type": "application/json; charset=utf-8",
           "www-authenticate": `Bearer resource_metadata="${base}/.well-known/oauth-protected-resource/mcp"`,
           "cache-control": "no-store",
+          ...securityHeaders(),
         });
         res.end(JSON.stringify({ error: "unauthorized" }));
         return;
@@ -172,6 +230,7 @@ const server = http.createServer(async (req, res) => {
         "access-control-allow-origin": "*",
         "access-control-allow-methods": "GET,POST,OPTIONS",
         "access-control-allow-headers": "Authorization,Content-Type,Accept,Mcp-Session-Id,Last-Event-Id",
+        ...securityHeaders(),
       });
       res.end();
       return;
@@ -179,8 +238,10 @@ const server = http.createServer(async (req, res) => {
 
     json(res, 404, { error: "not_found" });
   } catch (error) {
-    console.error(error);
-    json(res, 502, { error: "compatibility_proxy_error" });
+    const code = error instanceof Error && error.message === "request_too_large"
+      ? "request_too_large"
+      : "compatibility_proxy_error";
+    json(res, code === "request_too_large" ? 413 : 502, { error: code });
   }
 });
 
