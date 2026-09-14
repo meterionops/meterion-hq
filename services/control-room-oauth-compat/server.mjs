@@ -328,7 +328,14 @@ const server = http.createServer(async (req, res) => {
         return proxy(req, res, SUPABASE_MCP, { interceptUnauthorized: true, bodyOverride: bodyBuffer });
       }
 
-      if (!req.headers.authorization) return unauthorized(res, base);
+      if (!req.headers.authorization) {
+        res.writeHead(405, {
+          "allow": "POST, OPTIONS",
+          "cache-control": "no-store",
+          ...securityHeaders(),
+        });
+        return res.end();
+      }
       return proxy(req, res, SUPABASE_MCP, { interceptUnauthorized: true });
     }
 
