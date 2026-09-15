@@ -1,2 +1,13 @@
 [functions.control-room-api-v1]
 verify_jwt = false
+
+[functions.control-room-mcp-v1]
+# Intentionally false: unauthenticated MCP requests must reach the function so
+# it can return RFC 6750/RFC 9728 OAuth discovery challenges. The function
+# validates bearer tokens itself through Supabase Auth before invoking MCP.
+verify_jwt = false
+
+[functions.control-room-auth-ui]
+# Public authorization/consent page. It uses only the project publishable key;
+# Supabase Auth handles user authentication and OAuth approval/denial.
+verify_jwt = false
