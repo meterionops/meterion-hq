@@ -15,12 +15,7 @@ const PROJECT_HOST = `${PROJECT_REF}.supabase.co`;
 const SUPABASE_URL = `https://${PROJECT_HOST}`;
 const AUTHORIZATION_SERVER = `${SUPABASE_URL}/auth/v1`;
 const MCP_URL = `${SUPABASE_URL}/functions/v1/control-room-mcp-v1`;
-
-// Important: use a path-based RFC 9728 resource metadata endpoint, not a
-// query-string endpoint. ChatGPT's MCP OAuth discovery expects a real
-// protected-resource surface and follows the WWW-Authenticate pointer here.
 const RESOURCE_METADATA_URL = `${MCP_URL}/oauth-protected-resource`;
-
 const PROJECT_KEY_RE = /^[a-z0-9][a-z0-9-]*$/;
 
 function secretKey(): string {
@@ -103,6 +98,25 @@ function mapRpcError(message: string): { code: string; message: string } {
   };
 }
 
+async function writeAuthDeniedAudit(
+  userId: string | null,
+  clientId: string | null,
+  reason: string,
+) {
+  try {
+    await admin.from("control_room_mcp_audit_log").insert({
+      user_id: userId,
+      client_id: clientId,
+      tool_name: "__auth__",
+      outcome: "denied",
+      error_code: reason,
+      metadata: {},
+    });
+  } catch {
+    // Authorization must fail closed even if audit persistence is unavailable.
+  }
+}
+
 async function verifyAccessToken(token: string) {
   const verifyRequest = new Request(MCP_URL, {
     headers: { Authorization: `Bearer ${token}` },
@@ -125,29 +139,58 @@ async function verifyAccessToken(token: string) {
     (typeof claims.sub === "string" && claims.sub) ||
     "";
   const expiresAt = Number(claims.exp);
+  const oauthClientId =
+    typeof claims.client_id === "string" && claims.client_id.length > 0
+      ? claims.client_id
+      : "";
+  const aal = typeof claims.aal === "string" ? claims.aal : "aal1";
 
-  if (!userId || !Number.isFinite(expiresAt)) {
+  if (!userId || !Number.isFinite(expiresAt) || !oauthClientId) {
+    await writeAuthDeniedAudit(userId || null, oauthClientId || null, "incomplete_token");
     throw new OAuthError(OAuthErrorCode.InvalidToken, "Incomplete access token");
   }
 
-  const { data: operator, error: operatorError } = await ctx.supabaseAdmin
-    .from("control_room_operators")
-    .select("role, active")
-    .eq("user_id", userId)
-    .eq("active", true)
-    .maybeSingle();
+  const [operatorResult, clientResult] = await Promise.all([
+    ctx.supabaseAdmin
+      .from("control_room_operators")
+      .select("role, active, require_mfa")
+      .eq("user_id", userId)
+      .eq("active", true)
+      .maybeSingle(),
+    ctx.supabaseAdmin
+      .from("control_room_oauth_clients")
+      .select("client_id, active")
+      .eq("client_id", oauthClientId)
+      .eq("active", true)
+      .maybeSingle(),
+  ]);
 
-  if (operatorError || !operator) {
+  const operator = operatorResult.data;
+  const approvedClient = clientResult.data;
+
+  if (operatorResult.error || !operator) {
+    await writeAuthDeniedAudit(userId, oauthClientId, "operator_not_enrolled");
     throw new OAuthError(
       OAuthErrorCode.InvalidToken,
       "This user is not enrolled as a Meterion Control Room operator",
     );
   }
 
-  const oauthClientId =
-    typeof claims.client_id === "string" && claims.client_id.length > 0
-      ? claims.client_id
-      : userId;
+  if (clientResult.error || !approvedClient) {
+    await writeAuthDeniedAudit(userId, oauthClientId, "oauth_client_not_approved");
+    throw new OAuthError(
+      OAuthErrorCode.InvalidToken,
+      "This OAuth client is not approved for Meterion Control Room",
+    );
+  }
+
+  if (operator.require_mfa !== false && aal !== "aal2") {
+    await writeAuthDeniedAudit(userId, oauthClientId, "mfa_required");
+    throw new OAuthError(
+      OAuthErrorCode.InvalidToken,
+      "Meterion Control Room requires an MFA-verified session",
+    );
+  }
 
   return {
     token,
@@ -166,7 +209,7 @@ const authGate = requireBearerAuth({
 function buildServer() {
   const server = new McpServer({
     name: "Meterion Control Room",
-    version: "1.0.1",
+    version: "1.1.0",
   });
 
   server.registerTool(
@@ -452,13 +495,75 @@ function resourceMetadataResponse(method: string): Response {
 }
 
 function isProtectedResourceMetadataRequest(url: URL): boolean {
-  // Primary route matches Supabase's current OAuth protected-resource middleware.
   if (url.pathname.endsWith("/oauth-protected-resource")) return true;
-
-  // Also answer path-local well-known probes used by some MCP clients.
   if (url.pathname.includes("/.well-known/oauth-protected-resource")) return true;
-
   return false;
+}
+
+function bearerFromRequest(request: Request): string | null {
+  const header = request.headers.get("authorization") ?? "";
+  const match = header.match(/^Bearer\s+(.+)$/i);
+  return match?.[1] ?? null;
+}
+
+function decodeValidatedJwtClaims(token: string | null): Record<string, unknown> {
+  if (!token) return {};
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return {};
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+    return asObject(JSON.parse(atob(padded)));
+  } catch {
+    return {};
+  }
+}
+
+async function extractToolAudit(request: Request): Promise<{
+  toolName: string | null;
+  projectKey: string | null;
+}> {
+  if (request.method !== "POST") return { toolName: null, projectKey: null };
+  try {
+    const body = asObject(await request.clone().json());
+    if (body.method !== "tools/call") return { toolName: null, projectKey: null };
+    const params = asObject(body.params);
+    const args = asObject(params.arguments);
+    const toolName = typeof params.name === "string" ? params.name : null;
+    const projectKey =
+      typeof args.project_key === "string" && PROJECT_KEY_RE.test(args.project_key)
+        ? args.project_key
+        : null;
+    return { toolName, projectKey };
+  } catch {
+    return { toolName: null, projectKey: null };
+  }
+}
+
+async function writeToolAudit(
+  request: Request,
+  response: Response,
+  clientId: string,
+) {
+  const { toolName, projectKey } = await extractToolAudit(request);
+  if (!toolName) return;
+
+  const claims = decodeValidatedJwtClaims(bearerFromRequest(request));
+  const userId = typeof claims.sub === "string" ? claims.sub : null;
+
+  try {
+    await admin.from("control_room_mcp_audit_log").insert({
+      user_id: userId,
+      client_id: clientId,
+      tool_name: toolName,
+      project_key: projectKey,
+      http_status: response.status,
+      outcome: response.status >= 400 ? "error" : "invoked",
+      metadata: { mcp_method: "tools/call" },
+    });
+  } catch {
+    // Never expose audit persistence failures to the caller or log secrets.
+  }
 }
 
 export default {
@@ -477,6 +582,8 @@ export default {
     const auth = await authGate(request);
     if (auth instanceof Response) return auth;
 
-    return mcpHandler.fetch(request, { authInfo: auth });
+    const response = await mcpHandler.fetch(request, { authInfo: auth });
+    await writeToolAudit(request, response.clone(), auth.clientId);
+    return response;
   },
 };
