@@ -1,6 +1,6 @@
 # Meterion Control Room — Web v1
 
-Status: DEPLOYED / FIRST OWNER BOOTSTRAP PENDING
+Status: ACCEPTED / LIVE
 Date: 2026-09-16
 
 ## Purpose
@@ -102,21 +102,21 @@ Render service:
 
 The first Render deploy `dep-dal60g3l550s73ak487g` reached `live` on 2026-09-16.
 
-Supabase `control-room-web-v1` version 3 introduced the Render bridge behavior. Direct browser GETs to the Supabase function now redirect to the Render UI; `?render_proxy=1` remains available for the credentialless Render server to retrieve the HTML shell.
+Supabase `control-room-web-v1` version 4 is the accepted Render-bridge deployment. Direct browser GETs to the Supabase function redirect to the Render UI; `?render_proxy=1` remains available for the credentialless Render server to retrieve the HTML shell.
 
-## Remaining acceptance step
+## Acceptance evidence
 
-At deployment there were zero Auth users and zero Control Room operators.
+Web v1 passed first-owner end-to-end acceptance on 2026-09-16.
 
-The remaining end-to-end acceptance step requires the Owner to open the Render URL, authenticate with the already allow-listed Owner email, enroll/verify TOTP and allow the bounded first-operator bootstrap to complete.
+Verified runtime state:
 
-After that first login verify:
+- exactly one intended Supabase Auth user exists;
+- exactly one active Control Room operator exists with role `owner`;
+- exactly one TOTP factor is verified;
+- the browser session reports `AAL2 · private`;
+- Today, Projects, AI Company OS and System all rendered successfully through the private gateway;
+- the Owner credential gate was cleared in Control Room state v24.
 
-- exactly one intended Auth user exists;
-- exactly one active Owner operator exists;
-- the session reached AAL2;
-- Today and Projects can read through the private gateway;
-- unauthenticated callers still cannot read Control Room data;
-- no secret/service-role credential is present in browser-delivered configuration.
+The accepted surface now replaces the bootstrap-pending state. Ongoing work returns to state freshness, lifecycle reconciliation and resume-anywhere quality rather than authentication setup.
 
 ChatGPT MCP remains a separate integration and is not required for Web v1 acceptance.
