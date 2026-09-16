@@ -11,15 +11,21 @@ It remains a quiet operating picture, not a project-management product.
 
 ## Live surface
 
-Supabase Edge Function:
+Browser-facing URL:
 
-`control-room-web-v1`
+`https://meterion-control-room-web.onrender.com/`
 
-Live URL:
+Backend/auth endpoint:
 
 `https://cavvdvxicadgfftbziao.supabase.co/functions/v1/control-room-web-v1`
 
-The function is deployed with `verify_jwt=false` only because the same endpoint must handle pre-authentication magic-link initiation. All private reads implement their own user-session, AAL2 and operator checks before reaching Control Room data.
+Supabase hosted Edge Functions intentionally rewrite `text/html` GET responses to `text/plain` unless a custom domain is used. Therefore the browser UI is rendered through a tiny Render proxy while Supabase remains the authentication, authorization and private data boundary.
+
+The Render host contains no service-role key and no Control Room source credential. It only:
+
+- fetches the public HTML shell from the Edge Function using `?render_proxy=1` and returns it as `text/html`;
+- forwards same-origin browser POST requests to the Edge Function;
+- preserves the browser Authorization bearer when present.
 
 ## Implemented views
 
@@ -38,13 +44,14 @@ There are no task, Kanban, agent-map, analytics-wall, calendar, CRM or workflow-
 
 First Owner bootstrap is intentionally bounded:
 
-1. the browser submits an email to the web function;
-2. the function checks `control_room_login_allowlist` server-side before asking Supabase Auth to send a magic link;
-3. the magic link returns to the same Supabase-origin web function, avoiding a new external Auth redirect dependency;
-4. Supabase Auth establishes the user session only after possession of the allow-listed email is proven;
-5. TOTP enrollment/challenge is mandatory and the resulting session must reach AAL2;
-6. only then may the server activate the first `control_room_operators` row;
-7. first-operator activation is allowed only while there are zero active operators; later users cannot self-enroll through this bootstrap path.
+1. browser loads the UI through the Render host;
+2. the UI submits the email through the same Render origin, which proxies the request to the Edge Function;
+3. the Edge Function checks `control_room_login_allowlist` server-side before asking Supabase Auth to send a magic link;
+4. the magic link uses the canonical Supabase Edge Function URL as its approved redirect target;
+5. the Edge Function redirects browser GETs to the Render UI; the browser preserves the Supabase Auth URL fragment so the Supabase JS client can establish the session on the Render page;
+6. TOTP enrollment/challenge is mandatory and the resulting session must reach AAL2;
+7. only then may the server activate the first `control_room_operators` row;
+8. first-operator activation is allowed only while there are zero active operators; later users cannot self-enroll through this bootstrap path.
 
 The browser receives only the publishable Supabase key and its own user session. It never receives the Supabase secret/service-role key.
 
@@ -70,43 +77,40 @@ No state or registry mutation is exposed by Web v1.
 
 ## UI behavior
 
-### Today
+Today renders only non-empty `needs_you`, `working_now` and `changed_materially` sections. Projects separates confirmed active portfolio, active-but-unclassified and unconfirmed identities. AI Company OS remains a separate top-level Meterion system/project. System shows state reconciliation, Founder Attention count and runtime status without becoming an observability dashboard.
 
-Renders only non-empty `needs_you`, `working_now` and `changed_materially` sections. An empty Today is treated as a healthy state.
+## Security boundary
 
-### Projects
+The Render host is deliberately credentialless. The service-role/secret key exists only inside Supabase server-side execution. Browser private reads still terminate at the Edge Function, which validates session, allow-list, AAL2 and operator membership before calling API v2.
 
-Separates confirmed active portfolio, active-but-unclassified and unconfirmed identities. It uses truth-quality counts rather than productivity KPIs.
-
-### AI Company OS
-
-Shows AI Company OS as one Meterion top-level system/project. It does not import or expose AI Company OS companies as Meterion projects.
-
-### System
-
-Shows state reconciliation, Founder Attention count, API/web status and the current Control Room operating state without becoming an observability dashboard.
-
-## Security headers
-
-The web response is `no-store`, denies framing, disables camera/microphone/geolocation, uses a restrictive Content Security Policy and allows network connections only to the same Supabase origin and the pinned Supabase JS module CDN required by the browser auth client.
+Responses are `no-store`; framing is denied; camera/microphone/geolocation are disabled; the browser shell retains a restrictive CSP.
 
 ## Deployment record
 
-Canonical source branch: `control-room-web-v1`
+Canonical UI implementation: `supabase/functions/control-room-web-v1/index.ts`
 
-Canonical implementation commit: `116e1e8fa059c7434a5929c0422671f4d897e6ae`
+Canonical Render bridge entrypoint: `supabase/functions/control-room-web-v1/render-entry.ts`
 
-Supabase function deployment: `control-room-web-v1` version 1.
+Render host: `services/control-room-web-proxy/server.mjs`
 
-The deployed Edge Function entrypoint imports the canonical implementation from the exact GitHub commit above, so the deployed source is pinned rather than following a moving branch.
+Render service:
+
+- name: `meterion-control-room-web`
+- id: `srv-dal60fjl550s73ak4740`
+- region: Frankfurt
+- public URL: `https://meterion-control-room-web.onrender.com/`
+
+The first Render deploy `dep-dal60g3l550s73ak487g` reached `live` on 2026-09-16.
+
+Supabase `control-room-web-v1` version 3 introduced the Render bridge behavior. Direct browser GETs to the Supabase function now redirect to the Render UI; `?render_proxy=1` remains available for the credentialless Render server to retrieve the HTML shell.
 
 ## Remaining acceptance step
 
-There were zero Auth users and zero Control Room operators at deployment time.
+At deployment there were zero Auth users and zero Control Room operators.
 
-The remaining end-to-end acceptance step therefore requires the Owner to open the live URL, authenticate with the already allow-listed Owner email, enroll/verify TOTP and allow the bounded first-operator bootstrap to complete.
+The remaining end-to-end acceptance step requires the Owner to open the Render URL, authenticate with the already allow-listed Owner email, enroll/verify TOTP and allow the bounded first-operator bootstrap to complete.
 
-After that first login we must verify:
+After that first login verify:
 
 - exactly one intended Auth user exists;
 - exactly one active Owner operator exists;
