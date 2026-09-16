@@ -1,7 +1,8 @@
 # Meterion Control Room — Project Registry v1
 
-Status: OWNER-CONFIRMED BASELINE
-Date: 2026-09-12
+Status: OWNER-CONFIRMED BASELINE / RUNTIME SYNCED
+Owner decision date: 2026-09-12
+Registry sync date: 2026-09-16
 
 ## Purpose
 
@@ -30,7 +31,9 @@ Actual work remains in ChatGPT / Work, GitHub, Supabase, Lovable, production ser
 
 ## Owner decisions — 2026-09-12
 
-### Confirmed CORE
+The canonical classification source is `OWNER_RECONCILIATION_PROPOSAL_V1.md`, status `OWNER CONFIRMED / 2026-09-12`.
+
+### CORE
 
 - AI Company OS
 - Maistio
@@ -40,12 +43,36 @@ Actual work remains in ChatGPT / Work, GitHub, Supabase, Lovable, production ser
 
 The earlier `CORE max 3` rule is not a hard constraint for Control Room. The current Owner-confirmed CORE set contains five projects and is valid. Capacity rules may be advisory/configurable later, but may not override explicit Owner classification.
 
+### EXPERIMENT
+
+- Folio
+
+### AUTOPILOT
+
+- Calendar Platform
+- Yritystiedot
+- Nordic Bottle Index
+
+### MAINTENANCE
+
+- Namorada
+- Tinku Latin Flavors
+- House of Flores
+- Sprinkler Water Tank — site delivery / compliance, after closeout
+
+### VAULT / paused
+
+- Volaire
+- Pelovio
+- Avoinna
+- Digiapu247
+
 ### Historical / no longer current
 
 - Pertti
 - CityOS
 
-Preserve their repositories and historical architecture. Do not surface them in Today or the active portfolio unless the Owner explicitly reactivates them.
+Preserve historical repositories, architecture documents and state history. Do not surface historical-only projects in Today or the active portfolio unless the Owner explicitly reactivates them.
 
 ---
 
@@ -59,18 +86,18 @@ Preserve their repositories and historical architecture. Do not surface them in 
 | `cala-europe` | Cala Europe | product | CORE | active | Europe-first beach discovery; core must not depend on paid content/data APIs |
 | `sprinkler-rfq-platform` | Sprinkler RFQ Platform | product | CORE | active | Keep separate from individual sprinkler installation/client jobs |
 | `rail-atlas` | Rail Atlas / Junamatkailusivusto | product | CORE | active | Global train-travel discovery product |
-| `folio` | Folio | product | UNCONFIRMED | active | Active portfolio project; classification not confirmed here |
-| `calendar-platform` | Calendar Platform | platform | UNCONFIRMED | unconfirmed | Country sites stay inside the platform family by default |
-| `yritystiedot` | Yritystiedot | data_asset | UNCONFIRMED | unconfirmed | Shared Finnish company-data asset |
-| `nordic-bottle-index` | Nordic Bottle Index | product | UNCONFIRMED | unconfirmed | Cross-Nordic product matching/indexing |
-| `namorada` | Namorada | product | UNCONFIRMED | unconfirmed | Charter administration workflow |
-| `tinku-latin-flavors` | Tinku Latin Flavors | client_operation | UNCONFIRMED | unconfirmed | Client website/reservation presence |
-| `house-of-flores` | House of Flores | client_operation | UNCONFIRMED | unconfirmed | Client SEO/Timma presence |
-| `volaire` | Volaire | product | UNCONFIRMED | unconfirmed | Airport-specific discovery / SEO / affiliate product |
-| `pelovio` | Pelovio | product | UNCONFIRMED | unconfirmed | Country-manual/travel-guide product; distinct from Volaire |
-| `avoinna` | Avoinna | product | UNCONFIRMED | unconfirmed | Finland-wide opening-hours discovery |
-| `digiapu247` | Digiapu247 | product | UNCONFIRMED | unconfirmed | AI phone-agent / digital-help service |
-| `sprinkler-water-tank-site` | Sprinkler Water Tank — site delivery / compliance | client_operation | UNCONFIRMED | completed_candidate | Preserve closeout history; never merge with RFQ Platform |
+| `folio` | Folio | product | EXPERIMENT | active | Reality-engine / competitor-monitoring proof |
+| `calendar-platform` | Calendar Platform | platform | AUTOPILOT | active | Country sites stay inside the platform family by default |
+| `yritystiedot` | Yritystiedot | data_asset | AUTOPILOT | active | Shared Finnish company-data asset |
+| `nordic-bottle-index` | Nordic Bottle Index | product | AUTOPILOT | active | Cross-Nordic product matching/indexing |
+| `namorada` | Namorada | product | MAINTENANCE | active | Charter administration workflow |
+| `tinku-latin-flavors` | Tinku Latin Flavors | client_operation | MAINTENANCE | active | Client website/reservation presence |
+| `house-of-flores` | House of Flores | client_operation | MAINTENANCE | active | Client SEO/Timma presence and current website refinement |
+| `sprinkler-water-tank-site` | Sprinkler Water Tank — site delivery / compliance | client_operation | MAINTENANCE | unconfirmed | Class is Owner-confirmed; lifecycle stays unconfirmed until current site-delivery/closeout evidence proves active vs completed |
+| `volaire` | Volaire | product | VAULT | paused | Airport-specific discovery / SEO / affiliate product |
+| `pelovio` | Pelovio | product | VAULT | paused | Country-manual/travel-guide product; distinct from Volaire |
+| `avoinna` | Avoinna | product | VAULT | paused | Finland-wide opening-hours discovery |
+| `digiapu247` | Digiapu247 | product | VAULT | paused | AI phone-agent / digital-help service |
 
 ## Historical references only
 
@@ -79,7 +106,13 @@ Preserve their repositories and historical architecture. Do not surface them in 
 | `pertti` | Pertti | historical_only / retired_candidate |
 | `cityos` | CityOS | historical_only / retired_candidate |
 
-Historical files may contain older `Active` labels. The Owner decision dated 2026-09-12 is the current authority.
+Older project files that say `Active` describe their state when those files were written; the 2026-09-12 Owner decision is the current authority.
+
+## Lifecycle interpretation used by runtime sync
+
+The Owner-confirmed document calls the table above the **current visible portfolio baseline** and explicitly separates `VAULT / paused`. Runtime sync therefore treats EXPERIMENT, AUTOPILOT and MAINTENANCE entries as active unless a more specific Owner/source decision says otherwise, and treats the four VAULT entries as paused.
+
+The exception is `sprinkler-water-tank-site`: its portfolio class is confirmed as MAINTENANCE, but the wording `after closeout` plus current site/compliance evidence does not safely prove whether closeout has occurred. Its lifecycle is intentionally left `unconfirmed` rather than guessed.
 
 ## Known project connections
 
