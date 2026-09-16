@@ -1,7 +1,7 @@
 # Meterion Control Room — Project Registry v1
 
 Status: OWNER-CONFIRMED BASELINE / RUNTIME SYNCED
-Owner decision date: 2026-09-12
+Owner decision dates: 2026-09-12 and 2026-09-16
 Registry sync date: 2026-09-16
 
 ## Purpose
@@ -28,10 +28,17 @@ Actual work remains in ChatGPT / Work, GitHub, Supabase, Lovable, production ser
 6. AI may update operational state, but may not silently change the project's goal, portfolio class, lifecycle or locked constraints.
 7. Meterion Control Room is system infrastructure and does not consume a portfolio slot.
 8. Pertti and CityOS are historical projects, not current portfolio projects, unless explicitly reactivated later.
+9. Fire Sprinkler Hub and Sprinkler RFQ Platform are separate products and must never be merged into one Control Room identity.
+10. Microapps Factory is idea-stage only until explicitly activated; its planned AI Company OS relationship does not make it an existing AI Company or active AI Company OS subsystem.
 
-## Owner decisions — 2026-09-12
+## Owner decisions
 
-The canonical classification source is `OWNER_RECONCILIATION_PROPOSAL_V1.md`, status `OWNER CONFIRMED / 2026-09-12`.
+Current authority is the combination of:
+
+- `OWNER_RECONCILIATION_PROPOSAL_V1.md` — OWNER CONFIRMED / 2026-09-12
+- `OWNER_RECONCILIATION_V2.md` — OWNER CONFIRMED / 2026-09-16
+
+Where they differ, the 2026-09-16 decision is newer and wins.
 
 ### CORE
 
@@ -56,7 +63,6 @@ The earlier `CORE max 3` rule is not a hard constraint for Control Room. The cur
 ### MAINTENANCE
 
 - Namorada
-- Tinku Latin Flavors
 - House of Flores
 - Sprinkler Water Tank — site delivery / compliance, after closeout
 
@@ -67,12 +73,20 @@ The earlier `CORE max 3` rule is not a hard constraint for Control Room. The cur
 - Avoinna
 - Digiapu247
 
+### Active / portfolio class unconfirmed
+
+- Fire Sprinkler Hub
+
+### Idea stage / classification unconfirmed
+
+- Microapps Factory
+
 ### Historical / no longer current
 
 - Pertti
 - CityOS
 
-Preserve historical repositories, architecture documents and state history. Do not surface historical-only projects in Today or the active portfolio unless the Owner explicitly reactivates them.
+Tinku Latin Flavors was explicitly removed from Control Room on 2026-09-16 and is not retained as a current or historical Control Room project.
 
 ---
 
@@ -84,16 +98,17 @@ Preserve historical repositories, architecture documents and state history. Do n
 | `ai-company-os` | AI Company OS | internal_system | CORE | active | Company Factory remains canonical AI Company creation path |
 | `maistio` | Maistio | product | CORE | active | Restaurant-first Local Discovery Graph; later verticals stay out of launch scope |
 | `cala-europe` | Cala Europe | product | CORE | active | Europe-first beach discovery; core must not depend on paid content/data APIs |
-| `sprinkler-rfq-platform` | Sprinkler RFQ Platform | product | CORE | active | Keep separate from individual sprinkler installation/client jobs |
+| `sprinkler-rfq-platform` | Sprinkler RFQ Platform | product | CORE | active | Tank/RFQ operating domain; separate from Fire Sprinkler Hub |
 | `rail-atlas` | Rail Atlas / Junamatkailusivusto | product | CORE | active | Global train-travel discovery product |
 | `folio` | Folio | product | EXPERIMENT | active | Reality-engine / competitor-monitoring proof |
 | `calendar-platform` | Calendar Platform | platform | AUTOPILOT | active | Country sites stay inside the platform family by default |
 | `yritystiedot` | Yritystiedot | data_asset | AUTOPILOT | active | Shared Finnish company-data asset |
 | `nordic-bottle-index` | Nordic Bottle Index | product | AUTOPILOT | active | Cross-Nordic product matching/indexing |
 | `namorada` | Namorada | product | MAINTENANCE | active | Charter administration workflow |
-| `tinku-latin-flavors` | Tinku Latin Flavors | client_operation | MAINTENANCE | active | Client website/reservation presence |
 | `house-of-flores` | House of Flores | client_operation | MAINTENANCE | active | Client SEO/Timma presence and current website refinement |
 | `sprinkler-water-tank-site` | Sprinkler Water Tank — site delivery / compliance | client_operation | MAINTENANCE | unconfirmed | Class is Owner-confirmed; lifecycle stays unconfirmed until current site-delivery/closeout evidence proves active vs completed |
+| `fire-sprinkler-hub` | Fire Sprinkler Hub | product | UNCONFIRMED | active | Manufacturer-independent sprinkler search, selection, comparison and verification product |
+| `microapps-factory` | Microapps Factory | candidate | UNCONFIRMED | unconfirmed | Idea-stage factory planned to connect with AI Company OS later; not an active build yet |
 | `volaire` | Volaire | product | VAULT | paused | Airport-specific discovery / SEO / affiliate product |
 | `pelovio` | Pelovio | product | VAULT | paused | Country-manual/travel-guide product; distinct from Volaire |
 | `avoinna` | Avoinna | product | VAULT | paused | Finland-wide opening-hours discovery |
@@ -106,18 +121,24 @@ Preserve historical repositories, architecture documents and state history. Do n
 | `pertti` | Pertti | historical_only / retired_candidate |
 | `cityos` | CityOS | historical_only / retired_candidate |
 
-Older project files that say `Active` describe their state when those files were written; the 2026-09-12 Owner decision is the current authority.
+Older project files that say `Active` describe their state when those files were written; the latest explicit Owner decision is the current authority.
 
 ## Lifecycle interpretation used by runtime sync
 
-The Owner-confirmed document calls the table above the **current visible portfolio baseline** and explicitly separates `VAULT / paused`. Runtime sync therefore treats EXPERIMENT, AUTOPILOT and MAINTENANCE entries as active unless a more specific Owner/source decision says otherwise, and treats the four VAULT entries as paused.
+The Owner-confirmed baseline treats EXPERIMENT, AUTOPILOT and MAINTENANCE entries as active unless a more specific Owner/source decision says otherwise, and treats the four VAULT entries as paused.
 
-The exception is `sprinkler-water-tank-site`: its portfolio class is confirmed as MAINTENANCE, but the wording `after closeout` plus current site/compliance evidence does not safely prove whether closeout has occurred. Its lifecycle is intentionally left `unconfirmed` rather than guessed.
+The exception is `sprinkler-water-tank-site`: its portfolio class is confirmed as MAINTENANCE, but current site/compliance evidence does not safely prove whether closeout has occurred. Its lifecycle remains `unconfirmed` rather than guessed.
+
+`fire-sprinkler-hub` is active because a current repository, dedicated Supabase backend and published Lovable implementation are verified. Its portfolio class remains `UNCONFIRMED` until explicitly assigned.
+
+`microapps-factory` remains `unconfirmed` / inactive at the operating-state level because only the idea and intended AI Company OS relationship are currently confirmed.
 
 ## Known project connections
 
 - AI Company OS → `meterionops/ai-company-os`
-- Sprinkler RFQ Platform → `meterionops/fire-sprinkler-hub`
+- Sprinkler RFQ Platform → TankB2B Supabase `nekcogfryyhpmvumkrvt`
+- Fire Sprinkler Hub → `meterionops/fire-sprinkler-hub`, Supabase `imzdpkekrdzjiqqpqbmk`, Lovable `861026d9-38b8-4d3e-bb05-250fc4ab1080`
+- Microapps Factory → planned relationship to AI Company OS; no implementation source yet
 - Volaire → `meterionops/volairport`
 - Digiapu247 → `meterionops/digiapu247`
 - Calendar Platform repo family → `meterionops/paivasta-selva`, `meterionops/kalenderklart`, `meterionops/calendify-your-world`, `meterionops/kalenderpunkt`
