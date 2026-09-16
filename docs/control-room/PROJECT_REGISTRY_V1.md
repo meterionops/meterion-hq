@@ -30,6 +30,8 @@ Actual work remains in ChatGPT / Work, GitHub, Supabase, Lovable, production ser
 8. Pertti and CityOS are historical projects, not current portfolio projects, unless explicitly reactivated later.
 9. Fire Sprinkler Hub and Sprinkler RFQ Platform are separate products and must never be merged into one Control Room identity.
 10. Microapps Factory is idea-stage only until explicitly activated; its planned AI Company OS relationship does not make it an existing AI Company or active AI Company OS subsystem.
+11. Foreign Contractor Finland is idea-stage despite having a Sites prototype; the prototype must not be treated as proof of an active production product.
+12. Published status for Korvauskirje and Lomakone establishes an active product lifecycle but does not assign a portfolio class.
 
 ## Owner decisions
 
@@ -37,8 +39,9 @@ Current authority is the combination of:
 
 - `OWNER_RECONCILIATION_PROPOSAL_V1.md` — OWNER CONFIRMED / 2026-09-12
 - `OWNER_RECONCILIATION_V2.md` — OWNER CONFIRMED / 2026-09-16
+- `OWNER_RECONCILIATION_V3.md` — OWNER CONFIRMED / 2026-09-16
 
-Where they differ, the 2026-09-16 decision is newer and wins.
+Where they differ, the newer explicit decision wins.
 
 ### CORE
 
@@ -76,10 +79,13 @@ The earlier `CORE max 3` rule is not a hard constraint for Control Room. The cur
 ### Active / portfolio class unconfirmed
 
 - Fire Sprinkler Hub
+- Korvauskirje
+- Lomakone
 
 ### Idea stage / classification unconfirmed
 
 - Microapps Factory
+- Foreign Contractor Finland
 
 ### Historical / no longer current
 
@@ -108,7 +114,10 @@ Tinku Latin Flavors was explicitly removed from Control Room on 2026-09-16 and i
 | `house-of-flores` | House of Flores | client_operation | MAINTENANCE | active | Client SEO/Timma presence and current website refinement |
 | `sprinkler-water-tank-site` | Sprinkler Water Tank — site delivery / compliance | client_operation | MAINTENANCE | unconfirmed | Class is Owner-confirmed; lifecycle stays unconfirmed until current site-delivery/closeout evidence proves active vs completed |
 | `fire-sprinkler-hub` | Fire Sprinkler Hub | product | UNCONFIRMED | active | Manufacturer-independent sprinkler search, selection, comparison and verification product |
+| `korvauskirje` | Korvauskirje | product | UNCONFIRMED | active | Published flight-compensation claim-letter product; portfolio class not yet assigned |
+| `lomakone` | Lomakone | product | UNCONFIRMED | active | Published travel-planning and destination-discovery product; portfolio class not yet assigned |
 | `microapps-factory` | Microapps Factory | candidate | UNCONFIRMED | unconfirmed | Idea-stage factory planned to connect with AI Company OS later; not an active build yet |
+| `foreign-contractor-finland` | Foreign Contractor Finland | candidate | UNCONFIRMED | unconfirmed | Idea-stage project with an existing ChatGPT Sites prototype; not an active build yet |
 | `volaire` | Volaire | product | VAULT | paused | Airport-specific discovery / SEO / affiliate product |
 | `pelovio` | Pelovio | product | VAULT | paused | Country-manual/travel-guide product; distinct from Volaire |
 | `avoinna` | Avoinna | product | VAULT | paused | Finland-wide opening-hours discovery |
@@ -131,7 +140,9 @@ The exception is `sprinkler-water-tank-site`: its portfolio class is confirmed a
 
 `fire-sprinkler-hub` is active because a current repository, dedicated Supabase backend and published Lovable implementation are verified. Its portfolio class remains `UNCONFIRMED` until explicitly assigned.
 
-`microapps-factory` remains `unconfirmed` / inactive at the operating-state level because only the idea and intended AI Company OS relationship are currently confirmed.
+`korvauskirje` and `lomakone` are active because current public Lovable publications were verified. Their portfolio classes remain `UNCONFIRMED` until explicitly assigned.
+
+`microapps-factory` and `foreign-contractor-finland` remain `unconfirmed` / inactive at the operating-state level because they are explicitly idea-stage projects. A prototype does not automatically activate a project.
 
 ## Known project connections
 
@@ -139,6 +150,9 @@ The exception is `sprinkler-water-tank-site`: its portfolio class is confirmed a
 - Sprinkler RFQ Platform → TankB2B Supabase `nekcogfryyhpmvumkrvt`
 - Fire Sprinkler Hub → `meterionops/fire-sprinkler-hub`, Supabase `imzdpkekrdzjiqqpqbmk`, Lovable `861026d9-38b8-4d3e-bb05-250fc4ab1080`
 - Microapps Factory → planned relationship to AI Company OS; no implementation source yet
+- Foreign Contractor Finland → ChatGPT Sites prototype; exact prototype URL not yet connected to Control Room
+- Korvauskirje → Supabase `tylxmwmqfrbfthrsnpwy`, Lovable `8234be17-972b-47db-a2a3-a0f686c6cee5`, `korvauskirje.fi`
+- Lomakone → `meterionops/Lomakone`, Lovable `7e6a2022-a993-40d8-b5de-b8507f6346e8`, `lomakone.com`
 - Volaire → `meterionops/volairport`
 - Digiapu247 → `meterionops/digiapu247`
 - Calendar Platform repo family → `meterionops/paivasta-selva`, `meterionops/kalenderklart`, `meterionops/calendify-your-world`, `meterionops/kalenderpunkt`
