@@ -1,6 +1,6 @@
 # Meterion Control Room — Resume Anywhere v1
 
-Status: IMPLEMENTED READ MODEL
+Status: IMPLEMENTED READ MODEL / v1.1
 Date: 2026-09-16
 
 ## Purpose
@@ -13,7 +13,7 @@ The packet answers, in one bounded read:
 - what is the current operating phase and focus?
 - what materially happened most recently?
 - what should happen next?
-- may AI continue, should it verify a dependency, or must it stop for the Owner?
+- may AI continue, should it verify a dependency, wait for an explicit work request, or stop for the Owner?
 - how fresh is the state?
 - which source system should be opened next if deeper truth is required?
 
@@ -42,13 +42,17 @@ The project is active and the current state says AI may continue. Start from `pr
 
 The current state is `waiting`. Check the named dependency/source before continuing. Do not turn waiting into Founder attention unless the dependency actually requires Founder authority.
 
+### `idle_until_requested`
+
+The project lifecycle is active, but `autonomy_state=inactive`. This is common for quiet MAINTENANCE work: the project still exists in the active portfolio, but AI should not create background work merely because it is technically possible. An explicit Owner work request may resume the project from its recorded state.
+
 ### `stop_for_owner`
 
 The state requires Founder attention or `autonomy_state=owner_needed`. Respect `founder_gate` and `founder_attention_reason`; do not route around the gate.
 
 ### `do_not_resume_without_reactivation`
 
-The project is inactive, paused, completed or archived. Preserve state and source pointers, but do not restart work merely because a new chat mentioned the project.
+The project lifecycle is paused, completed or archived. Preserve state and source pointers, but do not restart work merely because a new chat mentioned the project. Reactivation is an Owner lifecycle decision.
 
 ## Deep-fetch rule
 
