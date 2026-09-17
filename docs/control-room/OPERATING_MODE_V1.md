@@ -20,9 +20,13 @@ The Projects surface prioritizes this distinction because published/live operati
 
 ## UI rule
 
-Active `operate` projects render in a dedicated **PUBLISHED / OPERATING** section and keep their portfolio-class badge.
+Projects uses work-mode tabs so published products do not compete with active construction work for attention:
 
-Active `build` projects remain grouped by portfolio class and are explicitly marked `BUILD`.
+- **Build** is the default tab and contains active `build` projects, grouped by portfolio class.
+- **Published** contains active `operate` projects and keeps each project's portfolio-class badge.
+- **Other** contains idea-stage, delivery and other unconfirmed work-mode states that should remain visible without crowding Build.
+
+The selected tab is preserved while opening a project detail and returning to Projects during the same session.
 
 Idea-stage projects remain quiet until explicitly activated. Delivery work stays distinct from software build work. Paused projects stay out of normal active views.
 
