@@ -78,7 +78,7 @@ function enhanceReiskaAssistantHtml(html: string): string {
     "function navButtons(){return ['today','projects','ai','system'].map(v=>'<button data-view=\\\"'+v+'\\\" class=\\\"'+(v===currentView?'active':'')+'\\\">'+({today:'Tänään',projects:'Projektit',ai:'Keskustele',system:'Asetukset'}[v])+'</button>').join('')}\\nfunction updateNav"
   );
 
-  const helpers = String.raw\`
+  const helpers = String.raw`
 const REISKA_PILOTS=new Set(['rail-atlas','maistio']);
 const REISKA_SNOOZE_KEY='reiska-snooze-v02';
 function reiskaSnoozes(){try{return JSON.parse(localStorage.getItem(REISKA_SNOOZE_KEY)||'{}')}catch{return {}}}
@@ -147,7 +147,7 @@ async function answerQuick(kind){
 async function answerProject(){const key=document.getElementById('assistant-project')?.value;if(!key)return;const p=await getAssistantProject(key);if(!p)return;reiskaAnswer(p.name,(p.next_best_action||'Tarkista nykytila')+' '+reiskaWhy(p))}
 \`;
 
-  const renderToday = String.raw\`async function renderToday(){
+  const renderToday = String.raw`async function renderToday(){
     const rows=await assistantRows();
     const active=rows.filter(p=>!isReiskaSnoozed(p.project_key));
     const attention=active.filter(p=>p.founder_attention_required||p.blocked||p.gate_status==='blocked');
@@ -167,7 +167,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     helpers + "\\n" + renderToday + "\\nasync function renderProjects"
   );
 
-  const renderProjectDetail = String.raw\`async function renderProjectDetail(key){
+  const renderProjectDetail = String.raw`async function renderProjectDetail(key){
     const state=first(await read('get_project_state',{project_key:key}));const cached=projectsCache.find(p=>p.project_key===key);currentView='projects';updateNav();if(!state)return;
     const merged={...cached,...state,project_key:key};
     const source=cached?.primary_connection_url?'<a class="source-link" target="_blank" rel="noreferrer" href="'+esc(cached.primary_connection_url)+'">Avaa lähde ↗</a>':esc(state.source_ref||'Lähdelinkkiä ei ole');
@@ -184,7 +184,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     renderProjectDetail + "\\nasync function renderAi"
   );
 
-  const renderAssistant = String.raw\`async function renderAi(){
+  const renderAssistant = String.raw`async function renderAi(){
     const rows=await assistantRows();const options=rows.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>'<option value="'+esc(p.project_key)+'">'+esc(p.name)+'</option>').join('');
     document.getElementById('main').innerHTML='<div class="view-head"><div><div class="eyebrow">Keskustele</div><h1>Kysy Reiskalta projekteistasi</h1><p class="intro">Tämä näkymä vastaa Control Roomin projektitilasta. Se ei käynnistä työtä tai hyväksy päätöksiä.</p></div></div>'+
     '<section class="assistant-panel"><h2>Mitä haluat tietää?</h2><div class="quick-grid"><button data-ask="focus">Mihin keskityn nyt?</button><button data-ask="needs">Mikä tarvitsee minua?</button><button data-ask="prepare">Mitä voit valmistella?</button><button data-ask="changed">Mikä on muuttunut?</button></div><div id="assistant-answer" class="assistant-answer"><h3>Reiska on valmis.</h3><p>Valitse kysymys tai projekti. Vastaukset perustuvat tallennettuun projektitilaan, eivät vapaaseen arvaukseen.</p></div></section>'+
