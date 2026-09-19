@@ -11,6 +11,7 @@ type Action =
   | "get_state_reconciliation"
   | "get_resume_packet"
   | "update_project_state"
+  | "complete_work_batch"
   | "append_project_event";
 
 const PROJECT_KEY_RE = /^[a-z0-9][a-z0-9-]*$/;
@@ -54,13 +55,23 @@ function classifyRpcError(message: string): { status: number; code: string } {
   if (message.includes("project_not_found")) {
     return { status: 404, code: "project_not_found" };
   }
+  if (message.includes("work_batch_in_progress")) {
+    return { status: 409, code: "work_batch_in_progress" };
+  }
   if (
     message.includes("violates check constraint") ||
     message.includes("invalid input syntax") ||
     message.includes("event_summary_required") ||
     message.includes("event_object_required") ||
     message.includes("state_object_required") ||
-    message.includes("control_arrays_required")
+    message.includes("state_patch_object_required") ||
+    message.includes("control_arrays_required") ||
+    message.includes("jev_result_object_required") ||
+    message.includes("jev_decision_required") ||
+    message.includes("invalid_jev_confidence") ||
+    message.includes("invalid_batch_key") ||
+    message.includes("invalid_expected_version") ||
+    message.includes("event_metadata_object_required")
   ) {
     return { status: 400, code: "invalid_payload" };
   }
@@ -131,6 +142,7 @@ export default {
       "get_state_reconciliation",
       "get_resume_packet",
       "update_project_state",
+      "complete_work_batch",
       "append_project_event",
     ];
 
@@ -242,10 +254,62 @@ export default {
             });
           }
 
-          result = await admin.rpc("control_room_append_project_state_v2", {
+          result = await admin.rpc("control_room_patch_project_state_v1", {
             p_project_key: projectKey,
             p_expected_version: expectedVersion,
-            p_state: body.state,
+            p_state_patch: body.state,
+          });
+          break;
+        }
+
+        case "complete_work_batch": {
+          const projectKey = requireProjectKey(body.project_key);
+          const expectedVersion = body.expected_version;
+          const batchKey = body.batch_key;
+
+          if (!Number.isInteger(expectedVersion) || (expectedVersion as number) < 0) {
+            return json(400, {
+              ok: false,
+              code: "invalid_expected_version",
+              request_id: requestId,
+            });
+          }
+          if (typeof batchKey !== "string" || batchKey.trim().length === 0 || batchKey.length > 200) {
+            return json(400, {
+              ok: false,
+              code: "invalid_batch_key",
+              request_id: requestId,
+            });
+          }
+          if (!isObject(body.state_patch)) {
+            return json(400, {
+              ok: false,
+              code: "state_patch_object_required",
+              request_id: requestId,
+            });
+          }
+          if (!isObject(body.event) || typeof body.event.summary !== "string" || body.event.summary.trim().length === 0) {
+            return json(400, {
+              ok: false,
+              code: "event_summary_required",
+              request_id: requestId,
+            });
+          }
+          if (body.jev_result !== undefined && body.jev_result !== null && !isObject(body.jev_result)) {
+            return json(400, {
+              ok: false,
+              code: "jev_result_object_required",
+              request_id: requestId,
+            });
+          }
+
+          result = await admin.rpc("control_room_complete_work_batch_v1", {
+            p_project_key: projectKey,
+            p_expected_version: expectedVersion,
+            p_batch_key: batchKey,
+            p_state_patch: body.state_patch,
+            p_event: body.event,
+            p_jev_result: body.jev_result ?? null,
           });
           break;
         }
