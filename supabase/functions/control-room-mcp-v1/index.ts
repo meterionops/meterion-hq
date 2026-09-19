@@ -27,7 +27,8 @@ function toolResult(data: unknown) { return { content: [{ type: "text" as const,
 function toolError(code: string, message: string) { return { isError: true, content: [{ type: "text" as const, text: JSON.stringify({ ok: false, code, message }) }] }; }
 function mapRpcError(message: string): { code: string; message: string } {
   if (message.includes("state_version_conflict")) return { code: "state_version_conflict", message: "Project state changed after it was read. Re-read current state and reconcile before writing." };
-  if (message.includes("project_not_found")) return { code: "project_not_found", message: "Unknown Control Room project." };\n  if (message.includes("work_batch_in_progress")) return { code: "work_batch_in_progress", message: "This work batch is already being committed. Retry with the same batch key." };
+  if (message.includes("project_not_found")) return { code: "project_not_found", message: "Unknown Control Room project." };
+  if (message.includes("work_batch_in_progress")) return { code: "work_batch_in_progress", message: "This work batch is already being committed. Retry with the same batch key." };
   if (message.includes("state_object_required") || message.includes("state_patch_object_required") || message.includes("event_object_required") || message.includes("event_summary_required") || message.includes("event_metadata_object_required") || message.includes("control_arrays_required") || message.includes("jev_result_object_required") || message.includes("jev_decision_required") || message.includes("invalid_jev_confidence") || message.includes("invalid_batch_key") || message.includes("invalid_expected_version") || message.includes("violates check constraint") || message.includes("invalid input syntax")) return { code: "invalid_payload", message: "The proposed Control Room update is invalid." };
   return { code: "control_room_rpc_error", message: "Control Room could not complete the operation." };
 }
