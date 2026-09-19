@@ -120,18 +120,40 @@ function makeWorkPacket(p){
     'Käytä nykyisiä lähdejärjestelmiä. Älä avaa strategiaa uudelleen ilman uutta näyttöä. Lopuksi päivitä vain todennettu materiaalinen muutos Control Roomiin.'
   ].join('\\n');
 }
+function makeResearchPacket(p){
+  return ['Tutki projektia '+p.name+' varten vain sellaista ulkoista tietoa, joka voi muuttaa nykyistä päätöstä tai seuraavaa työvaihetta.',
+    'Projektin tavoite: '+(p.goal||'tarkista Project Control File'),
+    'Nykyinen työ: '+(p.current_build||p.current_focus||'tarkista nykytila'),
+    'Seuraava portti: '+(p.next_gate||'ei kirjattu'),
+    'Nykyinen suositus: '+(p.next_best_action||'ei kirjattu'),
+    'Tutkimussääntö: nimeä ennen hakua, mitä projektipäätöstä tieto voi muuttaa. Rajaa haku olennaisiin lähteisiin. Älä luo uutta projektia tai muuta prioriteettia löydöksen perusteella.',
+    'Lopputulos: 1) mitä havaittiin, 2) vaikuttaako se nykyiseen suunnitelmaan, 3) suositellaanko pientä testiä vai ei toimenpiteitä, 4) lähteet ja niiden ajankohta.'
+  ].join('\\n');
+}
 async function prepareWork(key){
   const p=await getAssistantProject(key);if(!p)return toast('Projektia ei löytynyt');
   const packet=makeWorkPacket(p);
   const old=document.getElementById('task-packet-panel');if(old)old.remove();
-  const panel=document.createElement('section');panel.id='task-packet-panel';panel.className='assistant-panel';panel.innerHTML='<div class="eyebrow">Valmis toimeksianto</div><h2>'+esc(p.name)+'</h2><p class="reiska-note">Reiska valmisteli rajatun työpaketin. Sen kopioiminen ei käynnistä toteutusta.</p><div class="task-packet">'+esc(packet)+'</div><div class="reiska-actions"><button class="primary-action" id="copy-packet">Kopioi ChatGPT:lle</button><button id="close-packet">Sulje</button></div>';
+  const panel=document.createElement('section');panel.id='task-packet-panel';panel.className='assistant-panel';panel.innerHTML='<div class="eyebrow">Valmis toimeksianto</div><h2>'+esc(p.name)+'</h2><p class="reiska-note">Reiska valmisteli rajatun työpaketin. Sen kopioiminen tai jakaminen ei käynnistä toteutusta.</p><div class="task-packet">'+esc(packet)+'</div><div class="reiska-actions"><button class="primary-action" id="copy-packet">Kopioi ChatGPT:lle</button><button id="share-packet">Jaa…</button><button id="close-packet">Sulje</button></div>';
   document.getElementById('main').appendChild(panel);panel.scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('copy-packet').onclick=async()=>{try{await navigator.clipboard.writeText(packet);toast('Työpaketti kopioitu')}catch{toast('Kopiointi ei onnistunut — valitse teksti käsin')}};
+  const share=document.getElementById('share-packet');if(!navigator.share)share.hidden=true;else share.onclick=async()=>{try{await navigator.share({title:'Reiska — '+p.name,text:packet})}catch{}};
+  document.getElementById('close-packet').onclick=()=>panel.remove();
+}
+async function prepareResearch(key){
+  const p=await getAssistantProject(key);if(!p)return toast('Projektia ei löytynyt');
+  const packet=makeResearchPacket(p);
+  const old=document.getElementById('task-packet-panel');if(old)old.remove();
+  const panel=document.createElement('section');panel.id='task-packet-panel';panel.className='assistant-panel';panel.innerHTML='<div class="eyebrow">Rajattu tutkimuspaketti</div><h2>'+esc(p.name)+'</h2><p class="reiska-note">Tutkimus on sidottu projektin nykyiseen päätökseen tai työvaiheeseen. Paketin luominen ei käynnistä verkkohakua.</p><div class="task-packet">'+esc(packet)+'</div><div class="reiska-actions"><button class="primary-action" id="copy-research">Kopioi ChatGPT:lle</button><button id="share-research">Jaa…</button><button id="close-packet">Sulje</button></div>';
+  document.getElementById('main').appendChild(panel);panel.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('copy-research').onclick=async()=>{try{await navigator.clipboard.writeText(packet);toast('Tutkimuspaketti kopioitu')}catch{toast('Kopiointi ei onnistunut — valitse teksti käsin')}};
+  const share=document.getElementById('share-research');if(!navigator.share)share.hidden=true;else share.onclick=async()=>{try{await navigator.share({title:'Reiska tutkimus — '+p.name,text:packet})}catch{}};
   document.getElementById('close-packet').onclick=()=>panel.remove();
 }
 function wireReiskaActions(){
   document.querySelectorAll('[data-project]').forEach(b=>b.onclick=()=>renderProjectDetail(b.dataset.project));
   document.querySelectorAll('[data-prepare]').forEach(b=>b.onclick=()=>prepareWork(b.dataset.prepare));
+  document.querySelectorAll('[data-research]').forEach(b=>b.onclick=()=>prepareResearch(b.dataset.research));
   document.querySelectorAll('[data-snooze]').forEach(b=>b.onclick=()=>snoozeReiska(b.dataset.snooze));
 }
 async function assistantRows(){const rows=arr(await read('get_projects'));projectsCache=rows;return rows.filter(p=>p.lifecycle_status==='active')}
@@ -172,7 +194,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     const merged={...cached,...state,project_key:key};
     const source=cached?.primary_connection_url?'<a class="source-link" target="_blank" rel="noreferrer" href="'+esc(cached.primary_connection_url)+'">Avaa lähde ↗</a>':esc(state.source_ref||'Lähdelinkkiä ei ole');
     const controlLink=state.project_control_file_url?'<a class="control-link" target="_blank" rel="noreferrer" href="'+esc(state.project_control_file_url)+'">Avaa Project Control File ↗</a>':'Ei linkitetty';
-    const assistant='<section class="project-assistant-block"><div class="eyebrow">Reiskan suositus</div><h2>'+esc(state.next_best_action||'Tarkista projektin nykytila')+'</h2><div class="why">'+esc(reiskaWhy(merged))+'</div><div class="reiska-actions"><button class="primary-action" data-prepare="'+esc(key)+'">Valmistele työ</button><button class="quiet" data-snooze="'+esc(key)+'">Ei nyt</button></div></section>';
+    const assistant='<section class="project-assistant-block"><div class="eyebrow">Reiskan suositus</div><h2>'+esc(state.next_best_action||'Tarkista projektin nykytila')+'</h2><div class="why">'+esc(reiskaWhy(merged))+'</div><div class="reiska-actions"><button class="primary-action" data-prepare="'+esc(key)+'">Valmistele työ</button><button data-research="'+esc(key)+'">Valmistele tutkimus</button><button class="quiet" data-snooze="'+esc(key)+'">Ei nyt</button></div></section>';
     const jev=state.last_jev_decision?(state.last_jev_decision+(state.last_jev_confidence!=null?' · '+Math.round(Number(state.last_jev_confidence)*100)+'%':'')):'Ei kirjattua Jev-päätöstä';
     const stopGates=arr(state.stop_gates).join(' · ')||'Ei kirjattuja';
     const control='<details class="control-block"><summary><strong>Tekniset ja ohjaustiedot</strong> · '+esc(state.state_freshness||'unknown')+'</summary><dl class="control-grid" style="margin-top:14px"><dt>Nykyinen työ</dt><dd>'+esc(state.current_build||state.current_focus||'—')+'</dd><dt>Valmistumiskriteeri</dt><dd>'+esc(state.definition_of_done||'—')+'</dd><dt>Seuraava portti</dt><dd>'+esc(state.next_gate||'—')+'</dd><dt>Stop-gatet</dt><dd>'+esc(stopGates)+'</dd><dt>Jev</dt><dd>'+esc(jev)+'</dd><dt>Control file</dt><dd>'+controlLink+'</dd><dt>Lähde</dt><dd>'+source+'</dd></dl></details>';
@@ -188,11 +210,12 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     const rows=await assistantRows();const options=rows.sort((a,b)=>a.name.localeCompare(b.name)).map(p=>'<option value="'+esc(p.project_key)+'">'+esc(p.name)+'</option>').join('');
     document.getElementById('main').innerHTML='<div class="view-head"><div><div class="eyebrow">Keskustele</div><h1>Kysy Reiskalta projekteistasi</h1><p class="intro">Tämä näkymä vastaa Control Roomin projektitilasta. Se ei käynnistä työtä tai hyväksy päätöksiä.</p></div></div>'+
     '<section class="assistant-panel"><h2>Mitä haluat tietää?</h2><div class="quick-grid"><button data-ask="focus">Mihin keskityn nyt?</button><button data-ask="needs">Mikä tarvitsee minua?</button><button data-ask="prepare">Mitä voit valmistella?</button><button data-ask="changed">Mikä on muuttunut?</button></div><div id="assistant-answer" class="assistant-answer"><h3>Reiska on valmis.</h3><p>Valitse kysymys tai projekti. Vastaukset perustuvat tallennettuun projektitilaan, eivät vapaaseen arvaukseen.</p></div></section>'+
-    '<section class="assistant-panel"><h2>Kysy yhdestä projektista</h2><label for="assistant-project">Projekti</label><select id="assistant-project" class="assistant-project-select">'+options+'</select><div class="reiska-actions"><button class="primary-action" id="ask-project">Mitä seuraavaksi?</button><button id="prepare-project">Valmistele työ</button></div></section>'+
+    '<section class="assistant-panel"><h2>Kysy yhdestä projektista</h2><label for="assistant-project">Projekti</label><select id="assistant-project" class="assistant-project-select">'+options+'</select><div class="reiska-actions"><button class="primary-action" id="ask-project">Mitä seuraavaksi?</button><button id="prepare-project">Valmistele työ</button><button id="research-project">Valmistele tutkimus</button></div></section>'+
     '<section class="assistant-panel"><div class="eyebrow">Tutkiminen</div><h2>Rajattu projektien ympärille</h2><div class="policy-row"><span class="policy-dot"></span><div><strong>Vain aktiivisiin projekteihin liittyvä</strong><p class="reiska-note">Ulkoinen tutkimus otetaan käyttöön vain, kun kysymys voi muuttaa projektin seuraavaa päätöstä tai työvaihetta. Automaattinen web-tutkimus ei vielä käynnisty tästä näkymästä.</p></div></div><div class="policy-row"><span class="policy-dot"></span><div><strong>Ei uusia projekteja tutkimuksen sivutuotteena</strong><p class="reiska-note">Löydös voi synnyttää pienen kokeiluehdotuksen, ei automaattista prioriteetin muutosta.</p></div></div></section>';
     document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>answerQuick(b.dataset.ask));
     document.getElementById('ask-project').onclick=answerProject;
-    document.getElementById('prepare-project').onclick=()=>prepareWork(document.getElementById('assistant-project').value)
+    document.getElementById('prepare-project').onclick=()=>prepareWork(document.getElementById('assistant-project').value);
+    document.getElementById('research-project').onclick=()=>prepareResearch(document.getElementById('assistant-project').value)
   }`;
   out = out.replace(
     /async function renderAi\(\)\{[\s\S]*?\}\nasync function renderSystem/,
