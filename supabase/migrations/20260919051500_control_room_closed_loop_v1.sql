@@ -30,7 +30,7 @@ returns jsonb
 language plpgsql
 security definer
 set search_path = public, pg_temp
-as $
+as $patch$
 declare
   v_project_id uuid;
   v_current_state jsonb;
@@ -60,7 +60,7 @@ begin
     v_merged_state
   );
 end;
-$;
+$patch$;
 
 create or replace function public.control_room_complete_work_batch_v1(
   p_project_key text,
