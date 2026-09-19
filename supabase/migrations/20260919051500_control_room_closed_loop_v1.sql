@@ -21,6 +21,47 @@ alter table public.control_room_work_batches enable row level security;
 
 revoke all on table public.control_room_work_batches from anon, authenticated;
 
+create or replace function public.control_room_patch_project_state_v1(
+  p_project_key text,
+  p_expected_version integer,
+  p_state_patch jsonb
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $
+declare
+  v_project_id uuid;
+  v_current_state jsonb;
+  v_merged_state jsonb;
+begin
+  if p_state_patch is null or jsonb_typeof(p_state_patch) <> 'object' then
+    raise exception 'state_patch_object_required' using errcode = 'P0001';
+  end if;
+
+  select id into v_project_id
+  from public.control_room_projects
+  where project_key = p_project_key;
+
+  if v_project_id is null then
+    raise exception 'project_not_found:%', p_project_key using errcode = 'P0001';
+  end if;
+
+  select to_jsonb(s) into v_current_state
+  from public.control_room_project_current_v2 s
+  where s.project_id = v_project_id;
+
+  v_merged_state := coalesce(v_current_state, '{}'::jsonb) || p_state_patch;
+
+  return public.control_room_append_project_state_v2(
+    p_project_key,
+    p_expected_version,
+    v_merged_state
+  );
+end;
+$;
+
 create or replace function public.control_room_complete_work_batch_v1(
   p_project_key text,
   p_expected_version integer,
@@ -136,7 +177,7 @@ begin
     );
   end if;
 
-  v_state := public.control_room_append_project_state_v2(
+  v_state := public.control_room_patch_project_state_v1(
     p_project_key,
     p_expected_version,
     v_merged_state
@@ -184,9 +225,13 @@ begin
 end;
 $$;
 
+revoke all on function public.control_room_patch_project_state_v1(text,integer,jsonb)
+  from public, anon, authenticated;
 revoke all on function public.control_room_complete_work_batch_v1(text,integer,text,jsonb,jsonb,jsonb)
   from public, anon, authenticated;
 
+grant execute on function public.control_room_patch_project_state_v1(text,integer,jsonb)
+  to service_role;
 grant execute on function public.control_room_complete_work_batch_v1(text,integer,text,jsonb,jsonb,jsonb)
   to service_role;
 
