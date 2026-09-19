@@ -9,6 +9,7 @@ type Action =
   | "get_today"
   | "get_owner_attention"
   | "get_state_reconciliation"
+  | "get_resume_packet"
   | "update_project_state"
   | "append_project_event";
 
@@ -58,7 +59,8 @@ function classifyRpcError(message: string): { status: number; code: string } {
     message.includes("invalid input syntax") ||
     message.includes("event_summary_required") ||
     message.includes("event_object_required") ||
-    message.includes("state_object_required")
+    message.includes("state_object_required") ||
+    message.includes("control_arrays_required")
   ) {
     return { status: 400, code: "invalid_payload" };
   }
@@ -127,6 +129,7 @@ export default {
       "get_today",
       "get_owner_attention",
       "get_state_reconciliation",
+      "get_resume_packet",
       "update_project_state",
       "append_project_event",
     ];
@@ -146,7 +149,7 @@ export default {
       switch (action as Action) {
         case "get_project_state": {
           const projectKey = requireProjectKey(body.project_key);
-          result = await admin.rpc("control_room_get_project_state_v2", {
+          result = await admin.rpc("control_room_get_project_state_v3", {
             p_project_key: projectKey,
           });
           break;
@@ -169,7 +172,7 @@ export default {
             });
           }
 
-          result = await admin.rpc("control_room_get_projects_surface_v2", {
+          result = await admin.rpc("control_room_get_projects_surface_v3", {
             p_projects_section: projectsSection,
             p_portfolio_class: portfolioClass,
             p_state_freshness: stateFreshness,
@@ -213,6 +216,14 @@ export default {
           break;
         }
 
+        case "get_resume_packet": {
+          const projectKey = requireProjectKey(body.project_key);
+          result = await admin.rpc("control_room_get_resume_packet_v2", {
+            p_project_key: projectKey,
+          });
+          break;
+        }
+
         case "update_project_state": {
           const projectKey = requireProjectKey(body.project_key);
           const expectedVersion = body.expected_version;
@@ -231,7 +242,7 @@ export default {
             });
           }
 
-          result = await admin.rpc("control_room_append_project_state_v1", {
+          result = await admin.rpc("control_room_append_project_state_v2", {
             p_project_key: projectKey,
             p_expected_version: expectedVersion,
             p_state: body.state,
