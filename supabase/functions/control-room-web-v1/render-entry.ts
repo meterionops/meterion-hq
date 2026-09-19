@@ -145,7 +145,7 @@ async function answerQuick(kind){
   if(kind==='changed'){const changed=active.filter(p=>p.recent_material_change||p.latest_event_summary).slice(0,3);return reiskaAnswer('Viimeisimmät olennaiset muutokset',changed.length?changed.map(p=>p.name+': '+(p.latest_event_summary||p.last_material_result||'tila muuttui')).join(' · '):'Control Roomissa ei ole nyt uutta materiaalista muutosta nostettavaksi.')}
 }
 async function answerProject(){const key=document.getElementById('assistant-project')?.value;if(!key)return;const p=await getAssistantProject(key);if(!p)return;reiskaAnswer(p.name,(p.next_best_action||'Tarkista nykytila')+' '+reiskaWhy(p))}
-\`;
+`;
 
   const renderToday = String.raw`async function renderToday(){
     const rows=await assistantRows();
@@ -160,7 +160,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     else html+='<div class="reiska-empty"><strong>Mitään olennaista ei tarvitse nostaa juuri nyt.</strong><p>Reiska ei keksi tekemistä vain näyttääkseen aktiiviselta.</p></div>';
     html+='<p class="reiska-note" style="margin-top:18px">Pilottiprojektit: Rail Atlas ja Maistio. Kaikki projektit näkyvät Projektit-näkymässä. “Ei nyt” piilottaa ehdotuksen tältä laitteelta 24 tunniksi.</p>';
     document.getElementById('main').innerHTML=html;wireReiskaActions()
-  }\`;
+  }`;
 
   out = out.replace(
     /async function renderToday\(\)\{[\s\S]*?\}\nasync function renderProjects/,
@@ -178,7 +178,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     const control='<details class="control-block"><summary><strong>Tekniset ja ohjaustiedot</strong> · '+esc(state.state_freshness||'unknown')+'</summary><dl class="control-grid" style="margin-top:14px"><dt>Nykyinen työ</dt><dd>'+esc(state.current_build||state.current_focus||'—')+'</dd><dt>Valmistumiskriteeri</dt><dd>'+esc(state.definition_of_done||'—')+'</dd><dt>Seuraava portti</dt><dd>'+esc(state.next_gate||'—')+'</dd><dt>Stop-gatet</dt><dd>'+esc(stopGates)+'</dd><dt>Jev</dt><dd>'+esc(jev)+'</dd><dt>Control file</dt><dd>'+controlLink+'</dd><dt>Lähde</dt><dd>'+source+'</dd></dl></details>';
     document.getElementById('main').innerHTML='<button class="open back" id="back">← Projektit</button><div class="view-head"><div><div class="eyebrow">'+esc(state.portfolio_class||state.lifecycle_status||'Projekti')+'</div><h1>'+esc(state.name)+'</h1><p class="intro">'+esc(state.current_focus||state.goal||'')+'</p></div></div>'+assistant+'<section class="section"><div class="section-head"><h2>Tilanne</h2><span class="kicker">tarkistettu '+esc(fmtTime(state.verified_at))+'</span></div><div class="row"><h3>Viimeisin olennainen tulos</h3><p>'+esc(state.last_material_result||state.latest_event_summary||'Ei kirjattua materiaalista muutosta.')+'</p></div><div class="row"><h3>Seuraava portti</h3><p>'+esc(state.next_gate||'Ei erillistä porttia kirjattu.')+'</p></div></section>'+control;
     document.getElementById('back').onclick=()=>go('projects');wireReiskaActions()
-  }\`;
+  }`;
   out = out.replace(
     /async function renderProjectDetail\(key\)\{[\s\S]*?\}\nasync function renderAi/,
     renderProjectDetail + "\\nasync function renderAi"
@@ -193,7 +193,7 @@ async function answerProject(){const key=document.getElementById('assistant-proj
     document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>answerQuick(b.dataset.ask));
     document.getElementById('ask-project').onclick=answerProject;
     document.getElementById('prepare-project').onclick=()=>prepareWork(document.getElementById('assistant-project').value)
-  }\`;
+  }`;
   out = out.replace(
     /async function renderAi\(\)\{[\s\S]*?\}\nasync function renderSystem/,
     renderAssistant + "\\nasync function renderSystem"
