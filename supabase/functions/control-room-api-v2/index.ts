@@ -52,7 +52,12 @@ function classifyRpcError(message: string): { status: number; code: string } {
   if (message.includes("state_version_conflict")) {
     return { status: 409, code: "state_version_conflict" };
   }
-  if (message.includes("project_not_found")) {\n    return { status: 404, code: "project_not_found" };\n  }\n  if (message.includes("work_batch_in_progress")) {\n    return { status: 409, code: "work_batch_in_progress" };\n  }
+  if (message.includes("project_not_found")) {
+    return { status: 404, code: "project_not_found" };
+  }
+  if (message.includes("work_batch_in_progress")) {
+    return { status: 409, code: "work_batch_in_progress" };
+  }
   if (
     message.includes("violates check constraint") ||
     message.includes("invalid input syntax") ||
