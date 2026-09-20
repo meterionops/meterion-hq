@@ -1,7 +1,7 @@
 # Reiska Project Assistant v0.2
 
-Status: deployed internal pilot
-Date: 2026-09-19
+Status: rolled back after browser runtime regression
+Date: 2026-09-20
 
 ## Purpose
 
@@ -74,3 +74,8 @@ In v0.2 the UI prepares a research packet. It does not start autonomous web rese
 No new email, payment, external commitment, production-write or credential authority is introduced.
 Control Room remains the coordination source.
 Detailed truth remains in source systems.
+
+
+## Rollback note
+
+The first v0.2 browser injection was rolled back on 2026-09-20 because the owner-facing page remained stuck on the loading state. Supabase `control-room-web-v1` was restored to the known-good pre-v0.2 frontend as edge version 12. Reiska v0.2 must not be redeployed until the generated browser JavaScript is executed in a real browser test, including authenticated desktop and mobile paths.
