@@ -1,7 +1,7 @@
 # Meterion Control Room — Jev Orchestration v1
 
-Status: ACTIVE
-Date: 2026-09-20
+Status: ACTIVE — AI COMPANY OS BRIDGE VERIFIED
+Date: 2026-09-21
 
 ## Purpose
 
@@ -101,7 +101,7 @@ AI Company OS `system-one-decision-service-v1` may persist an optional `control_
 
 The decision binding is an audit reference only.
 
-It does not copy:
+It does not become the source of truth for:
 - action budget;
 - Jev budget;
 - retry budget;
@@ -122,6 +122,54 @@ Control Room resume
   -> checkpoint
   -> complete_work_batch when material work batch ends
 ```
+
+### Fail-closed bridge contract
+
+AI Company OS now prechecks the supplied resume snapshot before a project-bound provider call:
+- run key must match;
+- run must be active;
+- Jev-call usage and ceiling must be valid;
+- one additional Jev call must fit inside the envelope.
+
+After a successful System One decision, AI Company OS emits a checkpoint proposal. The proposal may only add:
+- +1 Jev call;
+- 0 actions;
+- 0 retries;
+- 0 spend;
+- current context/action/ranking snapshots.
+
+Control Room remains the system that atomically accepts or rejects the checkpoint.
+
+AI Company OS records only:
+- supplied resume snapshot as audit evidence;
+- checkpoint proposal;
+- checkpoint acknowledgement state.
+
+It does not create a second budget ledger.
+
+### Verified bridge canary — 2026-09-21
+
+Control Room run:
+`aicos.system-one.bridge.canary.v1`
+
+Envelope:
+- max actions 1;
+- max Jev calls 2;
+- max retries 0;
+- max spend 0.
+
+Observed:
+- first System One Choice: allowed, checkpoint 0/2 -> 1/2;
+- second System One Choice: allowed, checkpoint 1/2 -> 2/2;
+- third System One request: rejected before TypeSafe with `control_room_jev_budget_exceeded`;
+- rejected request created no AI capability route request, provider runtime run, or System One binding;
+- action usage stayed 0;
+- retry usage stayed 0;
+- spend stayed 0;
+- two successful checkpoint proposals were acknowledged applied;
+- run was closed `completed`.
+
+This verifies that Control Room's Jev-call ceiling is an execution-time gate, not dashboard metadata.
 
 ## Unknown external-call outcome
 
@@ -148,12 +196,14 @@ Normal execution layers remain authoritative.
 
 ## Repository / live truth
 
-Live migration:
+Control Room orchestration migration:
 `20260919095921_control_room_jev_orchestration_v1`
 
-The migration is now also stored in the Meterion Control Room repository.
+AI Company OS bridge migration:
+`20260921041130_system_one_control_room_bridge_v1`
 
 See also:
 - `docs/control-room/CLOSED_LOOP_V1.md`
 - `control_room_complete_work_batch_v1`
-- `control_room_get_resume_packet_v1`.
+- `control_room_get_resume_packet_v1`
+- AI Company OS `docs/integrations/system-one-decision-service-v1.md`.
