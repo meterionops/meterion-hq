@@ -1,7 +1,12 @@
 # YritystenTiedot — Project Control Pointer
 
 Status: ACTIVE
+Current stage: BUILD
 Current phase: PHASE 0 — FOUNDATION CLOSEOUT
+Phase 0 status: FUNCTIONALLY COMPLETE
+Next phase: PHASE 1 — COMPANY EVENT FOUNDATION
+Phase 1 status: IMPLEMENTATION-READY / REPOSITORY-BLOCKED
+
 Implementation repository: NOT YET CREATED
 Production database: Supabase project porkfghjezygajprlwtn
 Frontend: FROZEN until Data Readiness Gate
@@ -54,16 +59,46 @@ COMPLETED
 OPEN
 5. Create a dedicated private implementation repository for YritystenTiedot before major Phase 1 coding.
 
-## Next phase
+## Phase 1 architecture readiness
 
-PHASE 1 — COMPANY EVENT FOUNDATION
+Project Control now contains:
+- 05 — Phase 1 Event Foundation — Data Architecture Contract
+- 06 — Phase 1 Migration Draft — STAGING ONLY
 
-Scope:
+The live-data-derived Phase 1 contract is locked around:
+- deterministic UNIQUE event_key
+- semantic_key
+- effective_precision
+- first-class company_event_evidence
+- resumable event backfill state
+- source-backed atomic event types only
+- no guessed historical ADDRESS_CHANGED
+- no guessed NAME_CHANGED
+
+Potential atomic history event candidates:
+- NAME_REGISTERED: 1,003,766
+- NAME_ENDED: 471,464
+- REGISTER_JOINED: 3,544,019
+- REGISTER_LEFT: 1,895,163
+- maximum total: 6,914,412
+
+Primary-name history audit:
+- transition rows: 120,662
+- exact prior-end/new-start same day: 41,895
+- gap: 73,756
+- overlap: 3,678
+- prior row still open: 1,333
+
+Therefore the initial history backfill stores NAME_REGISTERED / NAME_ENDED lifecycle facts and does not infer NAME_CHANGED from adjacency.
+
+## Phase 1 scope
+
 - Event Schema v1
 - deterministic deduplication
-- provenance
+- event evidence/provenance
 - name-history event derivation
 - register-history event derivation
+- resumable batch backfill
 - idempotence tests
 - QA
 
@@ -73,7 +108,18 @@ Do not build here:
 - full financials
 - Europe expansion
 - AI chatbot
+- Business Finland
+- Hilma
+- continuous PRH delta sync
 
 ## Gate
 
-Phase 0 is functionally complete except for the dedicated implementation repository. Do not place YritystenTiedot implementation code in meterion-hq.
+Phase 1 must not be applied to production from Drive staging documents.
+
+Before implementation:
+1. create dedicated private YritystenTiedot implementation repository
+2. commit migration/backfill code there
+3. re-run production preflight
+4. only then apply the additive Event Foundation migration
+
+Do not place YritystenTiedot implementation code in meterion-hq.
