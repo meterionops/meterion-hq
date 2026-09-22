@@ -27,7 +27,7 @@ Key constraints:
 
 ## Current production checkpoint
 
-As of 2026-09-18:
+As of 2026-09-22:
 - companies: 693,706
 - source_observations: 693,720
 - company_versions: 693,695
@@ -35,14 +35,23 @@ As of 2026-09-18:
 - company_notices: 0
 - PRH company_delta_sync: dormant / disabled
 - provenance frozen manifest: 693,706 / 693,706 terminal
+- provenance verification: gate_ok = true
+- provenance duplicate observations: 0
+- provenance duplicate versions: 0
+- provenance duplicate business IDs: 0
+- provenance orphan observations: 0
+- provenance outside-manifest observations: 0
 - company_addresses with end_date: 0
 
-## Current Phase 0 closeout items
+## Phase 0 closeout status
 
-1. Close provenance run-level counter discrepancy versus complete manifest.
-2. Decide whether completed provenance worker cron should remain active; otherwise disable it.
-3. Resolve or intentionally stop stale company_enrichment runner.
-4. Document address-history limitation.
+COMPLETED
+1. Provenance baseline final QA completed. Built-in verification returns gate_ok = true. The old run-level processed counter is treated as non-authoritative telemetry because the frozen manifest is complete and all integrity gates pass.
+2. Completed provenance worker cron disabled.
+3. Stale company_enrichment runner intentionally paused; its cron disabled.
+4. Address-history limitation documented: company_addresses currently has no end_date history, so ADDRESS_CHANGED cannot be historical-backfilled from that field.
+
+OPEN
 5. Create a dedicated private implementation repository for YritystenTiedot before major Phase 1 coding.
 
 ## Next phase
@@ -65,4 +74,6 @@ Do not build here:
 - Europe expansion
 - AI chatbot
 
-This file is a control pointer only. Do not place YritystenTiedot implementation code in meterion-hq.
+## Gate
+
+Phase 0 is functionally complete except for the dedicated implementation repository. Do not place YritystenTiedot implementation code in meterion-hq.
