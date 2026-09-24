@@ -19,6 +19,14 @@ SOURCES = [
     ("pyynikintori_menu", "Pyynikintorin Liha ja Kahvi", "https://www.pyynikintorinlihajakahvi.com/menu"),
 ]
 
+TARGET_TERMS = {
+    "menu", "ruokalista", "lounas", "lunch", "aamiainen", "breakfast",
+    "brunssi", "brunch", "alkuruoka", "starter", "paaaruoka", "main",
+    "jalkiruoka", "dessert", "pizza", "burger", "viini", "wine",
+    "olut", "beer", "annos", "dish", "price",
+}
+PRICE_RE = re.compile(r"(?:\d{1,3}[,.]\d{1,2}\s*(?:€|eur)|(?:€|eur)\s*\d{1,3}[,.]\d{1,2})", re.I)
+
 
 class VisibleTextParser(HTMLParser):
     def __init__(self) -> None:
@@ -55,6 +63,20 @@ def words(text: str) -> set[str]:
     }
 
 
+def normalized_for_terms(text: str) -> str:
+    return (
+        text.lower()
+        .replace("ä", "a")
+        .replace("ö", "o")
+        .replace("å", "a")
+    )
+
+
+def semantic_signals(text: str) -> set[str]:
+    normalized = normalized_for_terms(text)
+    return {term for term in TARGET_TERMS if term in normalized}
+
+
 def main() -> None:
     engine = ScraplingEngine()
     rows: list[dict] = []
@@ -85,6 +107,22 @@ def main() -> None:
         gain = dynamic_len - static_len
         ratio = round(dynamic_len / max(static_len, 1), 3)
 
+        static_semantic = semantic_signals(static_text)
+        dynamic_semantic = semantic_signals(dynamic_text)
+        added_semantic = sorted(dynamic_semantic - static_semantic)
+        static_prices = len(PRICE_RE.findall(static_text))
+        dynamic_prices = len(PRICE_RE.findall(dynamic_text))
+        price_gain = dynamic_prices - static_prices
+
+        target_gain = len(added_semantic) > 0 or price_gain > 0
+        candidate = (
+            static.status == 200
+            and dynamic.status == 200
+            and gain >= 120
+            and ratio >= 1.2
+            and target_gain
+        )
+
         rows.append(
             {
                 "key": key,
@@ -96,31 +134,34 @@ def main() -> None:
                 "dynamic_text_chars": dynamic_len,
                 "text_gain_chars": gain,
                 "text_gain_ratio": ratio,
+                "static_price_signals": static_prices,
+                "dynamic_price_signals": dynamic_prices,
+                "price_signal_gain": price_gain,
+                "added_target_terms": added_semantic,
                 "static_body_bytes": len(static.body),
                 "dynamic_raw_body_bytes": len(dynamic.body),
                 "dynamic_rendered_bytes": len(dynamic.content_for_extraction),
                 "captured_xhr_count": int(dynamic.metadata.get("captured_xhr_count", 0) or 0),
                 "captured_xhr_summaries": list(dynamic.metadata.get("captured_xhr_summaries", []) or [])[:10],
                 "added_word_sample": added[:40],
-                "browser_value_candidate": (
-                    static.status == 200
-                    and dynamic.status == 200
-                    and gain >= 250
-                    and ratio >= 1.35
-                    and len(added) >= 12
-                ),
+                "browser_value_candidate": candidate,
             }
         )
 
     ranked = sorted(
         rows,
-        key=lambda r: (r["browser_value_candidate"], r["text_gain_chars"], r["text_gain_ratio"]),
+        key=lambda r: (
+            r["browser_value_candidate"],
+            r["price_signal_gain"],
+            len(r["added_target_terms"]),
+            r["text_gain_chars"],
+        ),
         reverse=True,
     )
     print(
         json.dumps(
             {
-                "probe": "maistio-dynamic-route-probe-v1",
+                "probe": "maistio-dynamic-route-probe-v2",
                 "project_writes": 0,
                 "candidate_count": sum(1 for r in ranked if r["browser_value_candidate"]),
                 "results": ranked,
