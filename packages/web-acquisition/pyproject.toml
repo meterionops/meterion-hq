@@ -13,7 +13,7 @@ authors = [{name = "Meterion"}]
 dependencies = []
 
 [project.optional-dependencies]
-scrapling = ["scrapling==0.4.15"]
+scrapling = ["scrapling[fetchers]==0.4.15"]
 dev = ["pytest>=8"]
 
 [tool.setuptools.packages.find]
