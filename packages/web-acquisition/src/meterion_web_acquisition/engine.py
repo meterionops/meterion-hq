@@ -22,7 +22,12 @@ class EngineResponse:
     body: bytes
     status: int | None
     final_url: str
+    extraction_body: bytes | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
+
+    @property
+    def content_for_extraction(self) -> bytes:
+        return self.extraction_body if self.extraction_body is not None else self.body
 
 
 class CollectionEngine(Protocol):
