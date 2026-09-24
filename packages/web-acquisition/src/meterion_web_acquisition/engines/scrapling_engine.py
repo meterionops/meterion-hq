@@ -1,8 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 from typing import Any
 
 from ..engine import EngineRequest, EngineResponse
+
+
+def _header_value(headers: dict, name: str) -> str | None:
+    target = name.lower()
+    for key, value in headers.items():
+        if str(key).lower() == target:
+            return str(value)
+    return None
 
 
 class ScraplingEngine:
@@ -35,8 +44,10 @@ class ScraplingEngine:
             page = DynamicFetcher.fetch(
                 request.url,
                 timeout=request.timeout_ms,
+                wait=request.wait_ms,
                 network_idle=request.network_idle,
                 disable_resources=request.disable_resources,
+                capture_xhr=request.capture_xhr_pattern,
             )
         elif request.mode == "stealth_browser":
             if request.adaptive:
@@ -44,8 +55,10 @@ class ScraplingEngine:
             page = StealthyFetcher.fetch(
                 request.url,
                 timeout=request.timeout_ms,
+                wait=request.wait_ms,
                 network_idle=request.network_idle,
                 disable_resources=request.disable_resources,
+                capture_xhr=request.capture_xhr_pattern,
             )
         else:
             raise ValueError(f"Unsupported Scrapling collection mode: {request.mode}")
@@ -61,12 +74,34 @@ class ScraplingEngine:
         except Exception:
             page_text = ""
 
+        xhr_summaries: list[dict[str, Any]] = []
+        for xhr in captured_xhr[:100]:
+            try:
+                xhr_body = bytes(xhr.body)
+            except Exception:
+                xhr_body = b""
+            xhr_headers = dict(getattr(xhr, "headers", {}) or {})
+            xhr_summaries.append(
+                {
+                    "url": str(getattr(xhr, "url", "") or ""),
+                    "status": getattr(xhr, "status", None),
+                    "content_type": _header_value(xhr_headers, "content-type"),
+                    "body_bytes": len(xhr_body),
+                    "raw_hash": (
+                        "sha256:" + hashlib.sha256(xhr_body).hexdigest()
+                        if xhr_body
+                        else None
+                    ),
+                }
+            )
+
         meta: dict[str, Any] = dict(getattr(page, "meta", {}) or {})
         meta.update(
             {
                 "response_headers": headers,
                 "redirect_count": len(history),
                 "captured_xhr_count": len(captured_xhr),
+                "captured_xhr_summaries": xhr_summaries,
                 "response_text_length": len(page_text),
             }
         )
