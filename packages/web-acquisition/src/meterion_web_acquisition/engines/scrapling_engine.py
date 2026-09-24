@@ -55,7 +55,11 @@ class ScraplingEngine:
         headers = dict(getattr(page, "headers", {}) or {})
         history = list(getattr(page, "history", []) or [])
         captured_xhr = list(getattr(page, "captured_xhr", []) or [])
-        page_text = str(getattr(page, "text", "") or "")
+
+        try:
+            page_text = str(page.get_all_text(separator=" ", strip=True) or "")
+        except Exception:
+            page_text = ""
 
         meta: dict[str, Any] = dict(getattr(page, "meta", {}) or {})
         meta.update(
