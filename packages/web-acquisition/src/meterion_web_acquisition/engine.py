@@ -9,9 +9,11 @@ class EngineRequest:
     url: str
     mode: str
     timeout_ms: int = 30_000
+    wait_ms: int = 0
     network_idle: bool = False
     disable_resources: bool = False
     adaptive: bool = False
+    capture_xhr_pattern: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
 
