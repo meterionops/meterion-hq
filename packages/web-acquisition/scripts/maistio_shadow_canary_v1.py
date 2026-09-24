@@ -69,6 +69,7 @@ def result_for_response(source: dict, decision, response, evidence) -> dict:
     headers = dict(response.metadata.get("response_headers", {}) or {})
     text_length = int(response.metadata.get("response_text_length", 0) or 0)
     token = source.get("required_token")
+    extraction = response.content_for_extraction
     return {
         "key": source["key"],
         "requested_url": source["url"],
@@ -79,15 +80,15 @@ def result_for_response(source: dict, decision, response, evidence) -> dict:
         "content_type": content_type(headers),
         "body_bytes": evidence.body_bytes,
         "raw_hash": evidence.raw_hash,
+        "extraction_bytes": evidence.extraction_bytes,
+        "extraction_hash": evidence.extraction_hash,
+        "extraction_kind": response.metadata.get("extraction_kind"),
         "text_length": text_length,
         "redirect_count": int(response.metadata.get("redirect_count", 0) or 0),
         "captured_xhr_count": int(response.metadata.get("captured_xhr_count", 0) or 0),
-        "captured_xhr_summaries": list(
-            response.metadata.get("captured_xhr_summaries", []) or []
-        )[:30],
         "rights_status": evidence.rights_status,
         "required_token": token,
-        "required_token_found": body_contains(response.body, token),
+        "required_token_found": body_contains(extraction, token),
     }
 
 
@@ -125,6 +126,7 @@ def main() -> None:
             source_id=f"maistio-shadow:{source['key']}",
             source_url=response.final_url,
             body=response.body,
+            extraction_body=response.content_for_extraction,
             collection_method=decision.mode,
             http_status=response.status,
             rights_status="public_permitted",
@@ -153,31 +155,33 @@ def main() -> None:
             baseline_text_length = int(
                 baseline.metadata.get("response_text_length", 0) or 0
             )
+            baseline_extraction = baseline.content_for_extraction
             baseline_token_found = body_contains(
-                baseline.body, source.get("required_token")
+                baseline_extraction, source.get("required_token")
+            )
+            baseline_evidence = build_evidence(
+                source_id=f"maistio-shadow:{source['key']}:static-baseline",
+                source_url=baseline.final_url,
+                body=baseline.body,
+                extraction_body=baseline_extraction,
+                collection_method="static_http",
+                http_status=baseline.status,
+                rights_status="public_permitted",
+                response_meta=dict(baseline.metadata),
             )
             result["static_baseline"] = {
                 "status": baseline.status,
                 "final_url": baseline.final_url,
-                "body_bytes": len(baseline.body),
-                "raw_hash": build_evidence(
-                    source_id=f"maistio-shadow:{source['key']}:static-baseline",
-                    source_url=baseline.final_url,
-                    body=baseline.body,
-                    collection_method="static_http",
-                    http_status=baseline.status,
-                    rights_status="public_permitted",
-                    response_meta=dict(baseline.metadata),
-                ).raw_hash,
+                "body_bytes": baseline_evidence.body_bytes,
+                "raw_hash": baseline_evidence.raw_hash,
+                "extraction_bytes": baseline_evidence.extraction_bytes,
+                "extraction_hash": baseline_evidence.extraction_hash,
                 "text_length": baseline_text_length,
                 "content_type": content_type(baseline_headers),
                 "required_token_found": baseline_token_found,
             }
             result["dynamic_render_gain_text_chars"] = (
                 result["text_length"] - baseline_text_length
-            )
-            result["dynamic_hash_differs"] = (
-                result["raw_hash"] != result["static_baseline"]["raw_hash"]
             )
             result["dynamic_target_gain"] = (
                 result["required_token_found"] is True
