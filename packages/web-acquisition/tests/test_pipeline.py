@@ -29,8 +29,8 @@ def extractor(body, evidence):
     )
 
 
-def test_pipeline_keeps_evidence_and_promotes_valid_candidate():
-    run = run_acquisition(
+def make_run(**kwargs):
+    return run_acquisition(
         job=CollectionJob(
             job_id="j1",
             project_key="maistio",
@@ -42,6 +42,18 @@ def test_pipeline_keeps_evidence_and_promotes_valid_candidate():
         engine=FakeEngine(),
         extractor=extractor,
         source_id="restaurant-own-site",
+        **kwargs,
     )
+
+
+def test_pipeline_keeps_evidence_and_promotes_valid_candidate():
+    run = make_run(rights_status="public_permitted")
     assert run.evidence.raw_hash.startswith("sha256:")
     assert run.decisions[0].status == "promote"
+
+
+def test_pipeline_fails_closed_when_rights_are_not_supplied():
+    run = make_run()
+    assert run.evidence.rights_status == "unknown"
+    assert run.decisions[0].status == "review"
+    assert "insufficient_source_rights" in run.decisions[0].reason
