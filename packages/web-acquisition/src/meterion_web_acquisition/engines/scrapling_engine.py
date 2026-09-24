@@ -17,8 +17,9 @@ def _header_value(headers: dict, name: str) -> str | None:
 class ScraplingEngine:
     """Scrapling provider adapter.
 
-    Import is lazy so the shared core can be used in services that do not have
-    browser dependencies installed. Version 0.4.15 is the tested package extra.
+    The raw network body is retained as `body`. For browser routes,
+    `extraction_body` is a serialized rendered DOM snapshot so project
+    extractors can consume content that only exists after JavaScript execution.
     """
 
     name = "scrapling"
@@ -30,6 +31,8 @@ class ScraplingEngine:
             raise RuntimeError(
                 "Scrapling fetchers are not installed. Install meterion-web-acquisition[scrapling]."
             ) from exc
+
+        browser_mode = request.mode in {"dynamic_browser", "stealth_browser"}
 
         if request.mode in {"api_feed", "static_http"}:
             if request.adaptive:
@@ -64,6 +67,7 @@ class ScraplingEngine:
             raise ValueError(f"Unsupported Scrapling collection mode: {request.mode}")
 
         body = bytes(page.body)
+        extraction_body = body
         final_url = str(getattr(page, "url", request.url) or request.url)
         headers = dict(getattr(page, "headers", {}) or {})
         history = list(getattr(page, "history", []) or [])
@@ -73,6 +77,14 @@ class ScraplingEngine:
             page_text = str(page.get_all_text(separator=" ", strip=True) or "")
         except Exception:
             page_text = ""
+
+        if browser_mode:
+            try:
+                rendered_html = str(page.get() or "")
+            except Exception:
+                rendered_html = ""
+            if rendered_html:
+                extraction_body = rendered_html.encode("utf-8", errors="replace")
 
         xhr_summaries: list[dict[str, Any]] = []
         for xhr in captured_xhr[:100]:
@@ -103,10 +115,12 @@ class ScraplingEngine:
                 "captured_xhr_count": len(captured_xhr),
                 "captured_xhr_summaries": xhr_summaries,
                 "response_text_length": len(page_text),
+                "extraction_kind": "rendered_dom" if browser_mode else "raw_response",
             }
         )
         return EngineResponse(
             body=body,
+            extraction_body=extraction_body,
             status=getattr(page, "status", None),
             final_url=final_url,
             metadata=meta,
