@@ -17,6 +17,7 @@ from .models import (
 )
 from .pipeline import AcquisitionRun, run_acquisition
 from .policy import route_collection, source_observation_from_profile
+from .structured import StructuredExtraction, extract_wordpress_rendered_content
 from .validation import ValidationResult, deterministic_decision, validate_candidate
 
 __all__ = [
@@ -31,6 +32,7 @@ __all__ = [
     "RoutingDecision",
     "SourceObservation",
     "SourceProfile",
+    "StructuredExtraction",
     "ValidationResult",
     "JevDecisionProvider",
     "COLLECTION_STRATEGY_INSTRUCTION",
@@ -38,6 +40,7 @@ __all__ = [
     "build_evidence",
     "collection_strategy_state",
     "deterministic_decision",
+    "extract_wordpress_rendered_content",
     "route_collection",
     "run_acquisition",
     "sha256_bytes",
