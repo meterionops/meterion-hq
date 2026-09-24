@@ -34,6 +34,10 @@ jobs:
         run: |
           set -o pipefail
           python scripts/maistio_wp_structured_parity_v1.py | tee wp-parity-results.json
+      - name: Maistio dynamic route probe
+        run: |
+          set -o pipefail
+          python scripts/maistio_dynamic_probe_v1.py | tee dynamic-probe-results.json
       - name: Maistio shadow canary
         run: |
           set -o pipefail
@@ -45,4 +49,5 @@ jobs:
           name: maistio-web-acquisition-v1
           path: |
             packages/web-acquisition/wp-parity-results.json
+            packages/web-acquisition/dynamic-probe-results.json
             packages/web-acquisition/shadow-canary-results.json
