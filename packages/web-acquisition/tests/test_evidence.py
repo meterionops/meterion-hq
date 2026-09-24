@@ -1,7 +1,7 @@
 from meterion_web_acquisition import build_evidence, sha256_bytes
 
 
-def test_evidence_hash_is_stable():
+def test_evidence_hash_and_size_are_stable():
     body = b"hello"
     e = build_evidence(
         source_id="s",
@@ -13,3 +13,4 @@ def test_evidence_hash_is_stable():
     )
     assert e.raw_hash == sha256_bytes(body)
     assert e.raw_hash.startswith("sha256:")
+    assert e.body_bytes == 5
