@@ -34,11 +34,11 @@ jobs:
         run: |
           set -o pipefail
           python scripts/maistio_wp_structured_parity_v1.py | tee wp-parity-results.json
-      - name: Maistio dynamic route probe
+      - name: Maistio dynamic route evidence probe
         run: |
           set -o pipefail
           python scripts/maistio_dynamic_probe_v1.py | tee dynamic-probe-results.json
-      - name: Maistio shadow canary
+      - name: Maistio verified core-route canary
         run: |
           set -o pipefail
           python scripts/maistio_shadow_canary_v1.py | tee shadow-canary-results.json
