@@ -1,0 +1,29 @@
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any, Mapping, Protocol
+
+
+@dataclass(frozen=True)
+class EngineRequest:
+    url: str
+    mode: str
+    timeout_ms: int = 30_000
+    network_idle: bool = False
+    disable_resources: bool = False
+    adaptive: bool = False
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class EngineResponse:
+    body: bytes
+    status: int | None
+    final_url: str
+    metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+class CollectionEngine(Protocol):
+    name: str
+
+    def collect(self, request: EngineRequest) -> EngineResponse: ...
