@@ -40,8 +40,16 @@ def run_acquisition(
     if routing.mode == "research_pause":
         raise ValueError("research_pause is not an executable collection route")
 
-    response = engine.collect(EngineRequest(url=job.source_url, mode=routing.mode))
+    fetch_url = routing.fetch_url or job.source_url
+    response = engine.collect(EngineRequest(url=fetch_url, mode=routing.mode))
     extraction_body = response.content_for_extraction
+    response_meta = dict(response.metadata)
+    response_meta.update(
+        {
+            "source_identity_url": job.source_url,
+            "requested_fetch_url": fetch_url,
+        }
+    )
     evidence = build_evidence(
         source_id=source_id,
         source_url=response.final_url,
@@ -51,7 +59,7 @@ def run_acquisition(
         http_status=response.status,
         raw_snapshot_ref=snapshot_ref,
         rights_status=rights_status,
-        response_meta=dict(response.metadata),
+        response_meta=response_meta,
     )
     candidates = tuple(extractor(extraction_body, evidence))
     decisions = tuple(deterministic_decision(c, (evidence,)) for c in candidates)
