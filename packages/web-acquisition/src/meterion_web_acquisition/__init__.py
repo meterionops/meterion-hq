@@ -16,7 +16,7 @@ from .models import (
     SourceProfile,
 )
 from .pipeline import AcquisitionRun, run_acquisition
-from .policy import route_collection
+from .policy import route_collection, source_observation_from_profile
 from .validation import ValidationResult, deterministic_decision, validate_candidate
 
 __all__ = [
@@ -41,6 +41,7 @@ __all__ = [
     "route_collection",
     "run_acquisition",
     "sha256_bytes",
+    "source_observation_from_profile",
     "utc_now_iso",
     "validate_candidate",
 ]
