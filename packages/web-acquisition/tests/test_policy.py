@@ -15,6 +15,15 @@ def test_prefers_structured_endpoint_over_browser():
     assert not d.needs_jev
 
 
+def test_prefers_public_xhr_over_static_html():
+    d = route_collection(job(), SourceObservation(
+        has_public_xhr_endpoint=True,
+        static_html_contains_target=True,
+        rights_status="public_permitted",
+    ))
+    assert d.mode == "api_feed"
+
+
 def test_static_before_browser():
     d = route_collection(job(), SourceObservation(
         static_html_contains_target=True,
