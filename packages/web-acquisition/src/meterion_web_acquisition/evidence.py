@@ -20,6 +20,7 @@ def build_evidence(
     source_url: str,
     body: bytes,
     collection_method: str,
+    extraction_body: bytes | None = None,
     http_status: int | None = None,
     raw_snapshot_ref: str | None = None,
     extractor_id: str | None = None,
@@ -29,6 +30,7 @@ def build_evidence(
     response_meta: dict | None = None,
     fetched_at: str | None = None,
 ) -> EvidenceRecord:
+    extraction = extraction_body if extraction_body is not None else body
     return EvidenceRecord(
         source_id=source_id,
         source_url=source_url,
@@ -37,6 +39,8 @@ def build_evidence(
         http_status=http_status,
         raw_hash=sha256_bytes(body),
         body_bytes=len(body),
+        extraction_hash=sha256_bytes(extraction),
+        extraction_bytes=len(extraction),
         raw_snapshot_ref=raw_snapshot_ref,
         extractor_id=extractor_id,
         extractor_version=extractor_version,
