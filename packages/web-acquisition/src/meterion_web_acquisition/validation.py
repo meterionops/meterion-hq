@@ -30,6 +30,8 @@ def validate_candidate(candidate: CandidateObservation, evidence: Iterable[Evide
         reasons.append("missing_source_evidence")
     if any(e.rights_status == "prohibited" for e in matching):
         reasons.append("prohibited_source")
+    elif any(e.rights_status != "public_permitted" for e in matching):
+        reasons.append("insufficient_source_rights")
 
     for key, passed in candidate.validation.items():
         if not passed:
