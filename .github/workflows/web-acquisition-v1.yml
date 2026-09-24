@@ -31,7 +31,9 @@ jobs:
       - name: Unit tests
         run: pytest -q
       - name: Maistio shadow canary
-        run: python scripts/maistio_shadow_canary_v1.py | tee shadow-canary-results.json
+        run: |
+          set -o pipefail
+          python scripts/maistio_shadow_canary_v1.py | tee shadow-canary-results.json
       - name: Upload shadow result
         if: always()
         uses: actions/upload-artifact@v4
