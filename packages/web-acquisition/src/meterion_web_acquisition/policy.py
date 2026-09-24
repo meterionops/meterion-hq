@@ -24,22 +24,20 @@ def route_collection(job: CollectionJob, source: SourceObservation) -> RoutingDe
             needs_jev=True,
         )
 
-    if source.has_official_api_or_feed or source.has_public_structured_endpoint:
+    if (
+        source.has_official_api_or_feed
+        or source.has_public_structured_endpoint
+        or source.has_public_xhr_endpoint
+    ):
         return RoutingDecision(
             mode="api_feed",
-            reason="structured public source is available",
+            reason="structured public source or page endpoint is available",
         )
 
     if source.static_html_contains_target:
         return RoutingDecision(
             mode="static_http",
             reason="target evidence is available in static HTML",
-        )
-
-    if source.has_public_xhr_endpoint:
-        return RoutingDecision(
-            mode="api_feed",
-            reason="public page exposes a structured XHR/fetch endpoint",
         )
 
     if source.requires_javascript and not source.ordinary_browser_blocked:
