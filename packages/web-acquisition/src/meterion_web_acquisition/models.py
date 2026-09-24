@@ -71,6 +71,8 @@ class EvidenceRecord:
     collection_method: str
     raw_hash: str
     body_bytes: int
+    extraction_hash: str
+    extraction_bytes: int
     raw_snapshot_ref: str | None = None
     http_status: int | None = None
     extractor_id: str | None = None
