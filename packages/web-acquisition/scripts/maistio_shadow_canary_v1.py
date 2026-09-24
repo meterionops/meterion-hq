@@ -16,7 +16,7 @@ from meterion_web_acquisition.engines.scrapling_engine import ScraplingEngine
 SOURCES = [
     {
         "key": "static_mantra_menu",
-        "url": "https://www.ravintolamantra.fi/menu",
+        "source_url": "https://www.ravintolamantra.fi/menu",
         "target": "menu",
         "expected_mode": "static_http",
         "observation": {
@@ -27,28 +27,15 @@ SOURCES = [
     },
     {
         "key": "structured_rodeo_menu",
-        "url": "https://www.rodeosteakhouse.fi/wp-json/wp/v2/pages/319",
+        "source_url": "https://www.rodeosteakhouse.fi/menu/",
         "target": "menu",
         "expected_mode": "api_feed",
         "observation": {
             "has_public_structured_endpoint": True,
+            "preferred_fetch_url": "https://www.rodeosteakhouse.fi/wp-json/wp/v2/pages/319",
             "rights_status": "public_permitted",
         },
         "required_token": "Rodeo",
-    },
-    {
-        "key": "dynamic_thai_burpha_lunch",
-        "url": "https://www.thaiburpha.fi/lounas",
-        "target": "lunch",
-        "expected_mode": "dynamic_browser",
-        "observation": {
-            "requires_javascript": True,
-            "rights_status": "public_permitted",
-        },
-        "required_token": "Maanantaina",
-        "compare_static_baseline": True,
-        "capture_xhr": ".*",
-        "wait_ms": 2500,
     },
 ]
 
@@ -90,40 +77,6 @@ def content_type(headers: dict) -> str | None:
     return None
 
 
-def visible_contains(body: bytes, token: str | None, content_type_value: str | None) -> bool | None:
-    if not token:
-        return None
-    return token.lower() in visible_text(body, content_type_value).lower()
-
-
-def result_for_response(source: dict, decision, response, evidence) -> dict:
-    headers = dict(response.metadata.get("response_headers", {}) or {})
-    type_value = content_type(headers)
-    text_length = int(response.metadata.get("response_text_length", 0) or 0)
-    token = source.get("required_token")
-    extraction = response.content_for_extraction
-    return {
-        "key": source["key"],
-        "requested_url": source["url"],
-        "final_url": response.final_url,
-        "route": decision.mode,
-        "route_reason": decision.reason,
-        "status": response.status,
-        "content_type": type_value,
-        "body_bytes": evidence.body_bytes,
-        "raw_hash": evidence.raw_hash,
-        "extraction_bytes": evidence.extraction_bytes,
-        "extraction_hash": evidence.extraction_hash,
-        "extraction_kind": response.metadata.get("extraction_kind"),
-        "text_length": text_length,
-        "redirect_count": int(response.metadata.get("redirect_count", 0) or 0),
-        "captured_xhr_count": int(response.metadata.get("captured_xhr_count", 0) or 0),
-        "rights_status": evidence.rights_status,
-        "required_token": token,
-        "required_token_found": visible_contains(extraction, token, type_value),
-    }
-
-
 def main() -> None:
     engine = ScraplingEngine()
     results: list[dict] = []
@@ -132,7 +85,7 @@ def main() -> None:
         job = CollectionJob(
             job_id=f"maistio-shadow-{source['key']}",
             project_key="maistio",
-            source_url=source["url"],
+            source_url=source["source_url"],
             target=source["target"],
             recurring=False,
         )
@@ -143,16 +96,20 @@ def main() -> None:
                 f"{source['key']}: expected {source['expected_mode']}, got {decision.mode}"
             )
 
+        fetch_url = decision.fetch_url or job.source_url
         response = engine.collect(
             EngineRequest(
-                url=source["url"],
+                url=fetch_url,
                 mode=decision.mode,
                 timeout_ms=30_000,
-                wait_ms=int(source.get("wait_ms", 0)),
-                network_idle=False,
-                disable_resources=False,
-                capture_xhr_pattern=source.get("capture_xhr"),
             )
+        )
+        response_meta = dict(response.metadata)
+        response_meta.update(
+            {
+                "source_identity_url": job.source_url,
+                "requested_fetch_url": fetch_url,
+            }
         )
         evidence = build_evidence(
             source_id=f"maistio-shadow:{source['key']}",
@@ -162,80 +119,53 @@ def main() -> None:
             collection_method=decision.mode,
             http_status=response.status,
             rights_status="public_permitted",
-            response_meta=dict(response.metadata),
+            response_meta=response_meta,
         )
-        result = result_for_response(source, decision, response, evidence)
 
-        if response.status is None or not (200 <= response.status < 300):
-            result["pass"] = False
-            result["failure"] = "non_2xx_status"
-        elif result["required_token_found"] is False:
-            result["pass"] = False
-            result["failure"] = "required_content_signal_missing"
-        else:
-            result["pass"] = True
+        headers = dict(response.metadata.get("response_headers", {}) or {})
+        type_value = content_type(headers)
+        extraction_text = visible_text(response.content_for_extraction, type_value)
+        token_found = source["required_token"].lower() in extraction_text.lower()
 
-        if source.get("compare_static_baseline"):
-            baseline = engine.collect(
-                EngineRequest(
-                    url=source["url"],
-                    mode="static_http",
-                    timeout_ms=30_000,
-                )
-            )
-            baseline_headers = dict(baseline.metadata.get("response_headers", {}) or {})
-            baseline_type = content_type(baseline_headers)
-            baseline_text_length = int(
-                baseline.metadata.get("response_text_length", 0) or 0
-            )
-            baseline_extraction = baseline.content_for_extraction
-            baseline_token_found = visible_contains(
-                baseline_extraction, source.get("required_token"), baseline_type
-            )
-            baseline_evidence = build_evidence(
-                source_id=f"maistio-shadow:{source['key']}:static-baseline",
-                source_url=baseline.final_url,
-                body=baseline.body,
-                extraction_body=baseline_extraction,
-                collection_method="static_http",
-                http_status=baseline.status,
-                rights_status="public_permitted",
-                response_meta=dict(baseline.metadata),
-            )
-            result["static_baseline"] = {
-                "status": baseline.status,
-                "final_url": baseline.final_url,
-                "body_bytes": baseline_evidence.body_bytes,
-                "raw_hash": baseline_evidence.raw_hash,
-                "extraction_bytes": baseline_evidence.extraction_bytes,
-                "extraction_hash": baseline_evidence.extraction_hash,
-                "text_length": baseline_text_length,
-                "content_type": baseline_type,
-                "required_token_found": baseline_token_found,
-            }
-            result["dynamic_render_gain_text_chars"] = (
-                result["text_length"] - baseline_text_length
-            )
-            result["dynamic_target_gain"] = (
-                result["required_token_found"] is True
-                and baseline_token_found is False
-            )
-            if not result["dynamic_target_gain"]:
-                result["pass"] = False
-                result["failure"] = "dynamic_route_did_not_add_visible_target_evidence"
-
+        result = {
+            "key": source["key"],
+            "source_identity_url": job.source_url,
+            "requested_fetch_url": fetch_url,
+            "final_url": response.final_url,
+            "route": decision.mode,
+            "status": response.status,
+            "content_type": type_value,
+            "body_bytes": evidence.body_bytes,
+            "raw_hash": evidence.raw_hash,
+            "extraction_bytes": evidence.extraction_bytes,
+            "extraction_hash": evidence.extraction_hash,
+            "required_token": source["required_token"],
+            "required_token_found": token_found,
+            "pass": (
+                response.status is not None
+                and 200 <= response.status < 300
+                and token_found
+            ),
+        }
         results.append(result)
 
+    verified = all(row["pass"] for row in results)
     output = {
         "pilot": "maistio-finland-web-acquisition-shadow-v1",
         "project_writes": 0,
         "canonical_promotions": 0,
+        "verified_routes": ["static_http", "api_feed"] if verified else [],
+        "dynamic_browser_status": "EVIDENCE_REQUIRED",
+        "dynamic_browser_note": (
+            "Current Maistio probes did not find a source where browser rendering "
+            "added relevant target-bearing evidence over cheaper routes."
+        ),
         "results": results,
-        "all_routes_verified": all(r["pass"] for r in results),
+        "verified_core_routes_pass": verified,
     }
     print(json.dumps(output, ensure_ascii=False, indent=2))
 
-    if not output["all_routes_verified"]:
+    if not verified:
         raise SystemExit(1)
 
 
