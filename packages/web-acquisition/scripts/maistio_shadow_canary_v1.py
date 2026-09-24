@@ -36,14 +36,15 @@ SOURCES = [
         "required_token": "Rodeo",
     },
     {
-        "key": "dynamic_one_pint_beer_menu",
-        "url": "https://www.onepintpub.com/beer-menu",
+        "key": "dynamic_lucy_menu",
+        "url": "https://www.lucyinthesky.fi/menu",
         "target": "menu",
         "expected_mode": "dynamic_browser",
         "observation": {
             "requires_javascript": True,
             "rights_status": "public_permitted",
         },
+        "required_token": "TARTARE N. 11",
         "compare_static_baseline": True,
         "capture_xhr": ".*",
         "wait_ms": 2500,
@@ -58,10 +59,15 @@ def content_type(headers: dict) -> str | None:
     return None
 
 
+def body_contains(body: bytes, token: str | None) -> bool | None:
+    if not token:
+        return None
+    return token.lower() in body.decode("utf-8", errors="ignore").lower()
+
+
 def result_for_response(source: dict, decision, response, evidence) -> dict:
     headers = dict(response.metadata.get("response_headers", {}) or {})
     text_length = int(response.metadata.get("response_text_length", 0) or 0)
-    decoded = response.body.decode("utf-8", errors="ignore")
     token = source.get("required_token")
     return {
         "key": source["key"],
@@ -81,7 +87,7 @@ def result_for_response(source: dict, decision, response, evidence) -> dict:
         )[:30],
         "rights_status": evidence.rights_status,
         "required_token": token,
-        "required_token_found": None if not token else token.lower() in decoded.lower(),
+        "required_token_found": body_contains(response.body, token),
     }
 
 
@@ -147,6 +153,9 @@ def main() -> None:
             baseline_text_length = int(
                 baseline.metadata.get("response_text_length", 0) or 0
             )
+            baseline_token_found = body_contains(
+                baseline.body, source.get("required_token")
+            )
             result["static_baseline"] = {
                 "status": baseline.status,
                 "final_url": baseline.final_url,
@@ -162,6 +171,7 @@ def main() -> None:
                 ).raw_hash,
                 "text_length": baseline_text_length,
                 "content_type": content_type(baseline_headers),
+                "required_token_found": baseline_token_found,
             }
             result["dynamic_render_gain_text_chars"] = (
                 result["text_length"] - baseline_text_length
@@ -169,13 +179,13 @@ def main() -> None:
             result["dynamic_hash_differs"] = (
                 result["raw_hash"] != result["static_baseline"]["raw_hash"]
             )
-            result["dynamic_discovery_gain"] = (
-                result["dynamic_render_gain_text_chars"] > 50
-                or result["captured_xhr_count"] > 0
+            result["dynamic_target_gain"] = (
+                result["required_token_found"] is True
+                and baseline_token_found is False
             )
-            if not result["dynamic_discovery_gain"]:
+            if not result["dynamic_target_gain"]:
                 result["pass"] = False
-                result["failure"] = "dynamic_route_added_no_render_or_xhr_evidence"
+                result["failure"] = "dynamic_route_did_not_add_target_evidence"
 
         results.append(result)
 
@@ -184,11 +194,11 @@ def main() -> None:
         "project_writes": 0,
         "canonical_promotions": 0,
         "results": results,
-        "all_routes_executed": all(r["pass"] for r in results),
+        "all_routes_verified": all(r["pass"] for r in results),
     }
     print(json.dumps(output, ensure_ascii=False, indent=2))
 
-    if not output["all_routes_executed"]:
+    if not output["all_routes_verified"]:
         raise SystemExit(1)
 
 
