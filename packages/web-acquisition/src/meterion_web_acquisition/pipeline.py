@@ -5,7 +5,14 @@ from typing import Callable, Iterable
 
 from .engine import CollectionEngine, EngineRequest
 from .evidence import build_evidence
-from .models import CandidateObservation, CanonicalDecision, CollectionJob, EvidenceRecord, RoutingDecision
+from .models import (
+    CandidateObservation,
+    CanonicalDecision,
+    CollectionJob,
+    EvidenceRecord,
+    RightsStatus,
+    RoutingDecision,
+)
 from .validation import deterministic_decision
 
 Extractor = Callable[[bytes, EvidenceRecord], Iterable[CandidateObservation]]
@@ -27,7 +34,7 @@ def run_acquisition(
     engine: CollectionEngine,
     extractor: Extractor,
     source_id: str,
-    rights_status: str = "public_permitted",
+    rights_status: RightsStatus = "unknown",
     snapshot_ref: str | None = None,
 ) -> AcquisitionRun:
     if routing.mode == "research_pause":
@@ -41,7 +48,7 @@ def run_acquisition(
         collection_method=routing.mode,
         http_status=response.status,
         raw_snapshot_ref=snapshot_ref,
-        rights_status=rights_status,  # type: ignore[arg-type]
+        rights_status=rights_status,
         response_meta=dict(response.metadata),
     )
     candidates = tuple(extractor(response.body, evidence))
