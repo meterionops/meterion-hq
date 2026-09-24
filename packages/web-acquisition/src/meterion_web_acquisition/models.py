@@ -51,6 +51,7 @@ class SourceObservation:
     ordinary_browser_blocked: bool = False
     rights_status: RightsStatus = "unknown"
     allow_stealth: bool = False
+    preferred_fetch_url: str | None = None
     notes: tuple[str, ...] = ()
 
 
@@ -60,6 +61,7 @@ class RoutingDecision:
     reason: str
     needs_jev: bool = False
     confidence: float | None = None
+    fetch_url: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
 
 
