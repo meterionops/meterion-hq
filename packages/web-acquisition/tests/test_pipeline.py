@@ -89,3 +89,26 @@ def test_pipeline_extracts_from_rendered_content_but_retains_raw_evidence():
     assert run.evidence.raw_hash != run.evidence.extraction_hash
     assert run.evidence.body_bytes < run.evidence.extraction_bytes
     assert run.decisions[0].status == "promote"
+
+
+def test_pipeline_preserves_source_identity_when_fetching_verified_endpoint():
+    run = run_acquisition(
+        job=CollectionJob(
+            job_id="j3",
+            project_key="maistio",
+            source_url="https://example.com/menu",
+            target="menu",
+        ),
+        routing=RoutingDecision(
+            mode="api_feed",
+            reason="verified endpoint",
+            fetch_url="https://example.com/wp-json/wp/v2/pages/10",
+        ),
+        engine=FakeEngine(),
+        extractor=extractor,
+        source_id="restaurant-own-site",
+        rights_status="public_permitted",
+    )
+    assert run.evidence.source_url == "https://example.com/wp-json/wp/v2/pages/10"
+    assert run.evidence.response_meta["source_identity_url"] == "https://example.com/menu"
+    assert run.evidence.response_meta["requested_fetch_url"] == "https://example.com/wp-json/wp/v2/pages/10"
