@@ -19,13 +19,16 @@ class ScraplingEngine:
             from scrapling.fetchers import DynamicFetcher, Fetcher, StealthyFetcher
         except Exception as exc:  # pragma: no cover - environment dependent
             raise RuntimeError(
-                "Scrapling is not installed. Install meterion-web-acquisition[scrapling]."
+                "Scrapling fetchers are not installed. Install meterion-web-acquisition[scrapling]."
             ) from exc
 
         if request.mode in {"api_feed", "static_http"}:
             if request.adaptive:
                 Fetcher.configure(adaptive=True)
-            page = Fetcher.get(request.url, timeout=request.timeout_ms)
+            page = Fetcher.get(
+                request.url,
+                timeout=max(request.timeout_ms / 1000.0, 0.001),
+            )
         elif request.mode == "dynamic_browser":
             if request.adaptive:
                 DynamicFetcher.configure(adaptive=True)
@@ -49,7 +52,20 @@ class ScraplingEngine:
 
         body = bytes(page.body)
         final_url = str(getattr(page, "url", request.url) or request.url)
+        headers = dict(getattr(page, "headers", {}) or {})
+        history = list(getattr(page, "history", []) or [])
+        captured_xhr = list(getattr(page, "captured_xhr", []) or [])
+        page_text = str(getattr(page, "text", "") or "")
+
         meta: dict[str, Any] = dict(getattr(page, "meta", {}) or {})
+        meta.update(
+            {
+                "response_headers": headers,
+                "redirect_count": len(history),
+                "captured_xhr_count": len(captured_xhr),
+                "response_text_length": len(page_text),
+            }
+        )
         return EngineResponse(
             body=body,
             status=getattr(page, "status", None),
