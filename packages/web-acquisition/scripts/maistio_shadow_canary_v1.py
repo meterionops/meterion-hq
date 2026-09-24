@@ -45,6 +45,8 @@ SOURCES = [
             "rights_status": "public_permitted",
         },
         "compare_static_baseline": True,
+        "capture_xhr": ".*",
+        "wait_ms": 2500,
     },
 ]
 
@@ -74,6 +76,9 @@ def result_for_response(source: dict, decision, response, evidence) -> dict:
         "text_length": text_length,
         "redirect_count": int(response.metadata.get("redirect_count", 0) or 0),
         "captured_xhr_count": int(response.metadata.get("captured_xhr_count", 0) or 0),
+        "captured_xhr_summaries": list(
+            response.metadata.get("captured_xhr_summaries", []) or []
+        )[:30],
         "rights_status": evidence.rights_status,
         "required_token": token,
         "required_token_found": None if not token else token.lower() in decoded.lower(),
@@ -104,8 +109,10 @@ def main() -> None:
                 url=source["url"],
                 mode=decision.mode,
                 timeout_ms=30_000,
+                wait_ms=int(source.get("wait_ms", 0)),
                 network_idle=False,
                 disable_resources=False,
+                capture_xhr_pattern=source.get("capture_xhr"),
             )
         )
         evidence = build_evidence(
@@ -162,6 +169,13 @@ def main() -> None:
             result["dynamic_hash_differs"] = (
                 result["raw_hash"] != result["static_baseline"]["raw_hash"]
             )
+            result["dynamic_discovery_gain"] = (
+                result["dynamic_render_gain_text_chars"] > 50
+                or result["captured_xhr_count"] > 0
+            )
+            if not result["dynamic_discovery_gain"]:
+                result["pass"] = False
+                result["failure"] = "dynamic_route_added_no_render_or_xhr_evidence"
 
         results.append(result)
 
