@@ -1,10 +1,12 @@
 ## 2026-09-25 — Web Acquisition XHR evidence checkpoint
 
 Shared acquisition PR #33: optional bounded raw XHR retention and hash-addressed
-snapshot/manifest writer implemented. Unit replay/integrity tests pass; real-browser
-loopback fixture added to CI. Local browser installation failed (invalid downloaded
-archive), so full provider/browser verification depends on that CI step. No genuine
-dynamic restaurant canary or canonical write is claimed. Details:
+snapshot/manifest writer implemented. All 20 unit tests and the real-browser
+loopback fixture passed in CI run 36121281754, including exact JSON/binary/empty
+response replay. The full workflow succeeded. Its eight-source dynamic probe found
+zero qualifying browser-value candidates. Local browser installation failed;
+CI supplied the browser verification. No genuine dynamic restaurant acceptance or
+canonical write is claimed. Details:
 `packages/web-acquisition/docs/XHR_EVIDENCE.md`. Existing project/domain parsers and
 admission policy remain unchanged. Maistio PDF shadow checkpoint is in its PR #122.
 
