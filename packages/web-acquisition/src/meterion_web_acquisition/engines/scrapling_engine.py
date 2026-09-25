@@ -3,7 +3,47 @@ from __future__ import annotations
 import hashlib
 from typing import Any
 
-from ..engine import EngineRequest, EngineResponse
+from ..engine import CapturedResponse, EngineRequest, EngineResponse
+from ..evidence import utc_now_iso
+
+MAX_XHR_RESPONSES = 100
+MAX_XHR_BODY_BYTES = 2 * 1024 * 1024
+MAX_XHR_TOTAL_BYTES = 10 * 1024 * 1024
+
+
+def capture_responses(captured_xhr, retain: bool):
+    """Bound retained copies. Provider/browser buffering occurs before this step."""
+    results = []
+    retained_bytes = 0
+    for xhr in captured_xhr[:MAX_XHR_RESPONSES]:
+        body = None
+        size = None
+        digest = None
+        reason = None
+        try:
+            raw = xhr.body
+            if not isinstance(raw, (bytes, bytearray)):
+                raise TypeError('body is not bytes')
+            size = len(raw)
+            digest = 'sha256:' + hashlib.sha256(raw).hexdigest()
+            if not retain:
+                reason = 'retention_not_requested'
+            elif size > MAX_XHR_BODY_BYTES:
+                reason = 'body_size_limit'
+            elif retained_bytes + size > MAX_XHR_TOTAL_BYTES:
+                reason = 'total_size_limit'
+            else:
+                body = bytes(raw)
+                retained_bytes += size
+        except Exception:
+            reason = 'body_unavailable'
+        results.append(CapturedResponse(
+            url=str(getattr(xhr, 'url', '') or ''),
+            status=getattr(xhr, 'status', None),
+            content_type=_header_value(dict(getattr(xhr, 'headers', {}) or {}), 'content-type'),
+            body=body, body_bytes=size, raw_hash=digest, omission_reason=reason,
+        ))
+    return tuple(results)
 
 
 def _header_value(headers: dict, name: str) -> str | None:
@@ -25,6 +65,8 @@ class ScraplingEngine:
     name = "scrapling"
 
     def collect(self, request: EngineRequest) -> EngineResponse:
+        if request.retain_xhr_bodies and not request.capture_xhr_pattern:
+            raise ValueError('XHR body retention requires an explicit capture pattern')
         try:
             from scrapling.fetchers import DynamicFetcher, Fetcher, StealthyFetcher
         except Exception as exc:  # pragma: no cover - environment dependent
@@ -86,34 +128,24 @@ class ScraplingEngine:
             if rendered_html:
                 extraction_body = rendered_html.encode("utf-8", errors="replace")
 
-        xhr_summaries: list[dict[str, Any]] = []
-        for xhr in captured_xhr[:100]:
-            try:
-                xhr_body = bytes(xhr.body)
-            except Exception:
-                xhr_body = b""
-            xhr_headers = dict(getattr(xhr, "headers", {}) or {})
-            xhr_summaries.append(
-                {
-                    "url": str(getattr(xhr, "url", "") or ""),
-                    "status": getattr(xhr, "status", None),
-                    "content_type": _header_value(xhr_headers, "content-type"),
-                    "body_bytes": len(xhr_body),
-                    "raw_hash": (
-                        "sha256:" + hashlib.sha256(xhr_body).hexdigest()
-                        if xhr_body
-                        else None
-                    ),
-                }
-            )
+        retained_xhr = capture_responses(captured_xhr, request.retain_xhr_bodies)
+        xhr_summaries = [dict(
+            url=x.url, status=x.status, content_type=x.content_type,
+            body_bytes=x.body_bytes, raw_hash=x.raw_hash,
+            body_retained=x.body is not None, omission_reason=x.omission_reason,
+        ) for x in retained_xhr]
 
         meta: dict[str, Any] = dict(getattr(page, "meta", {}) or {})
         meta.update(
             {
                 "response_headers": headers,
+                "requested_fetch_url": request.url,
+                "collection_method": request.mode,
+                "fetched_at": utc_now_iso(),
                 "redirect_count": len(history),
                 "captured_xhr_count": len(captured_xhr),
                 "captured_xhr_summaries": xhr_summaries,
+                "captured_xhr_omitted_count": max(0, len(captured_xhr) - MAX_XHR_RESPONSES),
                 "response_text_length": len(page_text),
                 "extraction_kind": "rendered_dom" if browser_mode else "raw_response",
             }
@@ -124,4 +156,5 @@ class ScraplingEngine:
             status=getattr(page, "status", None),
             final_url=final_url,
             metadata=meta,
+            captured_responses=retained_xhr,
         )

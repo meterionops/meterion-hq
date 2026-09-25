@@ -1,4 +1,5 @@
-from .engine import CollectionEngine, EngineRequest, EngineResponse
+from .engine import CapturedResponse, CollectionEngine, EngineRequest, EngineResponse
+from .snapshots import retain_response
 from .evidence import build_evidence, sha256_bytes, utc_now_iso
 from .jev import (
     COLLECTION_STRATEGY_INSTRUCTION,
@@ -25,6 +26,7 @@ __all__ = [
     "CandidateObservation",
     "CanonicalDecision",
     "CollectionEngine",
+    "CapturedResponse",
     "CollectionJob",
     "EngineRequest",
     "EngineResponse",
@@ -43,6 +45,7 @@ __all__ = [
     "extract_wordpress_rendered_content",
     "route_collection",
     "run_acquisition",
+    "retain_response",
     "sha256_bytes",
     "source_observation_from_profile",
     "utc_now_iso",

@@ -30,6 +30,8 @@ jobs:
         run: scrapling install
       - name: Unit tests
         run: pytest -q
+      - name: Replay real browser XHR fixture
+        run: python scripts/xhr_replay_smoke_v1.py
       - name: Maistio WordPress structured parity
         run: |
           set -o pipefail

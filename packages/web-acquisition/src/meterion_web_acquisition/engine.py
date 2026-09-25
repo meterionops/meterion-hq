@@ -15,6 +15,18 @@ class EngineRequest:
     adaptive: bool = False
     capture_xhr_pattern: str | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
+    retain_xhr_bodies: bool = False
+
+
+@dataclass(frozen=True)
+class CapturedResponse:
+    url: str
+    status: int | None
+    content_type: str | None
+    body: bytes | None
+    body_bytes: int | None
+    raw_hash: str | None
+    omission_reason: str | None = None
 
 
 @dataclass(frozen=True)
@@ -24,6 +36,7 @@ class EngineResponse:
     final_url: str
     extraction_body: bytes | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
+    captured_responses: tuple[CapturedResponse, ...] = ()
 
     @property
     def content_for_extraction(self) -> bytes:
