@@ -748,3 +748,17 @@ Rollback regressions prove:
 - rollback leaves zero test residue.
 
 Persistent canary and Fresh Critic are still required before PER-3 is VERIFIED.
+
+
+### Fresh Critic material patch — direct executor bypass closed
+
+Fresh Critic found that the initial PER-3 implementation exposed the builtin executor helper itself as a service-role RPC. A service-role caller could therefore invoke the executor without going through capability binding, authority checks, Run Envelope action accounting or the dispatch ledger.
+
+Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` closes that path:
+
+- builtin execution is now inlined inside `control_room_dispatch_project_graph_node_v1`;
+- the standalone `control_room_execute_builtin_capability_v1` function is dropped;
+- the only executable runtime entrypoint that can perform a PER-3 capability is the governed dispatch RPC;
+- repository regression asserts that the standalone executor RPC does not exist.
+
+This preserves the intended boundary: registry resolution may be read separately, but execution cannot bypass dispatch.
