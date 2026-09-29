@@ -5,12 +5,14 @@ begin;
 
 do $$
 declare
-  v_state integer := 6;
+  v_state integer;
   v_route jsonb;
   v_out jsonb;
   v_rejected boolean;
   v_project_id uuid;
 begin
+  v_state := (public.control_room_get_project_state_v3('ai-company-os')->>'state_version')::integer;
+
   ---------------------------------------------------------------------------
   -- A. Successful declared capability dispatch + idempotent replay.
   ---------------------------------------------------------------------------
