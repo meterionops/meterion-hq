@@ -8,6 +8,7 @@ do $$
 declare
   v_state_version integer;
   v_rejected boolean := false;
+  v_replay jsonb;
 begin
   select (public.control_room_get_project_state_v3('ai-company-os')->>'state_version')::integer
   into v_state_version;
@@ -194,6 +195,56 @@ begin
     if position('run retry budget exceeded' in sqlerrm) > 0 then v_rejected := true; else raise; end if;
   end;
   if not v_rejected then raise exception 'retry_budget_not_enforced'; end if;
-end $$;
+
+  -- Idempotent create replay must survive a later Project State version.
+  perform public.control_room_patch_project_state_v1(
+    'ai-company-os',
+    v_state_version,
+    jsonb_build_object(
+      'current_focus', 'PER-1 idempotency rollback probe',
+      'verified_at', now()::text,
+      'source_type', 'per1-regression'
+    )
+  );
+
+  select public.control_room_create_project_work_graph_v1(
+    'ai-company-os',
+    'per1-regression-success',
+    'per1-regression-success',
+    v_state_version,
+    '{"objective":"PER-1 regression success","definition_of_done":{"criteria":["graph closes"]}}'::jsonb,
+    '[
+      {"node_key":"first-node","node_type":"code","action_kind":"test","purpose":"first","execution_mode":"deterministic_code","failure_policy":"stop","max_attempts":1,"authority_class":"read_only"},
+      {"node_key":"second-node","node_type":"verifier","action_kind":"test","purpose":"second","execution_mode":"server_executable","failure_policy":"stop","max_attempts":1,"authority_class":"read_only"}
+    ]'::jsonb,
+    '[{"from":"first-node","to":"second-node","edge_kind":"control","required_status":"completed"}]'::jsonb,
+    '{"max_actions":2,"max_retries":0,"max_spend_microusd":0}'::jsonb
+  ) into v_replay;
+
+  if coalesce((v_replay->>'idempotent_replay')::boolean, false) is not true then
+    raise exception 'idempotent_replay_failed_after_state_advance';
+  end if;
+
+  -- Same run key with changed limits is not the same request.
+  v_rejected := false;
+  begin
+    perform public.control_room_create_project_work_graph_v1(
+      'ai-company-os',
+      'per1-regression-success',
+      'per1-regression-success',
+      v_state_version,
+      '{"objective":"PER-1 regression success","definition_of_done":{"criteria":["graph closes"]}}'::jsonb,
+      '[
+        {"node_key":"first-node","node_type":"code","action_kind":"test","purpose":"first","execution_mode":"deterministic_code","failure_policy":"stop","max_attempts":1,"authority_class":"read_only"},
+        {"node_key":"second-node","node_type":"verifier","action_kind":"test","purpose":"second","execution_mode":"server_executable","failure_policy":"stop","max_attempts":1,"authority_class":"read_only"}
+      ]'::jsonb,
+      '[{"from":"first-node","to":"second-node","edge_kind":"control","required_status":"completed"}]'::jsonb,
+      '{"max_actions":3,"max_retries":0,"max_spend_microusd":0}'::jsonb
+    );
+  exception when others then
+    if position('graph_run_limits_conflict' in sqlerrm) > 0 then v_rejected := true; else raise; end if;
+  end;
+  if not v_rejected then raise exception 'run_limit_conflict_not_rejected'; end if;
+end $;
 
 rollback;
