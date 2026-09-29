@@ -837,7 +837,7 @@ PER-3 is ready for merge and material Project State commit.
 
 ## PER-4 — Provider Adapter Bridge
 
-Status: IMPLEMENTED — Fresh Critic verification candidate
+Status: VERIFIED — Fresh Critic READY
 
 PER-4 extends the verified PER-3 capability/executor boundary to one replaceable external provider adapter without introducing a second scheduler, retry ledger, authority source or credential store.
 
@@ -1117,3 +1117,48 @@ Observed current-runtime evidence:
 - canonical Project State remained v7.
 
 The original provider canary is marked `superseded_by=per4-provider-canary-v2-20260929`; it is retained rather than deleted so the hardening history remains auditable.
+
+
+### PER-4 Fresh Critic verification
+
+Verdict: **READY**.
+
+Audit boundary:
+
+- objective: add one replaceable provider adapter behind the verified PER-3 governed dispatch boundary;
+- preserve: PER-2 remains canonical for action/attempt/retry/lease/recovery; PER-3 remains canonical for capability/project binding/authority routing;
+- non-goals: automatic workers, broad parallelism, cross-provider fan-out, provider writes and provider credential infrastructure.
+
+Strongest evidence:
+
+- branch regressions PASS in dependency order: PER-2, PER-3, PER-4;
+- PER-4 rollback suite leaves zero Work Units, Graph Runs and dispatch rows;
+- all five PER-4 migration files are byte-identical to the corresponding applied Supabase migration statements;
+- final post-migration persistent canary `per4-provider-canary-v2-20260929` completed through the real connected GitHub provider;
+- canary result identifies `meterionops/meterion-hq` with default branch `main`;
+- handoff consumed zero action/attempt budget;
+- provider claim consumed exactly one PER-2 action and one node attempt;
+- final graph / Work Unit / Run Envelope are completed;
+- `actions_used=1`, `attempt_count=1`, `retries_used=0`, `spend_microusd=0`;
+- one provider dispatch exists and is completed;
+- open runtime exceptions: 0;
+- provider credential scanner is false for dispatch input, result and evidence;
+- prepare/claim/finish replay idempotently;
+- provider failure regression uses the existing PER-2 retry path;
+- expired provider-worker regression uses the existing PER-2 wake/retry path and reconciles the old provider dispatch;
+- provider adapter registry is RLS-enabled and anon/authenticated have no table privileges;
+- provider runtime RPCs deny anon/authenticated execution and allow only service_role;
+- provider adapter registry is SELECT-only to service_role;
+- only one provider-finish assertion function overload remains.
+
+Advisor review:
+
+- no new PER-4 missing-FK or exposed-access finding;
+- RLS-with-no-policy notices are expected for internal service-role-only tables that have no anon/auth grants;
+- unused-index notices on newly created provider indexes are informational immediately after creation;
+- existing unindexed FKs on `control_room_run_envelopes.project_id` and `control_room_work_batches.event_id` predate PER-4;
+- the project-level leaked-password-protection warning predates PER-4 and is outside this milestone.
+
+Fresh Critic found no remaining BLOCKER or MATERIAL issue.
+
+PER-4 is ready for merge and material Project State commit.
