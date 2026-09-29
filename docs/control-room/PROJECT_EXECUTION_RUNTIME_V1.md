@@ -1166,7 +1166,7 @@ PER-4 is ready for merge and material Project State commit.
 
 ## PER-5 — Automated Provider Worker Pickup
 
-Status: IMPLEMENTED — automated canary pending
+Status: VERIFIED — Fresh Critic READY
 
 PER-5 automates the worker side of the verified PER-4 `awaiting_provider -> claim -> provider -> finish` contract. It does not add a second scheduler, retry ledger, authority source or credential store.
 
@@ -1290,3 +1290,14 @@ PER-5 does not add:
 - sub-hour worker guarantees.
 
 The next verification step is a persistent provider handoff that is claimed and completed by a scheduled ChatGPT Automation without manual Project Operator brokerage.
+
+
+### PER-5 final closure evidence
+
+Persistent canary `per5-provider-worker-canary-20260929` completed from Project State v8 with Graph Run, Work Unit and Run Envelope completed; actions_used=1; attempt_count=1; retries_used=0; spend_microusd=0; exactly one completed provider dispatch; zero open exceptions; and provider credential scanner false for dispatch input, result and evidence. The canary was already durably completed before the final closure pass, so the verifier correctly did not re-claim or re-invoke an empty provider queue.
+
+The PER-2 through PER-5 rollback regression perimeter had already passed on this branch with zero residue. The final closure session independently reconfirmed zero PER-2/3/4/5 regression residue. Repository migration `20260929133738_project_execution_runtime_per5_worker_pickup.sql` exactly matches the applied Supabase migration payload. The pickup RPC is executable only by `service_role`; `anon` and `authenticated` have no EXECUTE privilege.
+
+Fresh Critic verdict: **READY**. No PER-5 BLOCKER or MATERIAL finding remains.
+
+Next milestone: **PER-6 — Ready-Node Scheduler & Safe Parallelism**. Schedule only dependency-ready work, allow bounded parallel execution of independent nodes, preserve PER-2 through PER-5 authority/budget/credential/recovery contracts, and do not introduce external-write authority.
