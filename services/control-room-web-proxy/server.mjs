@@ -2,6 +2,7 @@ import http from "node:http";
 
 const port = Number(process.env.PORT || 10000);
 const upstream = "https://cavvdvxicadgfftbziao.supabase.co/functions/v1/control-room-web-v1";
+const ownerProjectsUrl = "https://ai-company-os-ceo-dashboard.vercel.app/projects.html";
 const maxBodyBytes = 64 * 1024;
 
 function setSecurityHeaders(res) {
@@ -30,21 +31,11 @@ async function readBody(req) {
   return Buffer.concat(chunks);
 }
 
-async function serveHtml(res) {
-  const response = await fetch(`${upstream}?render_proxy=1`, {
-    method: "GET",
-    redirect: "manual",
-    headers: { "user-agent": "meterion-control-room-web/1" },
-  });
-  const body = await response.text();
-  if (!response.ok) {
-    return writeJson(res, 502, { ok: false, code: "upstream_html_unavailable", upstream_status: response.status });
-  }
+function redirectOwnerUi(res) {
   setSecurityHeaders(res);
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.setHeader("Content-Disposition", "inline");
-  res.end(body);
+  res.statusCode = 302;
+  res.setHeader("Location", ownerProjectsUrl);
+  res.end();
 }
 
 async function proxyPost(req, res) {
@@ -71,12 +62,10 @@ const server = http.createServer(async (req, res) => {
       return writeJson(res, 200, { ok: true, service: "meterion-control-room-web", upstream });
     }
     if (url.pathname !== "/") {
-      res.statusCode = 302;
-      res.setHeader("Location", "/");
-      return res.end();
+      return redirectOwnerUi(res);
     }
     if (req.method === "GET" || req.method === "HEAD") {
-      return await serveHtml(res);
+      return redirectOwnerUi(res);
     }
     if (req.method === "POST") {
       return await proxyPost(req, res);
