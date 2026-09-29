@@ -1075,3 +1075,45 @@ PER-4 does not implement:
 - a new budget system.
 
 Fresh Critic, final branch regression, repository review and merge are still required before PER-4 is VERIFIED.
+
+
+### PER-4 final post-migration canary
+
+The earlier `per4-provider-canary-20260929` remains as audit history and is superseded by the final post-migration canary.
+
+Final Graph Run:
+
+`per4-provider-canary-v2-20260929`
+
+Final Work Unit:
+
+`per4-provider-canary-v2`
+
+This canary was created and executed after all five applied PER-4 migrations, including the secret-scanner precision migration.
+
+Observed current-runtime evidence:
+
+- source Project State: v7
+- real provider: connected GitHub provider
+- capability: `github.repository.read`
+- executor: `github.repository.read.v1`
+- adapter: `github.connector.read.v1`
+- operation: `get_repo`
+- repository: `meterionops/meterion-hq`
+- returned default branch: `main`
+- Graph Run: `completed`
+- Work Unit: `completed`
+- Run Envelope: `completed`
+- nodes: 1/1 completed
+- `actions_used = 1`
+- node `attempt_count = 1`
+- `retries_used = 0`
+- `spend_microusd = 0`
+- dispatch rows: 1
+- completed dispatches: 1
+- open exceptions: 0
+- provider credential scan: false for dispatch input, result and evidence
+- prepare/claim/finish replay idempotently
+- canonical Project State remained v7.
+
+The original provider canary is marked `superseded_by=per4-provider-canary-v2-20260929`; it is retained rather than deleted so the hardening history remains auditable.
