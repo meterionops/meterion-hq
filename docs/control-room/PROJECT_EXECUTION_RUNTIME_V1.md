@@ -380,7 +380,7 @@ Provider dispatch, broad parallel execution and cross-provider execution remain 
 
 ## PER-2 — Runtime & Resume Hardening
 
-Status: IMPLEMENTED — verification candidate  
+Status: VERIFIED — Fresh Critic READY  
 Date: 2026-09-29
 
 PER-2 extends PER-1 rather than introducing another runtime.
@@ -536,3 +536,69 @@ PER-2 is READY only when a persistent production canary proves:
 7. transition/wake idempotency prevents duplicate state changes;
 8. runtime exceptions are inspectable and resolve when the node completes;
 9. Project State is not advanced until the milestone is independently verified.
+
+
+### PER-2 Fresh Critic verification
+
+Verdict: **READY**.
+
+Authoritative evidence:
+
+- final persistent run: `per2-canary-v3-20260929`
+- Work Unit: `per2-interruption-canary-v3`
+- source Project State: v5
+- runtime version: 2
+- Graph Run: `completed`
+- Work Unit: `completed`
+- Run Envelope: `completed`
+- six of six nodes completed
+- `actions_used = 7`
+- `retries_used = 1`
+- `spend_microusd = 0`
+- `resume_from = null`
+- `action_space = []`
+- final verified checkpoint contains all six nodes
+- open runtime exception count: 0.
+
+Observed interruption behavior:
+
+- `verified-first` stayed completed at attempt 1 / interruption 0 while later work was interrupted.
+- `interrupted-read` expired in RUNNING, wake requeued only that node, consumed exactly one canonical Run Envelope retry, then completed at attempt 2 / interruption 1.
+- `interrupted-write` expired in RUNNING and moved to `VERIFYING/reconcile`; reconciliation did not consume a second execute action and the material exception resolved on completion.
+- `verify-interrupted` expired after RUNNING -> VERIFYING; wake resumed verification, not execution, and did not consume an execute action or retry.
+- `session-wait` persisted `waiting_session` with explicit wait reason/time/resume cursor and completed after explicit release.
+- `owner-wait` persisted `waiting_owner` with explicit wait reason/time/resume cursor. Its release was synthetic canary evidence only and did not represent external business approval.
+- claim, heartbeat, transition, retry and wake replay semantics were regression-tested for idempotency.
+- changed content under an existing transition key is rejected.
+- PER-1 mutation RPCs reject runtime-version-2 graphs.
+
+Retry-budget patch discovered by Fresh Critic:
+
+The first implementation allowed a stale safe-retry requeue to use another node attempt without consuming the canonical Run Envelope retry budget. Fresh Critic classified that as material because PER-1 had already locked Run Envelope as the sole retry-budget owner.
+
+The patch in migration `20260929081422_project_execution_runtime_per2_recovery_retry_budget.sql` now:
+
+- consumes one Run Envelope retry for stale `recovery_policy=retry` requeue;
+- fails closed when `max_retries` is exhausted;
+- records `stale_execution_retry_budget_exhausted` as a blocker exception;
+- does not consume retries for VERIFYING resume or write reconciliation because those paths do not execute the side effect again.
+
+Repository regression proves `max_retries=0` blocks stale execution requeue and leaves `retries_used=0`.
+
+Canary provenance:
+
+- `per2-canary-20260929` failed because its non-interrupt predecessor was accidentally given a 5-second lease shorter than connector roundtrip. Runtime correctly detected the stale lease and failed closed at max attempts. The exception is retained but resolved as a superseded harness misconfiguration.
+- `per2-canary-v2-20260929` proved interruption/reconcile/verification/wait semantics but predates the recovery retry-budget patch.
+- `per2-canary-v3-20260929` is the final verification run after all material patches.
+
+Security and regression perimeter:
+
+- all PER-2 RPCs deny EXECUTE to `anon` and `authenticated` and allow `service_role`;
+- PER-2 runtime tables expose no anon/authenticated table privileges;
+- transition and wake ledgers are append-only for service_role;
+- the PER-2 FK advisor finding was fixed;
+- remaining Supabase advisor notices predate PER-2 and are outside this milestone;
+- `supabase/tests/project_execution_runtime_per2.sql` passes and rolls back all regression data;
+- canonical Project State remained v5 throughout implementation and verification.
+
+PER-2 is ready for material project-state commit.
