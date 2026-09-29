@@ -375,25 +375,10 @@ begin
   end if;
 
   ---------------------------------------------------------------------------
-  -- H. Builtin executor surface is closed: arbitrary executor keys fail.
+  -- H. Executor implementation has no standalone RPC bypass.
   ---------------------------------------------------------------------------
-  v_rejected := false;
-  begin
-    perform public.control_room_execute_builtin_capability_v1(
-      'control_room.arbitrary.function',
-      (select id from public.control_room_projects where project_key='ai-company-os'),
-      '{}'::jsonb
-    );
-  exception when others then
-    if position('builtin_executor_not_supported' in sqlerrm) > 0 then
-      v_rejected := true;
-    else
-      raise;
-    end if;
-  end;
-
-  if not v_rejected then
-    raise exception 'arbitrary_builtin_executor_not_rejected';
+  if to_regprocedure('public.control_room_execute_builtin_capability_v1(text,uuid,jsonb)') is not null then
+    raise exception 'standalone_executor_rpc_still_exists';
   end if;
 end $$;
 
