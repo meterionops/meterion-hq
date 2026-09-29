@@ -245,6 +245,6 @@ begin
     if position('graph_run_limits_conflict' in sqlerrm) > 0 then v_rejected := true; else raise; end if;
   end;
   if not v_rejected then raise exception 'run_limit_conflict_not_rejected'; end if;
-end $;
+end $$;
 
 rollback;
