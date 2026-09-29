@@ -602,3 +602,234 @@ Security and regression perimeter:
 - canonical Project State remained v5 throughout implementation and verification.
 
 PER-2 is ready for material project-state commit.
+
+
+## PER-3 — Governed Dispatch & Capability Routing
+
+Status: VERIFIED — Fresh Critic READY  
+Date: 2026-09-29
+
+PER-3 connects PER-2 `action_space` to explicitly declared bounded execution. It does not create a scheduler and it does not add external provider dispatch.
+
+### Objective
+
+A PER-2 graph node with `required_capability` can resolve to a project-authorized capability and a bounded executor, pass authority/budget checks before execution, execute exactly once under the existing PER-2 lease/idempotency state machine, and persist result/evidence back to the node.
+
+### Registry model
+
+PER-3 adds:
+
+- `control_room_execution_executors_v1`
+  - declares bounded executor keys
+  - executor kind is currently restricted to `builtin`
+  - declares supported execution modes and an authority ceiling.
+
+- `control_room_execution_capabilities_v1`
+  - maps a capability key to one declared executor
+  - declares supported execution modes/phases and an authority ceiling
+  - stores input/output contracts as metadata for the capability contract.
+
+- `control_room_project_capability_bindings_v1`
+  - explicitly authorizes a capability for a project
+  - has its own authority ceiling
+  - disabled/missing bindings fail closed.
+
+- `control_room_project_graph_dispatches_v1`
+  - durable dispatch ledger
+  - unique `(graph_run_key, dispatch_key)`
+  - stores request hash, route, executor, phase, status, input, result, evidence and error code.
+
+All registry tables are migration-managed. Runtime service_role has read-only access to executor/capability/binding registries and bounded insert/update access to the dispatch ledger.
+
+### Resolution path
+
+`control_room_resolve_project_graph_dispatch_v1` evaluates, before node claim:
+
+1. runtime version and graph/run state;
+2. session/human-gate waits;
+3. dispatchable node phase;
+4. Run Envelope action budget for execute phase;
+5. required capability existence/status;
+6. project capability binding existence/status;
+7. executor existence/status;
+8. execution-mode compatibility;
+9. phase compatibility;
+10. node authority against capability, project binding and executor ceilings.
+
+Only `route_status=dispatchable` may proceed to claim.
+
+Rejected/waiting resolution consumes no action and no node attempt.
+
+### Dispatch path
+
+`control_room_dispatch_project_graph_node_v1`:
+
+- serializes the same dispatch key with an advisory transaction lock;
+- replays an identical prior dispatch without re-execution;
+- rejects the same dispatch key with changed request content;
+- records rejected/waiting preflight attempts durably;
+- for a dispatchable route, calls PER-2 `claim`;
+- executes only a closed-set builtin executor;
+- completes/fails the node through PER-2 `transition`;
+- writes capability/executor/phase evidence into the node;
+- stores the final result/evidence in the dispatch ledger.
+
+PER-2 remains the owner of node leases, attempts, action usage, retry usage, recovery and checkpoints.
+
+### First bounded capability
+
+Capability:
+
+`control_room.project_state.read`
+
+Executor:
+
+`control_room.project_state.read.v1`
+
+Properties:
+
+- read-only
+- zero external spend
+- no external credentials
+- server-executable / deterministic-code compatible
+- execute phase only
+- bound initially to `ai-company-os`
+- returns the canonical Control Room Project State for the graph's own project.
+
+The builtin executor uses a closed CASE-style implementation. Arbitrary function names are not executed.
+
+### Explicit waits and fail-closed behavior
+
+- `chatgpt_session` -> `waiting_session`; no server claim
+- `human_gate` / `owner_gate` -> `waiting_owner`; no server claim
+- missing/disabled capability -> rejected; no claim
+- missing/disabled project binding -> rejected; no claim
+- unsupported mode/phase -> rejected; no claim
+- authority ceiling exceeded -> rejected; no claim
+- exhausted action budget -> rejected before claim; PER-2 claim remains the atomic second budget check.
+
+### Security boundary
+
+PER-3 tables are RLS-enabled and expose no anon/authenticated table privileges.
+
+All PER-3 RPCs are executable only by `service_role`.
+
+The capability/executor/binding registries are not runtime-writable by service_role.
+
+### Non-goals
+
+PER-3 does not implement:
+
+- external provider adapters
+- provider credential storage
+- broad/cross-provider dispatch
+- parallel worker scheduling
+- background scheduling
+- browser/client dispatch
+- arbitrary SQL/function execution
+- a second authority or budget ledger.
+
+### Verification candidate evidence
+
+Rollback regressions prove:
+
+- declared capability -> executor resolution
+- successful dispatch writes result/evidence to the node
+- successful dispatch consumes exactly one existing Run Envelope action
+- identical dispatch replay consumes no second action
+- changed request under the same dispatch key is rejected
+- unregistered capability rejection consumes zero action/attempt
+- authority rejection consumes zero action/attempt
+- session/Owner work stays explicit wait
+- disabled project binding rejects before claim
+- pre-consumed action budget rejects before claim
+- arbitrary builtin executor keys are rejected
+- service-role-only privilege boundary
+- rollback leaves zero test residue.
+
+Persistent canary and Fresh Critic are still required before PER-3 is VERIFIED.
+
+
+### Fresh Critic material patch — direct executor bypass closed
+
+Fresh Critic found that the initial PER-3 implementation exposed the builtin executor helper itself as a service-role RPC. A service-role caller could therefore invoke the executor without going through capability binding, authority checks, Run Envelope action accounting or the dispatch ledger.
+
+Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` closes that path:
+
+- builtin execution is now inlined inside `control_room_dispatch_project_graph_node_v1`;
+- the standalone `control_room_execute_builtin_capability_v1` function is dropped;
+- the only executable runtime entrypoint that can perform a PER-3 capability is the governed dispatch RPC;
+- repository regression asserts that the standalone executor RPC does not exist.
+
+This preserves the intended boundary: registry resolution may be read separately, but execution cannot bypass dispatch.
+
+
+### PER-3 Fresh Critic verification
+
+Verdict: **READY**.
+
+Final persistent canary:
+
+- Graph Run: `per3-canary-v2-20260929`
+- Work Unit: `per3-capability-canary-v2`
+- source Project State: v6
+- runtime version: 2
+- capability: `control_room.project_state.read`
+- executor: `control_room.project_state.read.v1`
+- Graph Run: `completed`
+- Work Unit: `completed`
+- Run Envelope: `completed`
+- nodes completed: 1/1
+- `actions_used = 1`
+- `retries_used = 0`
+- `spend_microusd = 0`
+- `resume_from = null`
+- `action_space = []`
+- dispatch ledger rows: 1
+- completed dispatches: 1
+- rejected/waiting/failed dispatches: 0
+- open runtime exceptions: 0.
+
+Observed governed-dispatch behavior:
+
+- READY node exposed `required_capability=control_room.project_state.read` in the existing PER-2 action space.
+- Resolution found the active ai-company-os project binding, capability and bounded executor.
+- Authority was read-only at node, binding, capability and executor boundaries.
+- Dispatch claim consumed exactly one canonical Run Envelope action and one node attempt.
+- The executor returned canonical ai-company-os Project State version 6.
+- Result and evidence were persisted on the PER-2 node and in the dispatch ledger.
+- An identical dispatch-key/request replay returned idempotently and did not consume another action or attempt.
+- The final checkpoint contains the completed `read-project-state` node.
+- Canonical Project State remained v6 throughout implementation and verification.
+
+Negative/regression evidence:
+
+- unregistered capability -> rejected before claim, action/attempt usage unchanged
+- authority above capability ceiling -> rejected before claim
+- disabled project binding -> rejected before claim
+- exhausted action budget -> rejected before claim
+- ChatGPT-session work -> explicit `waiting_session`, no server claim
+- human/Owner work -> explicit `waiting_owner`, no server claim
+- changed input under an existing dispatch key -> `dispatch_key_conflict`
+- rollback regression leaves zero Work Units, Graph Runs and dispatch rows
+- standalone executor RPC does not exist after the Fresh Critic boundary patch.
+
+Security:
+
+- PER-3 tables are RLS-enabled.
+- `anon` and `authenticated` have no table privileges on the PER-3 registry/dispatch tables.
+- PER-3 runtime RPCs deny EXECUTE to `anon` and `authenticated`.
+- `service_role` has SELECT-only registry access and bounded dispatch-ledger write access.
+- capability execution is inlined behind the governed dispatch RPC; there is no separately callable executor helper.
+- no PER-3 missing-FK advisor finding remains.
+
+Advisor notices outside this milestone:
+
+- existing unindexed FKs on `control_room_run_envelopes.project_id` and `control_room_work_batches.event_id` predate PER-3;
+- unused-index notices on newly created PER-3 indexes are informational immediately after creation;
+- RLS-with-no-policy notices are expected for internal service-role-only tables with no anon/auth grants;
+- the project-level leaked-password-protection warning predates PER-3.
+
+Fresh Critic found one material issue before READY: the initial standalone builtin executor helper could be called directly by service_role and bypass dispatch governance. Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` removed that helper and moved the closed-set builtin execution into the governed dispatch RPC. Full regression and the final persistent canary were rerun after the patch.
+
+PER-3 is ready for merge and material Project State commit.
