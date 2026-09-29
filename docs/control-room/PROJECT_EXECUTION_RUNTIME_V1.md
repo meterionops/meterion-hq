@@ -376,3 +376,163 @@ PER-2 should extend the PER-1 foundation rather than create another runtime:
 - regression proof that interruption resumes from the latest verified checkpoint without duplicate side effects.
 
 Provider dispatch, broad parallel execution and cross-provider execution remain later milestones.
+
+
+## PER-2 — Runtime & Resume Hardening
+
+Status: IMPLEMENTED — verification candidate  
+Date: 2026-09-29
+
+PER-2 extends PER-1 rather than introducing another runtime.
+
+### Objective
+
+A bounded project graph may be interrupted during execution without losing its verified checkpoint, silently duplicating side effects, or requiring the Owner to reconstruct runtime state manually.
+
+### Runtime version boundary
+
+PER-2 Graph Runs use `runtime_version = 2`.
+
+PER-1 read APIs remain compatible, but PER-1 mutation/refresh RPCs explicitly reject runtime-version-2 graphs. PER-2 mutation must use the v2 lease/idempotency path.
+
+### Node lease
+
+PER-2 adds to each graph node:
+
+- `execution_token`
+- `lease_expires_at`
+- `heartbeat_at`
+- `execution_epoch`
+- `interruption_count`
+- `last_recovered_at`
+- `recovery_policy`
+- durable `wait_context` / `wait_started_at`.
+
+Lease time uses PostgreSQL `clock_timestamp()`, not transaction-stable `now()`.
+
+A READY node must be claimed before execution. Claiming:
+
+- consumes one existing Run Envelope action
+- increments attempt count
+- creates a new execution epoch
+- returns a lease token
+- records an idempotent transition-ledger entry.
+
+A VERIFYING node can be claimed separately for verification/reconciliation without consuming a second execution action or incrementing attempt count.
+
+### Recovery policy
+
+`recovery_policy` is one of:
+
+- `retry` — safe work may return to READY after stale execution, subject to max attempts
+- `reconcile` — writes do not automatically re-run; stale execution moves to VERIFYING so the external effect is checked first
+- `owner_gate` — stale execution waits for Owner resolution
+- `fail` — stale execution fails closed.
+
+Default derivation:
+
+- bounded/external writes -> `reconcile`
+- Owner/human gate -> `owner_gate`
+- other work -> `retry`.
+
+### Stale execution and wake
+
+`control_room_refresh_project_graph_v2` detects an expired active lease and changes the Run Envelope to:
+
+- graph: `waiting`
+- envelope: `paused`
+- `stop_reason = stale_execution_wake_required`.
+
+`control_room_wake_project_graph_v2` is the bounded recovery entrypoint.
+
+It:
+
+- requeues safe retry-policy execution
+- resumes VERIFYING without replaying execute
+- converts interrupted write work into reconciliation
+- makes Owner-gated interruption explicit
+- fails closed when recovery policy/attempt budget requires it
+- records exceptions and transition history
+- is idempotent by `wake_key`.
+
+### Idempotent transition ledger
+
+`control_room_project_graph_node_transitions_v2` records:
+
+- transition key
+- request hash
+- transition kind
+- from/to states
+- phase
+- lease token
+- request and response evidence.
+
+Reusing the same transition key with the identical request is an idempotent replay.
+
+Reusing the key with different content is rejected as `transition_key_conflict`.
+
+This covers claim, heartbeat, state transitions, retry and wake recovery.
+
+### Durable waits
+
+`chatgpt_session` nodes persist:
+
+- `waiting_session`
+- `wait_context.reason = chatgpt_session_required`
+- `wait_started_at`
+- `resume_from`.
+
+Human/Owner gates persist the corresponding `waiting_owner` state.
+
+A wait must be explicitly released to READY through the v2 transition path before claim.
+
+### Exception/read model
+
+`control_room_project_graph_exceptions_v1` persists recovery exceptions with severity, details and resolution.
+
+`control_room_get_project_graph_runtime_v2` returns:
+
+- the PER-1 Work Unit / Graph Run / Run Envelope / Nodes / Edges
+- runtime version
+- stale-active count
+- open exception count
+- transition count
+- exception history.
+
+### Security
+
+The new runtime tables are RLS-enabled and expose no anon/authenticated table privilege.
+
+The new runtime RPCs are executable by `service_role` only.
+
+Transition and wake ledgers are append-only for service_role. Exception rows allow select/insert/update for resolution.
+
+### Regression evidence before production canary
+
+Rollback regressions verify:
+
+- a verified predecessor is not replayed after a later node is interrupted
+- stale execution is detected before wake
+- safe read-only work is requeued exactly once
+- write interruption enters reconciliation rather than execution replay
+- verification/reconciliation claim does not consume another execution action
+- session and Owner waits persist explicit reason/time/resume state
+- explicit retry consumes the existing retry budget
+- claim/retry/wake replay is idempotent
+- changed content under the same transition key is rejected
+- PER-1 mutation RPCs cannot mutate PER-2 graphs
+- no regression rows remain after rollback.
+
+### PER-2 Definition of Done
+
+PER-2 is READY only when a persistent production canary proves:
+
+1. a verified node remains completed across a later interruption;
+2. an expired RUNNING lease is detected as stale;
+3. wake resumes from the interrupted node, not from graph start;
+4. a bounded-write interruption enters reconcile and does not execute twice;
+5. a VERIFYING interruption resumes verification without consuming a second execute action;
+6. session/Owner waits remain durable;
+7. transition/wake idempotency prevents duplicate state changes;
+8. runtime exceptions are inspectable and resolve when the node completes;
+9. Project State is not advanced until the milestone is independently verified.
