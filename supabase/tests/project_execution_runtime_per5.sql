@@ -15,8 +15,25 @@ begin
   v_state := (public.control_room_get_project_state_v3('ai-company-os')->>'state_version')::integer;
 
   ---------------------------------------------------------------------------
-  -- A. No eligible handoff -> no claim and no budget consumption.
+  -- A. Test isolation + empty eligible queue -> no claim.
   ---------------------------------------------------------------------------
+  if exists (
+    select 1
+    from public.control_room_project_graph_dispatches_v1 d
+    join public.control_room_project_graph_runs_v1 g on g.run_key=d.graph_run_key
+    join public.control_room_project_graph_nodes_v1 n on n.graph_run_key=d.graph_run_key and n.id=d.node_id
+    join public.control_room_projects p on p.id=d.project_id
+    join public.control_room_run_envelopes r on r.run_key=d.graph_run_key
+    where p.project_key='ai-company-os'
+      and d.status='awaiting_provider'
+      and d.provider_adapter_key='github.connector.read.v1'
+      and g.status='active'
+      and n.status='ready'
+      and r.status='active'
+  ) then
+    raise exception 'per5_regression_requires_empty_provider_queue';
+  end if;
+
   v_pickup := public.control_room_claim_next_project_graph_provider_dispatch_v1(
     'ai-company-os',
     'per5-regression-worker',
