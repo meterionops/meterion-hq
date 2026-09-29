@@ -134,14 +134,28 @@ begin
   perform public.control_room_transition_project_graph_node_v1(
     'per1-regression-actions','action-one','running','completed','{"ok":true}'::jsonb,'{}'::jsonb
   );
+  if not exists (
+    select 1
+    from public.control_room_project_graph_runs_v1 g
+    join public.control_room_run_envelopes r on r.run_key=g.run_key
+    where g.run_key='per1-regression-actions'
+      and g.status='failed'
+      and r.status='blocked'
+      and r.stop_reason='action_budget_exhausted'
+      and r.resume_from is null
+      and r.action_space='[]'::jsonb
+  ) then
+    raise exception 'action_budget_stop_not_materialized';
+  end if;
+
   begin
     perform public.control_room_transition_project_graph_node_v1(
       'per1-regression-actions','action-two','ready','running',null,'{}'::jsonb
     );
   exception when others then
-    if position('run action budget exceeded' in sqlerrm) > 0 then v_rejected := true; else raise; end if;
+    if position('graph_run_not_executable:failed' in sqlerrm) > 0 then v_rejected := true; else raise; end if;
   end;
-  if not v_rejected then raise exception 'action_budget_not_enforced'; end if;
+  if not v_rejected then raise exception 'failed_graph_remained_executable'; end if;
 
   -- Retry budget enforcement.
   v_rejected := false;
@@ -158,6 +172,20 @@ begin
   perform public.control_room_transition_project_graph_node_v1(
     'per1-regression-retries','retry-node','running','failed','{"expected":true}'::jsonb,'{}'::jsonb
   );
+  if not exists (
+    select 1
+    from public.control_room_project_graph_runs_v1 g
+    join public.control_room_run_envelopes r on r.run_key=g.run_key
+    where g.run_key='per1-regression-retries'
+      and g.status='failed'
+      and r.status='blocked'
+      and r.stop_reason='retry_budget_exhausted'
+      and r.resume_from is null
+      and r.action_space='[]'::jsonb
+  ) then
+    raise exception 'retry_budget_stop_not_materialized';
+  end if;
+
   begin
     perform public.control_room_retry_project_graph_node_v1(
       'per1-regression-retries','retry-node'
