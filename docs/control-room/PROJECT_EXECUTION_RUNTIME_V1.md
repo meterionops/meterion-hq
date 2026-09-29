@@ -833,3 +833,245 @@ Advisor notices outside this milestone:
 Fresh Critic found one material issue before READY: the initial standalone builtin executor helper could be called directly by service_role and bypass dispatch governance. Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` removed that helper and moved the closed-set builtin execution into the governed dispatch RPC. Full regression and the final persistent canary were rerun after the patch.
 
 PER-3 is ready for merge and material Project State commit.
+
+
+## PER-4 — Provider Adapter Bridge
+
+Status: IMPLEMENTED — Fresh Critic verification candidate
+
+PER-4 extends the verified PER-3 capability/executor boundary to one replaceable external provider adapter without introducing a second scheduler, retry ledger, authority source or credential store.
+
+### Locked execution shape
+
+```text
+PER-2 READY node
+  -> PER-3 capability + project binding + authority/budget preflight
+  -> PER-4 provider adapter resolution
+  -> durable awaiting_provider handoff
+  -> provider claim immediately before invocation
+       -> PER-2 claim owns action + attempt + lease
+  -> connector-managed provider call
+  -> provider finish
+       -> PER-2 transition owns completed/failed state
+  -> result/evidence persisted in the existing dispatch/node runtime
+```
+
+PER-4 deliberately stops before automated worker pickup. During the canary, Project Operator acts as the bounded provider worker between `claim` and `finish`. PER-5 may automate that pickup without changing the adapter contract.
+
+### Provider adapter registry
+
+New registry:
+
+`control_room_execution_provider_adapters_v1`
+
+It declares:
+
+- adapter key
+- provider key
+- invocation mode
+- credential mode
+- status
+- allowed operations
+- descriptive metadata.
+
+The first adapter is:
+
+`github.connector.read.v1`
+
+Properties:
+
+- provider: GitHub
+- invocation mode: `chatgpt_connector`
+- credential mode: `connector_managed`
+- allowed operation: `get_repo`
+- read-only
+- zero direct provider spend in the canary.
+
+The executor registry now supports `provider_adapter` in addition to `builtin`. Provider executors must bind to a declared adapter + operation.
+
+### First provider capability
+
+Capability:
+
+`github.repository.read`
+
+Executor:
+
+`github.repository.read.v1`
+
+Initial project binding:
+
+`ai-company-os`
+
+Canary repository allowlist:
+
+`meterionops/meterion-hq`
+
+The capability is read-only, execute-phase only and initially bound only to the AI Company OS project.
+
+### Credential boundary
+
+Provider credentials never enter Graph Run, Node, Dispatch input/result/evidence or Project State.
+
+The adapter records only:
+
+`credential_mode=connector_managed`
+
+Authentication remains inside the connected GitHub provider.
+
+Provider input is closed-world:
+
+- required: `repository_full_name`
+- no additional fields
+- repository must match the project binding allowlist.
+
+Secret-bearing dispatch input is rejected before a dispatch ledger row or action claim is created.
+
+Provider result/evidence is also closed-world. For the first GitHub capability, success and failure payloads have separate bounded contracts. Unexpected fields, repository mismatches, adapter/operation/invocation mismatches or secret-bearing result/evidence fail closed before node completion.
+
+PER-2 runtime coordination tokens remain internal runtime state and are not provider credentials.
+
+### Handoff / claim / finish
+
+`control_room_dispatch_project_graph_node_v1`
+
+For a provider executor:
+
+- runs existing PER-3 preflight first;
+- resolves the provider adapter and operation;
+- validates/normalizes input;
+- creates one durable `awaiting_provider` dispatch;
+- creates a stable `provider_invocation_key`;
+- consumes zero actions and zero node attempts.
+
+`control_room_claim_project_graph_provider_dispatch_v1`
+
+Immediately before provider invocation:
+
+- revalidates the PER-3 route;
+- revalidates adapter status/operation;
+- revalidates normalized provider input;
+- calls the existing PER-2 node claim;
+- therefore PER-2 remains the canonical owner of action budget, attempt budget and lease;
+- persists the provider claim identity.
+
+`control_room_finish_project_graph_provider_dispatch_v1`
+
+After provider invocation:
+
+- requires the active PER-2 lease token;
+- validates bounded provider result/evidence;
+- completes or fails through the existing PER-2 node transition;
+- stores the result/evidence in the existing node and dispatch ledger;
+- replays identical finish requests idempotently;
+- rejects changed content under the same finish identity.
+
+### Recovery
+
+Provider failure does not create a PER-4 retry mechanism.
+
+A normal provider error:
+
+`provider failure -> PER-2 failed node -> PER-2 retry -> new dispatch/claim`
+
+A lost provider worker / expired lease:
+
+`PER-2 wake -> canonical retry budget -> node requeued -> old executing provider dispatch reconciled to failed -> new dispatch/claim`
+
+`control_room_sync_provider_dispatch_on_node_recovery_v1` exists only to keep the provider dispatch ledger aligned with a PER-2 recovery that already happened. It does not decide retry policy or consume retry budget itself.
+
+### Security boundary
+
+- provider adapter registry is RLS-enabled;
+- anon/authenticated have no provider-adapter table privileges;
+- provider bridge RPCs deny anon/authenticated execution;
+- service_role has read-only registry access and the existing bounded dispatch-ledger runtime writes;
+- connector credentials remain outside Postgres;
+- provider inputs/results/evidence are schema-bounded before persistence/completion;
+- no client/browser provider dispatch was added.
+
+### Applied migrations
+
+- `20260929121557_project_execution_runtime_per4_provider_adapter_bridge.sql`
+- `20260929121946_project_execution_runtime_per4_provider_result_idempotency.sql`
+- `20260929122213_project_execution_runtime_per4_provider_recovery_boundary.sql`
+- `20260929122551_project_execution_runtime_per4_provider_secret_boundary.sql`
+- `20260929124302_project_execution_runtime_per4_secret_scanner_precision.sql`
+
+The repository copies are synchronized to the exact applied Supabase migration statements.
+
+### Regression evidence
+
+`supabase/tests/project_execution_runtime_per4.sql` is rollback-only and proves:
+
+- provider handoff resolves the declared adapter/operation;
+- prepare consumes zero action/attempt budget;
+- prepare replay is idempotent;
+- changed request under the same dispatch key fails closed;
+- claim consumes exactly one canonical PER-2 action and attempt;
+- claim replay is idempotent;
+- finish completes through PER-2 transition;
+- finish replay is idempotent;
+- provider credential-shaped material is absent from dispatch input/result/evidence;
+- secret-bearing input is rejected before dispatch persistence/claim;
+- project repository allowlist is enforced;
+- adapter state is revalidated immediately before invocation;
+- unexpected provider output is rejected before completion;
+- provider failure uses the existing PER-2 retry budget/path;
+- expired provider execution is recovered by the existing PER-2 wake/retry path;
+- rollback leaves zero PER-4 test Work Units, Graph Runs and dispatches.
+
+The PER-3 regression was made state-version independent and passes after PER-4.
+
+### Persistent real-provider canary
+
+Graph Run:
+
+`per4-provider-canary-20260929`
+
+Work Unit:
+
+`per4-provider-canary`
+
+Source Project State:
+
+v7
+
+Real provider path:
+
+`github.repository.read -> github.repository.read.v1 -> github.connector.read.v1 -> GitHub get_repo`
+
+Observed result:
+
+- GitHub connector returned repository metadata for `meterionops/meterion-hq`;
+- default branch: `main`;
+- graph: `completed`;
+- Work Unit: `completed`;
+- Run Envelope: `completed`;
+- nodes: 1/1 completed;
+- actions used: 1;
+- node attempts: 1;
+- retries used: 0;
+- spend: 0;
+- dispatch ledger rows: 1;
+- completed provider dispatches: 1;
+- open exceptions: 0;
+- provider input/result/evidence contain no provider credential material;
+- identical prepare and finish replay without a second provider action;
+- canonical Project State remained v7.
+
+### Explicit non-goals
+
+PER-4 does not implement:
+
+- automatic provider-worker pickup
+- background provider workers
+- parallel scheduling
+- cross-provider fan-out
+- provider credential/vault infrastructure
+- provider writes
+- external side-effect authority
+- a new retry system
+- a new budget system.
+
+Fresh Critic, final branch regression, repository review and merge are still required before PER-4 is VERIFIED.
