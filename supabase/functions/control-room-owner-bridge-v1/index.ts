@@ -1,4 +1,5 @@
 import { withSupabase } from "npm:@supabase/server";
+import { createRemoteJWKSet, jwtVerify } from "npm:jose@6.1.0";
 
 type JsonObject = Record<string, unknown>;
 
@@ -11,9 +12,12 @@ type ReadAction =
   | "get_state_reconciliation"
   | "get_resume_packet";
 
-const AI_OS_URL = "https://yokcfxcbomuaupxxxoha.supabase.co";
-const AI_OS_PUBLISHABLE_KEY = "sb_publishable_ip_oZDtDAa5hqy1kQ8TfGg_p3DCSnzj";
+const AI_OS_ISSUER = "https://yokcfxcbomuaupxxxoha.supabase.co/auth/v1";
+const AI_OS_JWKS = createRemoteJWKSet(
+  new URL("https://yokcfxcbomuaupxxxoha.supabase.co/auth/v1/.well-known/jwks.json"),
+);
 const METERION_ORGANIZATION_ID = "2e737407-7aa5-4567-a8bf-0d110cfef2ae";
+const METERION_OWNER_USER_ID = "06ba24f1-556e-4e41-a735-79c94d20d3b0";
 const PROJECT_KEY_RE = /^[a-z0-9][a-z0-9-]*$/;
 const MAX_BODY_BYTES = 16_384;
 
@@ -81,59 +85,34 @@ function projectKey(value: unknown): string {
 
 async function verifyMeterionOwner(request: Request): Promise<{ userId: string } | null> {
   const authorization = request.headers.get("authorization") ?? "";
-  if (!/^Bearer\s+\S+$/i.test(authorization)) return null;
+  const match = authorization.match(/^Bearer\s+(\S+)$/i);
+  if (!match) return null;
 
-  const authResponse = await fetch(`${AI_OS_URL}/auth/v1/user`, {
-    headers: {
-      apikey: AI_OS_PUBLISHABLE_KEY,
-      Authorization: authorization,
-      Accept: "application/json",
-    },
-  });
-  if (!authResponse.ok) return null;
+  try {
+    const { payload } = await jwtVerify(match[1], AI_OS_JWKS, {
+      issuer: AI_OS_ISSUER,
+      audience: "authenticated",
+    });
 
-  const user = await authResponse.json() as JsonObject;
-  const userId = typeof user.id === "string" ? user.id : "";
-  if (!userId) return null;
+    const appMetadata = isObject(payload.app_metadata) ? payload.app_metadata : {};
+    const organizationId =
+      typeof appMetadata.organization_id === "string" ? appMetadata.organization_id : "";
+    const workspaceRole =
+      typeof appMetadata.workspace_role === "string" ? appMetadata.workspace_role : "";
+    const userId = typeof payload.sub === "string" ? payload.sub : "";
 
-  const membershipUrl = new URL(`${AI_OS_URL}/rest/v1/organization_members`);
-  membershipUrl.searchParams.set("select", "organization_id,role,status");
-  membershipUrl.searchParams.set("user_id", `eq.${userId}`);
-  membershipUrl.searchParams.set("organization_id", `eq.${METERION_ORGANIZATION_ID}`);
-  membershipUrl.searchParams.set("status", "eq.active");
-  membershipUrl.searchParams.set("limit", "1");
+    if (
+      userId !== METERION_OWNER_USER_ID ||
+      organizationId !== METERION_ORGANIZATION_ID ||
+      workspaceRole !== "owner"
+    ) {
+      return null;
+    }
 
-  const membershipResponse = await fetch(membershipUrl, {
-    headers: {
-      apikey: AI_OS_PUBLISHABLE_KEY,
-      Authorization: authorization,
-      Accept: "application/json",
-    },
-  });
-  if (!membershipResponse.ok) return null;
-
-  const memberships = await membershipResponse.json() as JsonObject[];
-  const membership = Array.isArray(memberships) ? memberships[0] : null;
-  if (!membership || membership.role !== "owner") return null;
-
-  const organizationUrl = new URL(`${AI_OS_URL}/rest/v1/organizations`);
-  organizationUrl.searchParams.set("select", "id,status");
-  organizationUrl.searchParams.set("id", `eq.${METERION_ORGANIZATION_ID}`);
-  organizationUrl.searchParams.set("status", "eq.active");
-  organizationUrl.searchParams.set("limit", "1");
-
-  const organizationResponse = await fetch(organizationUrl, {
-    headers: {
-      apikey: AI_OS_PUBLISHABLE_KEY,
-      Authorization: authorization,
-      Accept: "application/json",
-    },
-  });
-  if (!organizationResponse.ok) return null;
-  const organizations = await organizationResponse.json() as JsonObject[];
-  if (!Array.isArray(organizations) || organizations.length !== 1) return null;
-
-  return { userId };
+    return { userId };
+  } catch {
+    return null;
+  }
 }
 
 export default {
