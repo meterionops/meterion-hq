@@ -70,6 +70,10 @@ begin
       and execution_token is null
   ) then raise exception 'interrupted_node_not_requeued'; end if;
 
+  if (select retries_used from public.control_room_run_envelopes where run_key='per2-regression-interrupt') <> 1 then
+    raise exception 'stale_recovery_retry_budget_not_consumed';
+  end if;
+
   v_claim := public.control_room_claim_project_graph_node_v2(
     'per2-regression-interrupt','interrupted-second','reg-int:second:claim2',5
   );
@@ -83,6 +87,52 @@ begin
     select 1 from public.control_room_project_graph_runs_v1
     where run_key='per2-regression-interrupt' and status='completed'
   ) then raise exception 'interruption_graph_not_completed'; end if;
+
+  ---------------------------------------------------------------------------
+  -- A2. Stale safe-retry recovery fails closed when Run Envelope retry budget is zero.
+  ---------------------------------------------------------------------------
+  perform public.control_room_create_project_work_graph_v2(
+    'ai-company-os','per2-regression-retry-budget','per2-regression-retry-budget',v_state,
+    '{"objective":"PER-2 stale retry budget regression","compiler_version":"per2"}'::jsonb,
+    '[{"node_key":"budget-node","node_type":"code","action_kind":"test","purpose":"retry budget","execution_mode":"deterministic_code","failure_policy":"stop","max_attempts":2,"timeout_seconds":10,"authority_class":"read_only","recovery_policy":"retry"}]'::jsonb,
+    '[]'::jsonb,
+    '{"max_actions":3,"max_retries":0,"max_spend_microusd":0}'::jsonb
+  );
+
+  v_claim := public.control_room_claim_project_graph_node_v2(
+    'per2-regression-retry-budget','budget-node','reg-budget:claim1',1
+  );
+  perform pg_sleep(1.1);
+  perform public.control_room_refresh_project_graph_v2('per2-regression-retry-budget');
+  v_runtime := public.control_room_wake_project_graph_v2(
+    'per2-regression-retry-budget','reg-budget:wake1'
+  );
+
+  if v_runtime->'graph_run'->>'status' <> 'failed'
+     or v_runtime->'run_envelope'->>'status' <> 'blocked' then
+    raise exception 'stale_retry_budget_did_not_fail_closed';
+  end if;
+
+  if not exists (
+    select 1 from public.control_room_project_graph_nodes_v1
+    where graph_run_key='per2-regression-retry-budget'
+      and node_key='budget-node'
+      and status='failed'
+      and attempt_count=1
+      and interruption_count=1
+  ) then raise exception 'stale_retry_budget_node_not_failed'; end if;
+
+  if not exists (
+    select 1 from public.control_room_project_graph_exceptions_v1
+    where graph_run_key='per2-regression-retry-budget'
+      and code='stale_execution_retry_budget_exhausted'
+      and severity='blocker'
+      and status='open'
+  ) then raise exception 'stale_retry_budget_exception_missing'; end if;
+
+  if (select retries_used from public.control_room_run_envelopes where run_key='per2-regression-retry-budget') <> 0 then
+    raise exception 'exhausted_retry_budget_was_incremented';
+  end if;
 
   ---------------------------------------------------------------------------
   -- B. Verification resume + write reconciliation do not re-execute effects.
