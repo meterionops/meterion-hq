@@ -1,6 +1,6 @@
 # Meterion Project Execution Runtime v1
 
-Status: PER-1 IMPLEMENTED — verification candidate
+Status: PER-1 VERIFIED — Fresh Critic READY
 Date: 2026-09-29
 
 ## Objective
@@ -219,7 +219,9 @@ Graph validation rejects cycles.
   - persists Work Unit, Run Envelope, Graph Run, Nodes and Edges atomically
   - validates acyclic topology
   - supports contract-hash idempotent replay
-  - rejects stale Project State.
+  - returns the existing identical run even if canonical Project State has advanced since that run was created
+  - rejects a same-key replay when run limits differ
+  - rejects stale Project State for new runs.
 
 - `control_room_validate_project_graph_v1`
   - verifies graph existence, non-empty node set and acyclic topology.
@@ -231,7 +233,8 @@ Graph validation rejects cycles.
   - computes dependency-satisfied ready nodes
   - maps session/human-gate nodes to waiting states
   - updates `action_space` and `resume_from` in the existing Run Envelope
-  - closes Graph Run and Work Unit when all work terminates.
+  - closes Graph Run and Work Unit when all work terminates
+  - fails closed with explicit `action_budget_exhausted`, `retry_budget_exhausted` or `node_attempt_budget_exhausted` stop reasons instead of leaving a non-runnable graph in WAITING.
 
 - `control_room_transition_project_graph_node_v1`
   - enforces allowed state transitions with optimistic expected-state semantics
@@ -316,8 +319,10 @@ Negative verification:
 - stale rejection left zero Work Units, Graph Runs and Run Envelopes
 - cyclic graph was rejected with `graph_cycle_detected`
 - cycle rejection left zero Work Units, Graph Runs and Run Envelopes
-- rollback regression with `max_actions=1` rejected the second node start
-- rollback regression with `max_retries=0` rejected a retry
+- rollback regression with `max_actions=1` materialized `FAILED/BLOCKED` + `action_budget_exhausted`, cleared action/resume surfaces and rejected the second node start
+- rollback regression with `max_retries=0` materialized `FAILED/BLOCKED` + `retry_budget_exhausted`, cleared the resume cursor and rejected a retry
+- rollback regression advanced Project State inside the transaction and proved an identical pre-existing run still replays idempotently
+- same run key with changed run limits was rejected as `graph_run_limits_conflict`
 - all six PER-1 functions deny EXECUTE to `anon` and `authenticated`
 - all six PER-1 functions allow EXECUTE to `service_role`
 - all four PER-1 tables have RLS enabled and no anon/authenticated table privilege.
@@ -325,6 +330,10 @@ Negative verification:
 Supabase Performance Advisor initially identified the new composite Work Unit foreign key as lacking a covering index. The index was added and the PER-1 warning is no longer present.
 
 Existing unrelated Control Room advisor notices remain outside PER-1 scope.
+
+Fresh Critic verdict: **READY**. No PER-1 BLOCKER or MATERIAL finding remains after the budget-stop and post-state-advance idempotency patches.
+
+PER-1 has production-verification for `stop` and `retry` execution behavior. The broader failure-policy vocabulary (`fallback`, `skip`, `repair`, `escalate`) is retained as typed contract space for later runtime milestones and is not claimed as fully orchestrated behavior in PER-1.
 
 ## Preserve
 
