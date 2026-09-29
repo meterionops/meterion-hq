@@ -606,7 +606,7 @@ PER-2 is ready for material project-state commit.
 
 ## PER-3 — Governed Dispatch & Capability Routing
 
-Status: IMPLEMENTED — verification candidate  
+Status: VERIFIED — Fresh Critic READY  
 Date: 2026-09-29
 
 PER-3 connects PER-2 `action_space` to explicitly declared bounded execution. It does not create a scheduler and it does not add external provider dispatch.
@@ -762,3 +762,74 @@ Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` 
 - repository regression asserts that the standalone executor RPC does not exist.
 
 This preserves the intended boundary: registry resolution may be read separately, but execution cannot bypass dispatch.
+
+
+### PER-3 Fresh Critic verification
+
+Verdict: **READY**.
+
+Final persistent canary:
+
+- Graph Run: `per3-canary-v2-20260929`
+- Work Unit: `per3-capability-canary-v2`
+- source Project State: v6
+- runtime version: 2
+- capability: `control_room.project_state.read`
+- executor: `control_room.project_state.read.v1`
+- Graph Run: `completed`
+- Work Unit: `completed`
+- Run Envelope: `completed`
+- nodes completed: 1/1
+- `actions_used = 1`
+- `retries_used = 0`
+- `spend_microusd = 0`
+- `resume_from = null`
+- `action_space = []`
+- dispatch ledger rows: 1
+- completed dispatches: 1
+- rejected/waiting/failed dispatches: 0
+- open runtime exceptions: 0.
+
+Observed governed-dispatch behavior:
+
+- READY node exposed `required_capability=control_room.project_state.read` in the existing PER-2 action space.
+- Resolution found the active ai-company-os project binding, capability and bounded executor.
+- Authority was read-only at node, binding, capability and executor boundaries.
+- Dispatch claim consumed exactly one canonical Run Envelope action and one node attempt.
+- The executor returned canonical ai-company-os Project State version 6.
+- Result and evidence were persisted on the PER-2 node and in the dispatch ledger.
+- An identical dispatch-key/request replay returned idempotently and did not consume another action or attempt.
+- The final checkpoint contains the completed `read-project-state` node.
+- Canonical Project State remained v6 throughout implementation and verification.
+
+Negative/regression evidence:
+
+- unregistered capability -> rejected before claim, action/attempt usage unchanged
+- authority above capability ceiling -> rejected before claim
+- disabled project binding -> rejected before claim
+- exhausted action budget -> rejected before claim
+- ChatGPT-session work -> explicit `waiting_session`, no server claim
+- human/Owner work -> explicit `waiting_owner`, no server claim
+- changed input under an existing dispatch key -> `dispatch_key_conflict`
+- rollback regression leaves zero Work Units, Graph Runs and dispatch rows
+- standalone executor RPC does not exist after the Fresh Critic boundary patch.
+
+Security:
+
+- PER-3 tables are RLS-enabled.
+- `anon` and `authenticated` have no table privileges on the PER-3 registry/dispatch tables.
+- PER-3 runtime RPCs deny EXECUTE to `anon` and `authenticated`.
+- `service_role` has SELECT-only registry access and bounded dispatch-ledger write access.
+- capability execution is inlined behind the governed dispatch RPC; there is no separately callable executor helper.
+- no PER-3 missing-FK advisor finding remains.
+
+Advisor notices outside this milestone:
+
+- existing unindexed FKs on `control_room_run_envelopes.project_id` and `control_room_work_batches.event_id` predate PER-3;
+- unused-index notices on newly created PER-3 indexes are informational immediately after creation;
+- RLS-with-no-policy notices are expected for internal service-role-only tables with no anon/auth grants;
+- the project-level leaked-password-protection warning predates PER-3.
+
+Fresh Critic found one material issue before READY: the initial standalone builtin executor helper could be called directly by service_role and bypass dispatch governance. Migration `20260929093007_project_execution_runtime_per3_executor_boundary.sql` removed that helper and moved the closed-set builtin execution into the governed dispatch RPC. Full regression and the final persistent canary were rerun after the patch.
+
+PER-3 is ready for merge and material Project State commit.
