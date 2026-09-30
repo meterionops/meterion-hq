@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meterion-web-acquisition"
+version = "0.1.0"
+description = "Meterion shared web acquisition layer: source routing, evidence, validation, Jev gates, and replaceable collection engines."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Proprietary"}
+authors = [{name = "Meterion"}]
+dependencies = []
+
+[project.optional-dependencies]
+scrapling = ["scrapling[fetchers]==0.4.15"]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,3 +1,15 @@
+## 2026-09-25 — Web Acquisition XHR evidence checkpoint
+
+Shared acquisition PR #33: optional bounded raw XHR retention and hash-addressed
+snapshot/manifest writer implemented. All 20 unit tests and the real-browser
+loopback fixture passed in CI run 36121281754, including exact JSON/binary/empty
+response replay. The full workflow succeeded. Its eight-source dynamic probe found
+zero qualifying browser-value candidates. Local browser installation failed;
+CI supplied the browser verification. No genuine dynamic restaurant acceptance or
+canonical write is claimed. Details:
+`packages/web-acquisition/docs/XHR_EVIDENCE.md`. Existing project/domain parsers and
+admission policy remain unchanged. Maistio PDF shadow checkpoint is in its PR #122.
+
 ## 🔹 Pertti — Supervisory Contracts v1 + Identity Normalization (Checkpoint)
 
 ### Status
