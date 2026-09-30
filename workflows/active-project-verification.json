@@ -1,0 +1,8 @@
+{
+  "workflow": "meterion.project-milestone-verification",
+  "activeContract": "project-verification-v2.json",
+  "version": 2,
+  "sha256": "cf7b279a837088aa4286161f69ed5cf69277e0f65e938de86e6223e76449d79e",
+  "supersededForReplayOnly": ["project-verification-v1.json"],
+  "executionScope": "callable_session"
+}
