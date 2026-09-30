@@ -1162,3 +1162,142 @@ Advisor review:
 Fresh Critic found no remaining BLOCKER or MATERIAL issue.
 
 PER-4 is ready for merge and material Project State commit.
+
+
+## PER-5 — Automated Provider Worker Pickup
+
+Status: VERIFIED — Fresh Critic READY
+
+PER-5 automates the worker side of the verified PER-4 `awaiting_provider -> claim -> provider -> finish` contract. It does not add a second scheduler, retry ledger, authority source or credential store.
+
+### Worker-host decision
+
+The first PER-5 worker host is **ChatGPT Automation**, not Render.
+
+Reason:
+
+- the verified PER-4 adapter is `invocation_mode=chatgpt_connector`;
+- GitHub authentication is owned by the connected ChatGPT GitHub provider;
+- a Render/Node worker cannot invoke that connector without introducing a separate server-side GitHub credential model;
+- PER-4 explicitly locked `credential_mode=connector_managed`;
+- changing to server-held GitHub credentials is a separate architecture/authority decision and is not silently introduced by PER-5.
+
+This preserves the architecture:
+
+```text
+Control Room / Supabase = durable control plane
+ChatGPT Automation      = trusted provider worker host
+GitHub connector        = connector-managed provider authentication
+PER-2                   = action / attempt / lease / retry / wake owner
+PER-3                   = capability / project binding / authority router
+PER-4                   = provider handoff / claim / finish contract
+PER-5                   = automatic pickup of prepared provider handoffs
+```
+
+### Pickup RPC
+
+`control_room_claim_next_project_graph_provider_dispatch_v1`
+
+Inputs:
+
+- project key
+- worker key
+- explicit supported adapter-key list
+- optional lease seconds
+
+Behavior:
+
+1. validates the worker contract and adapter allowlist;
+2. considers only active Graph Runs / Run Envelopes with READY nodes and durable `awaiting_provider` dispatches;
+3. selects the oldest eligible dispatch with `FOR UPDATE ... SKIP LOCKED`;
+4. calls the existing PER-4 provider-claim RPC;
+5. therefore action/attempt/lease accounting stays inside PER-2;
+6. adds bounded `worker_pickup` evidence;
+7. returns `claimed=false / no-awaiting-provider` without consuming budget when no eligible work exists.
+
+The pickup function never invokes a provider itself and never reads provider credentials.
+
+### Concurrency and recovery
+
+- concurrent workers cannot claim the same `awaiting_provider` row because pickup uses a row lock with `SKIP LOCKED`;
+- after claim, the dispatch is no longer eligible for another pickup;
+- worker interruption is still recovered by PER-2 lease/wake/retry;
+- the PER-4 recovery trigger reconciles the interrupted dispatch;
+- PER-5 does not create a retry budget or worker-specific retry state.
+
+### First automation worker contract
+
+The first worker supports only:
+
+- project: `ai-company-os`
+- adapter: `github.connector.read.v1`
+- operation: `get_repo`
+- authority: read-only
+- repository allowlist already enforced by PER-4 project binding.
+
+Worker sequence:
+
+```text
+poll Control Room
+  -> assert queue/run is expected
+  -> claim_next(...)
+  -> validate returned adapter/operation/credential_mode/input
+  -> GitHub connector get_repo
+  -> reduce provider response to the closed PER-4 result contract
+  -> finish provider dispatch
+  -> verify Graph Run / Work Unit / Run Envelope completion
+```
+
+The worker must fail closed if the handoff is outside its supported adapter/operation or if the queue state is not the expected one.
+
+### Cadence
+
+ChatGPT Automations currently support an hourly recurring cadence at highest frequency. That is sufficient for this first internal-only worker proof but is not an instant queue consumer.
+
+Sub-hour or event-driven provider execution is a later concern. Achieving it with Render would require either a provider-specific server credential model or another supported event-driven ChatGPT execution surface; neither is introduced in PER-5.
+
+### Regression
+
+`supabase/tests/project_execution_runtime_per5.sql` proves:
+
+- empty eligible queue returns no claim;
+- explicit adapter filtering consumes zero action/attempt;
+- supported pickup claims exactly once through PER-2;
+- worker pickup evidence is persisted;
+- a second poll cannot claim an already executing dispatch or spend again;
+- the existing PER-4 finish contract completes the claimed node;
+- invalid worker contracts fail closed;
+- rollback leaves zero PER-5 test Work Units, Graph Runs and dispatch rows.
+
+The complete PER-2 -> PER-5 regression chain passes after this change.
+
+### Applied migration
+
+- `20260929133738_project_execution_runtime_per5_worker_pickup.sql`
+
+The repository migration is synchronized to the applied Supabase migration history.
+
+### Non-goals
+
+PER-5 does not add:
+
+- server-held GitHub credentials
+- a new provider authentication model
+- provider writes
+- broad graph scheduling
+- parallel fan-out
+- a second action/retry/budget system
+- sub-hour worker guarantees.
+
+The next verification step is a persistent provider handoff that is claimed and completed by a scheduled ChatGPT Automation without manual Project Operator brokerage.
+
+
+### PER-5 final closure evidence
+
+Persistent canary `per5-provider-worker-canary-20260929` completed from Project State v8 with Graph Run, Work Unit and Run Envelope completed; actions_used=1; attempt_count=1; retries_used=0; spend_microusd=0; exactly one completed provider dispatch; zero open exceptions; and provider credential scanner false for dispatch input, result and evidence. The canary was already durably completed before the final closure pass, so the verifier correctly did not re-claim or re-invoke an empty provider queue.
+
+The PER-2 through PER-5 rollback regression perimeter had already passed on this branch with zero residue. The final closure session independently reconfirmed zero PER-2/3/4/5 regression residue. Repository migration `20260929133738_project_execution_runtime_per5_worker_pickup.sql` exactly matches the applied Supabase migration payload. The pickup RPC is executable only by `service_role`; `anon` and `authenticated` have no EXECUTE privilege.
+
+Fresh Critic verdict: **READY**. No PER-5 BLOCKER or MATERIAL finding remains.
+
+Next milestone: **PER-6 — Ready-Node Scheduler & Safe Parallelism**. Schedule only dependency-ready work, allow bounded parallel execution of independent nodes, preserve PER-2 through PER-5 authority/budget/credential/recovery contracts, and do not introduce external-write authority.
