@@ -1,0 +1,23 @@
+{
+  "schema": "meterion.workflow.v1",
+  "id": "meterion.project-milestone-verification",
+  "version": 1,
+  "trigger": "Authorized project operator requests verification of a completed milestone",
+  "objective": "Produce a source-backed verdict for PER-6 without repeating its side effects",
+  "owner": {"role": "Meterion Project Operator", "authority": "read_only"},
+  "inputs": ["fresh Control Room target-run snapshot", "merged GitHub PR snapshot", "approved expected outcome"],
+  "systems": ["Meterion Control Room", "GitHub meterionops/meterion-hq"],
+  "decisions": ["Are all required observations present and fresh?", "Do repository and runtime agree?", "Does any requested action exceed read-only scope?"],
+  "actions": ["recover-contract", "collect-runtime", "collect-repository", "evaluate-evidence", "persist-report"],
+  "approvals": {"externalAction": "owner_required"},
+  "failureConditions": ["missing or stale evidence", "conflicting source identity", "incomplete runtime", "unmerged implementation", "external action request"],
+  "verificationCriteria": ["graph, work unit and envelope completed", "all expected nodes completed", "accounting matches contract", "no open exceptions", "PR merged to expected repository and commit"],
+  "escalationPath": "Return EVIDENCE_REQUIRED or WAITING_OWNER to Project Operator; never infer approval or completion",
+  "procedure": {"id": "METERION-PROJECT-VERIFY", "version": 1, "rules": ["Verify actual state, not completion prose", "Keep unknown values unknown", "Never execute an external action from a verification request"]},
+  "toolRouting": ["native connector", "structured tool", "browser only within separate authorized fallback", "owner"],
+  "intelligenceRouting": {"objectiveFacts": "deterministic", "ambiguity": "reasoning_then_escalate"},
+  "supportingEvidence": ["https://github.com/meterionops/meterion-hq/pull/41", "docs/control-room/PROJECT_EXECUTION_RUNTIME_PER6.md"],
+  "evaluationCases": ["real-completed-run", "missing-evidence", "conflicting-commit", "stale-evidence", "approval-required", "incomplete-runtime"],
+  "expected": {"project": "ai-company-os", "repository": "meterionops/meterion-hq", "targetRun": "per6-parallel-canary-20260930", "mergeSha": "0e412edcd4cfcfd00cb5c92d7e5fd5e84382bf7b", "actions": 4, "nodes": 4},
+  "evidenceMaxAgeSeconds": 3600
+}
