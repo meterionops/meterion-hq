@@ -1,6 +1,6 @@
 # PER-6 Ready-Node Scheduler and Safe Parallelism
 
-Status: implementation contract locked; not yet verified.
+Status: VERIFIED against the applied runtime; Fresh Critic READY. Canonical closure follows merge.
 
 ## Scope
 Extend runtime_version=2 and the existing PER-2/3/4/5 execution path. No second scheduler service, credential store, retry ledger, or provider-write authority.
@@ -30,3 +30,25 @@ The shared PER-2 claim boundary enforces PER-6 slots for every caller, dependenc
 - Fresh Critic READY before merge and canonical closure.
 
 No recurring automation is created or changed by this milestone. The tick is a bounded callable scheduler surface; no new cadence or unattended-service SLA is claimed.
+
+## Verification — 2026-09-30
+Fresh Critic verdict: **READY** for this bounded runtime milestone.
+
+| Criterion | Observed evidence |
+| --- | --- |
+| Capacity and dependencies | PER-6 rollback regression PASS: two live claims; third rejected without action consumption; join remains waiting until all predecessors complete. |
+| Idempotency | Concurrent persistent ticks returned scheduled=2 and scheduled=0; exactly two initial handoffs. Repeated/terminal ticks do not charge actions. |
+| Fail-closed boundary | Focused rollback regression PASS: absent/null/invalid/string-valued limits rejected; forged ready status cannot bypass dependencies; session/human/elevated claims rejected before spending. |
+| Retry | Provider failure, explicit PER-2 retry and next tick produce a distinct attempt dispatch; one retry charged, preparation does not charge another action. |
+| Preserve | PER-2, PER-3, PER-4 and PER-5 rollback regressions rerun PASS against the applied migration. |
+| Real provider canary | Control Room run `per6-parallel-canary-20260930`: three real connected GitHub repository reads and a dependent builtin state read completed. |
+| Accounting | Graph Run, Work Unit and Run Envelope completed; 4 actions, 0 retries, 0 spend, 4 dispatches, 0 exceptions. |
+| Actual overlap | read-a: 14:24:50–14:25:35 UTC; read-b: 14:24:42–14:25:42 UTC. read-c starts 14:25:58; join starts 14:26:47 after all three reads. |
+| Access | Scheduler anon/authenticated execution denied. Fixed search_path; no new tables, credentials or provider authority. |
+| Persistence | Applied migration `20260930141918_project_execution_runtime_per6_scheduler`; rollback fixture residue 0. |
+
+Canary host: current authorized ChatGPT session using PER-5 pickup and actual connected GitHub calls. This proves bounded runtime parallelism, not a new scheduled worker cadence.
+
+Supabase security advisor found no PER-6 function warning. Existing service-role tables retain RLS with no client policy (INFO). Auth has an unrelated leaked-password-protection warning; remediation: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection . No Auth settings changed.
+
+No BLOCKER or MATERIAL findings remain for the locked scope. Review was performed by the implementing session using the Fresh Critic reset and direct database/provider evidence, not by a separate reviewer. Next action: merge and close canonical state; do not invent an additional milestone.
