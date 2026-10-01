@@ -10,7 +10,10 @@ type ReadAction =
   | "get_today"
   | "get_owner_attention"
   | "get_state_reconciliation"
-  | "get_resume_packet";
+  | "get_resume_packet"
+  | "get_project_tracking"
+  | "get_project_tracking_surface"
+  | "get_tracking_changes";
 
 const AI_OS_ISSUER = "https://yokcfxcbomuaupxxxoha.supabase.co/auth/v1";
 const AI_OS_JWKS = createRemoteJWKSet(
@@ -154,6 +157,9 @@ export default {
       "get_owner_attention",
       "get_state_reconciliation",
       "get_resume_packet",
+      "get_project_tracking",
+      "get_project_tracking_surface",
+      "get_tracking_changes",
     ];
     if (typeof action !== "string" || !allowedActions.includes(action as ReadAction)) {
       return json(request, 400, { ok: false, code: "unknown_or_missing_action", request_id: requestId });
@@ -194,6 +200,30 @@ export default {
         case "get_resume_packet":
           result = await admin.rpc("control_room_get_resume_packet_v2", {
             p_project_key: projectKey(body.project_key),
+          });
+          break;
+        case "get_project_tracking":
+          result = await admin.rpc("control_room_get_project_tracking_v1", {
+            p_project_key: projectKey(body.project_key),
+          });
+          break;
+        case "get_project_tracking_surface":
+          result = await admin.rpc("control_room_get_project_tracking_surface_v1", {
+            p_portfolio_class: typeof body.portfolio_class === "string" ? body.portfolio_class : null,
+            p_lifecycle_status: typeof body.lifecycle_status === "string" ? body.lifecycle_status : null,
+            p_changed_since: typeof body.changed_since === "string" ? body.changed_since : null,
+          });
+          break;
+        case "get_tracking_changes":
+          result = await admin.rpc("control_room_get_tracking_changes_v1", {
+            p_after_sequence:
+              typeof body.after_sequence === "number" && Number.isInteger(body.after_sequence) && body.after_sequence >= 0
+                ? body.after_sequence
+                : 0,
+            p_limit:
+              typeof body.limit === "number" && Number.isInteger(body.limit) && body.limit > 0
+                ? Math.min(body.limit, 500)
+                : 100,
           });
           break;
       }
