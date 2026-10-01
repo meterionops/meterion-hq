@@ -28,7 +28,7 @@ alter table public.control_room_tracking_change_feed_v1 enable row level securit
 revoke all on public.control_room_tracking_change_feed_v1 from public, anon, authenticated;
 grant select, insert on public.control_room_tracking_change_feed_v1 to service_role;
 
-create or replace function private.control_room_record_tracking_change_v1(
+create or replace function public.control_room_record_tracking_change_v1(
   p_project_id uuid,
   p_change_kind text,
   p_source_table text,
@@ -38,7 +38,7 @@ create or replace function private.control_room_record_tracking_change_v1(
 returns bigint
 language plpgsql
 security definer
-set search_path = public, private, pg_temp
+set search_path = public, pg_temp
 as $$
 declare
   v_sequence bigint;
@@ -75,14 +75,14 @@ begin
 end;
 $$;
 
-create or replace function private.control_room_tracking_state_insert_v1()
+create or replace function public.control_room_tracking_state_insert_v1()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, private, pg_temp
+set search_path = public, pg_temp
 as $$
 begin
-  perform private.control_room_record_tracking_change_v1(
+  perform public.control_room_record_tracking_change_v1(
     new.project_id,
     'project_state',
     'control_room_project_state_versions',
@@ -98,14 +98,14 @@ begin
 end;
 $$;
 
-create or replace function private.control_room_tracking_event_insert_v1()
+create or replace function public.control_room_tracking_event_insert_v1()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, private, pg_temp
+set search_path = public, pg_temp
 as $$
 begin
-  perform private.control_room_record_tracking_change_v1(
+  perform public.control_room_record_tracking_change_v1(
     new.project_id,
     'material_event',
     'control_room_project_events',
@@ -122,14 +122,14 @@ begin
 end;
 $$;
 
-create or replace function private.control_room_tracking_project_change_v1()
+create or replace function public.control_room_tracking_project_change_v1()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, private, pg_temp
+set search_path = public, pg_temp
 as $$
 begin
-  perform private.control_room_record_tracking_change_v1(
+  perform public.control_room_record_tracking_change_v1(
     new.id,
     'project_identity',
     'control_room_projects',
@@ -146,11 +146,11 @@ begin
 end;
 $$;
 
-create or replace function private.control_room_tracking_connection_change_v1()
+create or replace function public.control_room_tracking_connection_change_v1()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, private, pg_temp
+set search_path = public, pg_temp
 as $$
 declare
   v_project_id uuid;
@@ -161,7 +161,7 @@ begin
   v_source_id := coalesce(new.id, old.id)::text;
   v_operation := lower(tg_op);
 
-  perform private.control_room_record_tracking_change_v1(
+  perform public.control_room_record_tracking_change_v1(
     v_project_id,
     'connection',
     'control_room_project_connections',
@@ -181,19 +181,19 @@ drop trigger if exists control_room_tracking_state_insert_v1
   on public.control_room_project_state_versions;
 create trigger control_room_tracking_state_insert_v1
 after insert on public.control_room_project_state_versions
-for each row execute function private.control_room_tracking_state_insert_v1();
+for each row execute function public.control_room_tracking_state_insert_v1();
 
 drop trigger if exists control_room_tracking_event_insert_v1
   on public.control_room_project_events;
 create trigger control_room_tracking_event_insert_v1
 after insert on public.control_room_project_events
-for each row execute function private.control_room_tracking_event_insert_v1();
+for each row execute function public.control_room_tracking_event_insert_v1();
 
 drop trigger if exists control_room_tracking_project_insert_v1
   on public.control_room_projects;
 create trigger control_room_tracking_project_insert_v1
 after insert on public.control_room_projects
-for each row execute function private.control_room_tracking_project_change_v1();
+for each row execute function public.control_room_tracking_project_change_v1();
 
 drop trigger if exists control_room_tracking_project_update_v1
   on public.control_room_projects;
@@ -214,13 +214,13 @@ when (
   or old.primary_workspace is distinct from new.primary_workspace
   or old.operating_mode is distinct from new.operating_mode
 )
-execute function private.control_room_tracking_project_change_v1();
+execute function public.control_room_tracking_project_change_v1();
 
 drop trigger if exists control_room_tracking_connection_change_v1
   on public.control_room_project_connections;
 create trigger control_room_tracking_connection_change_v1
 after insert or update or delete on public.control_room_project_connections
-for each row execute function private.control_room_tracking_connection_change_v1();
+for each row execute function public.control_room_tracking_connection_change_v1();
 
 create or replace view public.control_room_project_tracking_v1
 with (security_invoker = true)
