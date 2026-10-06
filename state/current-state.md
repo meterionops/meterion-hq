@@ -4274,3 +4274,7 @@ Notes:
 ## 2026-09-30 — AI Company OS PER-6 runtime verified
 
 Ready-Node Scheduler & Safe Parallelism implemented and applied to Meterion Control Room. Opt-in bounded read-only parallelism shares PER-2 claim, budget, lease and recovery enforcement. PER-2–PER-6 regressions PASS; persistent real-provider canary completed with 4 actions, 0 retries/spend/exceptions. Fresh Critic READY. See [PER-6 contract and evidence](../docs/control-room/PROJECT_EXECUTION_RUNTIME_PER6.md). Canonical Project State remains v9 until merge and batch closure. No new automation cadence or external-write authority.
+
+## AI Company OS milestone 2 — owner bridge candidate
+
+Current-membership bridge hardening implemented with 22 passing behavioral tests. Not deployed or milestone-verified; authenticated acceptance remains blocked. See [checkpoint](../docs/control-room/OWNER_BRIDGE_MEMBERSHIP_CHECKPOINT.md). Exact client source now has a READY Vercel preview; earlier missing-build observation is superseded.

@@ -1,8 +1,6 @@
 import { withSupabase } from "npm:@supabase/server";
 import { createRemoteJWKSet, jwtVerify } from "npm:jose@6.1.0";
 
-import { hasCurrentOwnerAccess } from "./current-owner.mjs";
-
 type JsonObject = Record<string, unknown>;
 
 type ReadAction =
@@ -114,7 +112,6 @@ async function verifyMeterionOwner(request: Request): Promise<{ userId: string }
       return null;
     }
 
-    if (!(await hasCurrentOwnerAccess(match[1], userId))) return null;
     return { userId };
   } catch {
     return null;
