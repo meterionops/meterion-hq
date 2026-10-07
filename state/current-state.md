@@ -4278,3 +4278,8 @@ Ready-Node Scheduler & Safe Parallelism implemented and applied to Meterion Cont
 ## AI Company OS milestone 2 — owner bridge candidate
 
 Current-membership bridge hardening implemented with 22 passing behavioral tests. Not deployed or milestone-verified; authenticated acceptance remains blocked. See [checkpoint](../docs/control-room/OWNER_BRIDGE_MEMBERSHIP_CHECKPOINT.md). Exact client source now has a READY Vercel preview; earlier missing-build observation is superseded.
+
+
+## 2026-10-07 — Office current project reader candidate
+
+Organization-scoped live reader and Office route implemented; 65 behavior tests PASS. Ownership and canonical writer readback/idempotency/conflict rollback checks PASS. See docs/control-room/OFFICE_CURRENT_PROJECT_READER_V1.md. Not activated: new backend/database release approval, authenticated live acceptance and guarded snapshot retirement remain open. Existing Pertti scope and runtime authority unchanged.

@@ -1,6 +1,7 @@
 import { withSupabase } from "npm:@supabase/server";
 import { createRemoteJWKSet, jwtVerify } from "npm:jose@6.1.0";
 
+import { readOfficePortfolio } from "./office-portfolio.mjs";
 import { hasCurrentOwnerAccess } from "./current-owner.mjs";
 
 type JsonObject = Record<string, unknown>;
@@ -15,7 +16,8 @@ type ReadAction =
   | "get_resume_packet"
   | "get_project_tracking"
   | "get_project_tracking_surface"
-  | "get_tracking_changes";
+  | "get_tracking_changes"
+  | "get_office_portfolio";
 
 const AI_OS_ISSUER = "https://yokcfxcbomuaupxxxoha.supabase.co/auth/v1";
 const AI_OS_JWKS = createRemoteJWKSet(
@@ -163,6 +165,7 @@ export default {
       "get_project_tracking",
       "get_project_tracking_surface",
       "get_tracking_changes",
+      "get_office_portfolio",
     ];
     if (typeof action !== "string" || !allowedActions.includes(action as ReadAction)) {
       return json(request, 400, { ok: false, code: "unknown_or_missing_action", request_id: requestId });
@@ -173,6 +176,10 @@ export default {
 
     try {
       switch (action as ReadAction) {
+        case "get_office_portfolio":
+          try { result = { data: await readOfficePortfolio(admin, METERION_ORGANIZATION_ID), error: null }; }
+          catch { result = { data: null, error: { message: "office_source_unavailable" } }; }
+          break;
         case "get_project_state":
           result = await admin.rpc("control_room_get_project_state_v3", {
             p_project_key: projectKey(body.project_key),
