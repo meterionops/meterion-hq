@@ -19,8 +19,8 @@ test('conflicting publication is unknown; foreign connections and unsafe domains
  const c=[true,false].map(published=>({project_id:'a',metadata:{published}}));c.push({project_id:'foreign',connection_type:'production',url:'https://foreign.test'});c.push({project_id:'a',connection_type:'production',url:'https://user:pass@unsafe.test'});
  const e=buildOfficePortfolio([p],c).entries[0];assert.equal(e.publication_status,'unknown');assert.deepEqual(e.domains,[]);
 });
-function admin({ownerRows=[{id:'a'}],projects=[p,{...p,id:'foreign'}],connections=[],failure}={}){
- const calls=[];return {calls,rpc:async()=>{calls.push('tracking');return {data:projects,error:failure==='tracking'?{}:null}},from(table){calls.push(table);const q={select(){return q},eq(k,v){calls.push([k,v]);return q},in(k,v){calls.push([k,v]);return q},async limit(){return {count:(table==='control_room_projects'?ownerRows:connections).length,data:table==='control_room_projects'?ownerRows:connections,error:failure===table?{}:null}}};return q}};
+function admin({ownerRows=[{id:'a'}],projects=[p,{...p,id:'foreign'}],connections=[],work=[],failure}={}){
+ const calls=[];return {calls,rpc:async()=>{calls.push('tracking');return {data:projects,error:failure==='tracking'?{}:null}},from(table){calls.push(table);const q={select(){return q},eq(k,v){calls.push([k,v]);return q},in(k,v){calls.push([k,v]);return q},order(){return q},async limit(){return {count:(table==='control_room_projects'?ownerRows:table==='control_room_project_work_units_v1'?work:connections).length,data:table==='control_room_projects'?ownerRows:table==='control_room_project_work_units_v1'?work:connections,error:failure===table?{}:null}}};return q}};
 }
 test('organization scope precedes tracking and excludes foreign rows',async()=>{
  const a=admin();const dto=await readOfficePortfolio(a,'org');assert.equal(dto.entries.length,1);assert.equal(dto.entries[0].id,'a');assert.deepEqual(a.calls.slice(0,3),['control_room_projects',['organization_id','org'],'tracking']);
@@ -32,4 +32,14 @@ test('empty authorized registry is distinct from source error',async()=>{
 });
 test('missing scoped tracking record fails rather than silently dropping project',async()=>{
  await assert.rejects(readOfficePortfolio(admin({projects:[]}),'org'));
+});
+
+
+test('work records are scoped and execution secrets omitted',async()=>{
+ const dto=await readOfficePortfolio(admin({work:[{id:'w',project_id:'a',objective:'Goal',status:'active',execution_token:'hidden'},{id:'other',project_id:'foreign',objective:'foreign goal'}]}),'org');
+ assert.equal(dto.entries[0].work_units.length,1); assert.equal(dto.entries[0].work_status,'available'); assert.doesNotMatch(JSON.stringify(dto),/hidden|foreign goal/);
+});
+test('work source failure preserves portfolio and reports unavailable',async()=>{
+ const dto=await readOfficePortfolio(admin({failure:'control_room_project_work_units_v1'}),'org');
+ assert.equal(dto.entries[0].work_status,'unavailable'); assert.deepEqual(dto.entries[0].work_units,[]);
 });
