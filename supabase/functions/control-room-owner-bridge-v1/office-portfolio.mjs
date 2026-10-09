@@ -1,5 +1,5 @@
 // Called only after the existing signature + current Owner membership gate.
-const projectFields = 'id project_key name kind goal portfolio_class lifecycle_status phase current_focus current_build next_gate next_best_action blocked blocker_summary founder_attention_required founder_attention_reason state_version verified_at state_committed_at tracking_changed_at tracking_fingerprint state_freshness state_missing classification_verified lifecycle_verified source_type source_ref project_control_file_url primary_connection_url recent_milestones'.split(' ');
+const projectFields = 'id project_key name kind goal portfolio_class lifecycle_status phase current_focus last_material_result definition_of_done source_ref current_build next_gate next_best_action blocked blocker_summary founder_attention_required founder_attention_reason state_version verified_at state_committed_at tracking_changed_at tracking_fingerprint state_freshness state_missing classification_verified lifecycle_verified source_type source_ref project_control_file_url primary_connection_url recent_milestones'.split(' ');
 const productFields = 'id parent_project_id name country_code country_name source_system source_project source_url source_updated_at captured_at connection_id repository_url reported_status publication_status publication_recorded_at next_milestone development_focus owner target_date search_console telemetry_state legal_pages_ready'.split(' ');
 const domainFields = 'url registrar registrar_source source_label source_updated_at dns_provider dns_verified dns_checked_at dns_source nameservers'.split(' ');
 const pick = (value, fields) => Object.fromEntries(fields.filter(k => Object.hasOwn(value || {}, k)).map(k => [k, value[k]]));
@@ -50,5 +50,15 @@ export async function readOfficePortfolio(admin, organizationId) {
     .select('project_id,connection_type,url,metadata,updated_at', {count: 'exact'})
     .in('project_id', projects.data.map(p => p.id)).limit(2001);
   if (connections.error || !Array.isArray(connections.data) || connections.count !== connections.data.length) throw Error('office_connections_unavailable');
-  return buildOfficePortfolio(projects.data, connections.data);
+  const portfolio = buildOfficePortfolio(projects.data, connections.data);
+  // Query only projects authorized above; never expose worker inputs, secrets or execution tokens.
+  const work = await admin.from('control_room_project_work_units_v1')
+    .select('id,project_id,objective,definition_of_done,status,updated_at,completed_at', {count:'exact'})
+    .in('project_id', projects.data.map(p => p.id)).order('updated_at', {ascending:false}).limit(1001);
+  const available = !work.error && Array.isArray(work.data) && work.count === work.data.length && work.data.length <= 1000;
+  for (const p of portfolio.entries) {
+    p.work_status = available ? 'available' : 'unavailable';
+    p.work_units = available ? work.data.filter(w => w.project_id === p.id).map(w => pick(w, ['id','objective','definition_of_done','status','updated_at','completed_at'])) : [];
+  }
+  return portfolio;
 }
