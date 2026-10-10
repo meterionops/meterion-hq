@@ -23,3 +23,7 @@ Maistio/Far by Rail work registries still have no linked execution, and no new u
 Decisions still happen in ChatGPT/Dot; Office does not ingest arbitrary chat decisions automatically.
 The scheduler is ChatGPT Automations; source sync remains the original Calendar cron. No new cron or paid model/data calls.
 Permission outages stop execution and must remain visible; scheduling is not proof of a worker currently running.
+
+
+## Superseding simplification — 10 October 2026
+User approved keeping Office lightweight. Owner bridge v7 now reads metadata.office_result directly from existing work records, without graph run/node queries. Calendar Automation now writes one bounded work record per day, with result, source evidence, next action and optional resume_note. No graph/claim/transition runtime is required for this check. Existing verified result was copied into its original work record preserving observed_at and verified_at; original graph history remains unchanged. Existing database, project registry and owner authentication remain dependencies; this is not a database migration or complete separation from Control Room storage. Frontend commit 2d81f717e0dbba2aae87faebd17967e89c34b2d0. Existing seven-run schedule and permissions unchanged. Transactional storage test rolled back without residual test work; 35 backend tests passed, including direct-evidence validation and absence of graph queries. The first scheduled execution is still pending.
