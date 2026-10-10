@@ -28,6 +28,7 @@ export function buildOfficePortfolio(projects, connections, observedAt = new Dat
       source_label: 'Control Roomin projektikytkentä',
     }));
     return {...pick(p, projectFields), products, domains: domainRecords,
+      gsc: publicGsc(linked.find(c => c.connection_type === 'supabase' && object(c.metadata?.office_gsc))?.metadata.office_gsc),
       publication_status: states.size === 1 ? (publication[0].metadata.published ? 'published' : 'unpublished') : 'unknown',
       publication_recorded_at: states.size === 1 ? publication.map(c => c.updated_at).filter(Boolean).sort().at(-1) || null : null,
     };
@@ -87,3 +88,17 @@ export function publicResult(value) {
 }
 
 function pickText(value, fields) { return Object.fromEntries(fields.filter(k=>typeof value[k]==='string').map(k=>[k,value[k].slice(0,5000)])); }
+
+
+// Only public reporting fields; credentials and raw connector metadata never leave this reader.
+export function publicGsc(value) {
+  if (!object(value)) return null;
+  const n = v => typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : null;
+  const period = v => ({days:n(v?.days),clicks:n(v?.clicks),impressions:n(v?.impressions)});
+  const rows = v => Array.isArray(v) ? v.filter(object).slice(0,5).map(r=>({...pickText(r,['label','period_start','period_end','fetched_at']),clicks:n(r.clicks),impressions:n(r.impressions)})) : [];
+  return {...pickText(value,['status','observed_at','source_project','refresh_note','next_action','blocker']),
+    sites:Array.isArray(value.sites)?value.sites.filter(object).slice(0,10).map(s=>({
+      ...pickText(s,['site_id','country_code','property','registry_status','fetched_at','period_start','period_end']),
+      current:period(s.current),previous:period(s.previous),top_queries:rows(s.top_queries),top_pages:rows(s.top_pages)
+    })):[]};
+}
