@@ -56,37 +56,23 @@ export async function readOfficePortfolio(admin, organizationId) {
     .select('id,project_id,work_unit_key,objective,definition_of_done,status,metadata,updated_at,completed_at', {count:'exact'})
     .in('project_id', projects.data.map(p => p.id)).order('updated_at', {ascending:false}).limit(1001);
   const available = !work.error && Array.isArray(work.data) && work.count === work.data.length && work.data.length <= 1000;
-  let runs = [], nodes = [], runtimeAvailable = available;
-  if (available && work.data.length) {
-    const rr = await admin.from('control_room_project_graph_runs_v1')
-      .select('run_key,project_id,work_unit_id,status,updated_at,completed_at', {count:'exact'})
-      .in('project_id', projects.data.map(p => p.id)).order('updated_at',{ascending:false}).limit(1001);
-    runtimeAvailable = !rr.error && Array.isArray(rr.data) && rr.count === rr.data.length && rr.data.length <= 1000;
-    if (runtimeAvailable) runs = rr.data.filter(r => allowed.has(r.project_id));
-    if (runs.length) {
-      const nr = await admin.from('control_room_project_graph_nodes_v1')
-        .select('graph_run_key,node_key,node_type,status,result,evidence,completed_at,heartbeat_at,lease_expires_at', {count:'exact'})
-        .in('graph_run_key', runs.map(r => r.run_key)).limit(5001);
-      runtimeAvailable = !nr.error && Array.isArray(nr.data) && nr.count === nr.data.length && nr.data.length <= 5000;
-      if (runtimeAvailable) nodes = nr.data;
-    }
-  }
   for (const p of portfolio.entries) {
     p.work_status = available ? 'available' : 'unavailable';
     p.work_units = available ? work.data.filter(w => w.project_id === p.id).map(w => {
-      const run = runs.find(r => r.work_unit_id === w.id && r.project_id === p.id);
-      const ns = run ? nodes.filter(n => n.graph_run_key === run.run_key) : [];
-      const verified = ns.filter(n => n.node_type === 'verifier' && n.status === 'completed' && object(n.result))
-        .sort((a,b) => String(b.completed_at).localeCompare(String(a.completed_at)))[0];
-      const result = verified ? publicResult(verified.result) : null;
-      const heartbeat = ns.filter(n => ['running','verifying'].includes(n.status) && Date.parse(n.lease_expires_at) > Date.now())
-        .map(n => n.heartbeat_at).filter(Boolean).sort().at(-1) || null;
+      const saved = w.metadata?.office_result;
+      const verified = w.status === 'completed' && object(saved)
+        && typeof saved.summary === 'string' && saved.summary.trim()
+        && Number.isFinite(Date.parse(saved.verified_at))
+        && Number.isFinite(Date.parse(saved.observed_at))
+        && Array.isArray(saved.checks) && saved.checks.length > 0
+        && typeof saved.source_project === 'string'
+        && Array.isArray(saved.source_tables) && saved.source_tables.length > 0;
       return {...pick(w, ['id','work_unit_key','objective','definition_of_done','status','updated_at','completed_at']),
-        runtime_status: runtimeAvailable ? (run?.status || 'not_linked') : 'unavailable',
-        run_key: run?.run_key || null, heartbeat_at: heartbeat, result,
-        checkpoint: ns.filter(n => n.status === 'completed').map(n => n.node_key),
+        result: verified ? publicResult(saved) : null,
+        next_action: typeof w.metadata?.next_action === 'string' ? w.metadata.next_action.slice(0,5000) : null,
+        resume_note: typeof w.metadata?.resume_note === 'string' ? w.metadata.resume_note.slice(0,5000) : null,
         maintenance: object(w.metadata?.office_maintenance) ? pickText(w.metadata.office_maintenance,
-          ['automation_id','schedule_label','next_expected_at','schedule_recorded_at','pilot_end_at']) : null};
+          ['schedule_label','next_expected_at','schedule_recorded_at','pilot_end_at']) : null};
     }) : [];
   }
   return portfolio;
