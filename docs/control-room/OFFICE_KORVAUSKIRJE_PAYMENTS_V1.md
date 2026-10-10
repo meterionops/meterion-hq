@@ -24,3 +24,7 @@ refresh_note='Automaattinen päivittäinen Stripe-luku ja Office-koosteen päivi
 ## Validation
 
 13 existing portfolio reader tests PASS. Payment checks PASS: privacy, foreign-project isolation, amount validation, totals, escaping, stale/invalid timestamps, live-mode and completeness guards. Snapshot must be read back; deployed bridge must be read back and unauthenticated requests return 401. Frontend remains in preview branch; do not promote unrelated pending Office changes. Authenticated visual acceptance is a separate check.
+
+## Deployment evidence
+
+2026-10-10: owner bridge ACTIVE v9, deployed source matches repository candidate, existing authorization files unchanged. Unauthenticated get_office_portfolio returned 401. Snapshot backread confirmed service totals EUR 23.60 / refund 5.90 / remaining 17.70, and office_gsc retained its original timestamp. Preview READY at https://ai-company-os-ceo-dashboard-ftz722ou6.vercel.app/office/portfolio/154a3b9a-7340-4e89-a083-0d6a9ce391b9 , UI commit fce379b78ad252bfd3bc9f7dffe6e88064020238. Protected Vercel fetch returned HTTP 200 for route and asset; asset exactly matches candidate. Hosted payment automation enabled=true. First subsequent scheduled run and authenticated visual end-to-end have not yet been observed. Production alias was not changed.
