@@ -54,3 +54,14 @@ test('simple work result needs evidence and never queries graph runtime',async()
  const ws=(await readOfficePortfolio(a,'org')).entries[0].work_units;
  assert.equal(ws[0].result.summary,'Checked');assert.equal(ws[1].result,null);assert.equal(ws[2].result,null);assert.ok(!a.calls.some(c=>typeof c==='string'&&c.includes('graph')));
 });
+
+test('GSC summaries are scoped and redact arbitrary metadata and nested secrets',()=>{
+ const g={status:'available',observed_at:'2026-10-10',private_key:'secret-value',sites:[{site_id:'child',current:{days:28,clicks:0,impressions:100,token:'secret-value'},previous:{days:8,clicks:2},top_queries:[{label:'query',clicks:0,impressions:10,token:'secret-value'}],top_pages:[]}]};
+ const out=buildOfficePortfolio([p],[{project_id:'a',connection_type:'supabase',metadata:{office_gsc:g}},{project_id:'foreign',connection_type:'supabase',metadata:{office_gsc:{blocker:'foreign-content'}}}]).entries[0].gsc;
+ assert.equal(out.sites[0].current.clicks,0);assert.equal(out.sites[0].previous.days,8);assert.equal(out.sites[0].previous.impressions,null);
+ assert.doesNotMatch(JSON.stringify(out),/secret-value|private_key|token|foreign-content/);
+});
+test('GSC missing numeric values never become zero',()=>{
+ const out=buildOfficePortfolio([p],[{project_id:'a',connection_type:'supabase',metadata:{office_gsc:{status:'blocked',sites:[{current:{clicks:'0',impressions:-1},previous:{}}]}}}]).entries[0].gsc;
+ assert.equal(out.sites[0].current.clicks,null);assert.equal(out.sites[0].current.impressions,null);assert.equal(out.sites[0].previous.days,null);
+});
