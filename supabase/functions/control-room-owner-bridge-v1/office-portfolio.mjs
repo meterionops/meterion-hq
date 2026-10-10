@@ -28,6 +28,7 @@ export function buildOfficePortfolio(projects, connections, observedAt = new Dat
       source_label: 'Control Roomin projektikytkentä',
     }));
     return {...pick(p, projectFields), products, domains: domainRecords,
+      payments: publicPayments(linked.find(c => c.connection_type === 'supabase' && object(c.metadata?.office_payments))?.metadata.office_payments),
       gsc: publicGsc(linked.find(c => c.connection_type === 'supabase' && object(c.metadata?.office_gsc))?.metadata.office_gsc),
       publication_status: states.size === 1 ? (publication[0].metadata.published ? 'published' : 'unpublished') : 'unknown',
       publication_recorded_at: states.size === 1 ? publication.map(c => c.updated_at).filter(Boolean).sort().at(-1) || null : null,
@@ -101,4 +102,26 @@ export function publicGsc(value) {
       ...pickText(s,['site_id','country_code','property','registry_status','fetched_at','period_start','period_end']),
       current:period(s.current),previous:period(s.previous),top_queries:rows(s.top_queries),top_pages:rows(s.top_pages)
     })):[]};
+}
+
+export function publicPayments(value) {
+  if (!object(value)) return null;
+  const integer = v => Number.isSafeInteger(v) && v >= 0 ? v : null;
+  const rows = v => Array.isArray(v) ? v.filter(object).slice(0,20).map(r => ({
+    currency: typeof r.currency === 'string' && /^[a-z]{3}$/.test(r.currency) ? r.currency : null,
+    payment_count: integer(r.payment_count), gross_minor: integer(r.gross_minor),
+    refunded_payment_count: integer(r.refunded_payment_count), refund_minor: integer(r.refund_minor),
+    net_before_fees_minor: integer(r.net_before_fees_minor),
+  })) : [];
+  return {...pickText(value,['status','observed_at','source','scope','refresh_note','next_action','blocker','latest_payment_at']),
+    live_verified:value.live_verified===true, complete:value.complete===true,
+    totals:rows(value.totals), service_totals:rows(value.service_totals),
+    reconciliation: object(value.reconciliation) ? {
+      ...pickText(value.reconciliation,['status','note','observed_at']),
+      database_payment_count:integer(value.reconciliation.database_payment_count),
+      stripe_payment_count:integer(value.reconciliation.stripe_payment_count),
+      database_only_count:integer(value.reconciliation.database_only_count),
+      stripe_only_count:integer(value.reconciliation.stripe_only_count)
+    } : null
+  };
 }
