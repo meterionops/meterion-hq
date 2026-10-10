@@ -53,12 +53,51 @@ export async function readOfficePortfolio(admin, organizationId) {
   const portfolio = buildOfficePortfolio(projects.data, connections.data);
   // Query only projects authorized above; never expose worker inputs, secrets or execution tokens.
   const work = await admin.from('control_room_project_work_units_v1')
-    .select('id,project_id,objective,definition_of_done,status,updated_at,completed_at', {count:'exact'})
+    .select('id,project_id,work_unit_key,objective,definition_of_done,status,metadata,updated_at,completed_at', {count:'exact'})
     .in('project_id', projects.data.map(p => p.id)).order('updated_at', {ascending:false}).limit(1001);
   const available = !work.error && Array.isArray(work.data) && work.count === work.data.length && work.data.length <= 1000;
+  let runs = [], nodes = [], runtimeAvailable = available;
+  if (available && work.data.length) {
+    const rr = await admin.from('control_room_project_graph_runs_v1')
+      .select('run_key,project_id,work_unit_id,status,updated_at,completed_at', {count:'exact'})
+      .in('project_id', projects.data.map(p => p.id)).order('updated_at',{ascending:false}).limit(1001);
+    runtimeAvailable = !rr.error && Array.isArray(rr.data) && rr.count === rr.data.length && rr.data.length <= 1000;
+    if (runtimeAvailable) runs = rr.data.filter(r => allowed.has(r.project_id));
+    if (runs.length) {
+      const nr = await admin.from('control_room_project_graph_nodes_v1')
+        .select('graph_run_key,node_key,node_type,status,result,evidence,completed_at,heartbeat_at,lease_expires_at', {count:'exact'})
+        .in('graph_run_key', runs.map(r => r.run_key)).limit(5001);
+      runtimeAvailable = !nr.error && Array.isArray(nr.data) && nr.count === nr.data.length && nr.data.length <= 5000;
+      if (runtimeAvailable) nodes = nr.data;
+    }
+  }
   for (const p of portfolio.entries) {
     p.work_status = available ? 'available' : 'unavailable';
-    p.work_units = available ? work.data.filter(w => w.project_id === p.id).map(w => pick(w, ['id','objective','definition_of_done','status','updated_at','completed_at'])) : [];
+    p.work_units = available ? work.data.filter(w => w.project_id === p.id).map(w => {
+      const run = runs.find(r => r.work_unit_id === w.id && r.project_id === p.id);
+      const ns = run ? nodes.filter(n => n.graph_run_key === run.run_key) : [];
+      const verified = ns.filter(n => n.node_type === 'verifier' && n.status === 'completed' && object(n.result))
+        .sort((a,b) => String(b.completed_at).localeCompare(String(a.completed_at)))[0];
+      const result = verified ? publicResult(verified.result) : null;
+      const heartbeat = ns.filter(n => ['running','verifying'].includes(n.status) && Date.parse(n.lease_expires_at) > Date.now())
+        .map(n => n.heartbeat_at).filter(Boolean).sort().at(-1) || null;
+      return {...pick(w, ['id','work_unit_key','objective','definition_of_done','status','updated_at','completed_at']),
+        runtime_status: runtimeAvailable ? (run?.status || 'not_linked') : 'unavailable',
+        run_key: run?.run_key || null, heartbeat_at: heartbeat, result,
+        checkpoint: ns.filter(n => n.status === 'completed').map(n => n.node_key),
+        maintenance: object(w.metadata?.office_maintenance) ? pickText(w.metadata.office_maintenance,
+          ['automation_id','schedule_label','next_expected_at','schedule_recorded_at','pilot_end_at']) : null};
+    }) : [];
   }
   return portfolio;
 }
+
+export function publicResult(value) {
+  const textFields = ['summary','outcome','verified_at','next_action','observed_at','source_project','verification_method','cost_status'];
+  const result = Object.fromEntries(textFields.filter(k => typeof value[k] === 'string').map(k => [k,value[k].slice(0,5000)]));
+  for (const key of ['alerts','checks','source_tables']) result[key] = Array.isArray(value[key]) ? value[key].filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,1000)) : [];
+  result.countries = Array.isArray(value.countries) ? value.countries.filter(object).slice(0,4).map(c=>pickText(c,['country_code','latest_fetch','latest_metric_date','search_console'])) : [];
+  return result;
+}
+
+function pickText(value, fields) { return Object.fromEntries(fields.filter(k=>typeof value[k]==='string').map(k=>[k,value[k].slice(0,5000)])); }
