@@ -27,3 +27,16 @@ Permission outages stop execution and must remain visible; scheduling is not pro
 
 ## Superseding simplification — 10 October 2026
 User approved keeping Office lightweight. Owner bridge v7 now reads metadata.office_result directly from existing work records, without graph run/node queries. Calendar Automation now writes one bounded work record per day, with result, source evidence, next action and optional resume_note. No graph/claim/transition runtime is required for this check. Existing verified result was copied into its original work record preserving observed_at and verified_at; original graph history remains unchanged. Existing database, project registry and owner authentication remain dependencies; this is not a database migration or complete separation from Control Room storage. Frontend commit 2d81f717e0dbba2aae87faebd17967e89c34b2d0. Existing seven-run schedule and permissions unchanged. Transactional storage test rolled back without residual test work; 35 backend tests passed, including direct-evidence validation and absence of graph queries. The first scheduled execution is still pending.
+
+
+## GSC visibility update — 10.10.2026
+Superseding addition to lightweight Office, no new tables/queue/cron/runtime.
+- Production frontend f75d925fe23a1cc42be7284bf5bbb889e0973a60, deployment dpl_Ahyr8aXA2jwqkUx6drSbP4MnBbCj READY; stable /office/ alias assigned.
+- Owner bridge v8 ACTIVE; custom signature/current-owner checks unchanged. Reporting allowlist added only.
+- Calendar source Supabase tkvpnkxchkhcftttdyos: four country summaries persisted into the existing project's Supabase connection metadata.office_gsc; observed 2026-10-10T07:46:21.9864Z, fetched about 05:30 UTC. Daily period 9 Sep–6 Oct; query/page period 11 Sep–8 Oct. Dates shown separately.
+- FI 28-day clicks 110 vs60, impressions22247 vs32749. Only FI has full previous28-day coverage; DE10,FR8,SE13 previous days. UI suppresses incomplete percentage comparisons and never fills absent values with zero.
+- Existing daily automation 6ac9d778bc508191817eaf20fee327b6 amended in place: refresh this summary and make at most one deduplicated planned improvement on Saturdays. Seven-run pilot11–17Oct retained; first actual scheduled execution remains pending.
+- First planned improvement: office-gsc-fr-numero-de-semaine, work4b2d1338-6df8-4629-9e0c-05829a4ad9b0. Evidence FR /numero-de-semaine 2143 impressions /0 clicks, not proof of cause. No site edits/publication.
+- Maistio and rail-atlas GSC reporting blocked. GSC Wizard returns payment_required / trial ended; their Supabase projects have no discovered GSC reporting tables. Calendar adapter is site_instance/country-scoped; extending it to unrelated projects was deliberately not done. Google property ownership/access for these two is NOT disproved. Need a usable authorized read connection before activation. No paid subscription or credentials created.
+- Verification:64 existing+reader tests and3 GSC render tests passed; DB readback verifies four Calendar sites and explicit blockers for the other projects. Fresh production browser reaches normal sign-in; no new authenticated end-to-end browser verification claimed.
+- Feature branches remain unmerged. An older main deployment could overwrite Office changes.
