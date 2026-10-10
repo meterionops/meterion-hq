@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildOfficePortfolio, readOfficePortfolio} from './office-portfolio.mjs';
+import {buildOfficePortfolio, readOfficePortfolio, publicResult} from './office-portfolio.mjs';
 const p={id:'a',project_key:'a',name:'A',phase:'BUILD',state_version:3,verified_at:'2026-09-01',classification_verified:false,secret:'hidden'};
 test('canonical fields preserved; fetch date does not overwrite verification; metadata allowlist',()=>{
  const result=buildOfficePortfolio([p],[{project_id:'a',connection_type:'production',url:'https://a.test',updated_at:'2026-10-01',metadata:{secret:'hidden',published:true}}],'2026-10-07');
@@ -42,4 +42,14 @@ test('work records are scoped and execution secrets omitted',async()=>{
 test('work source failure preserves portfolio and reports unavailable',async()=>{
  const dto=await readOfficePortfolio(admin({failure:'control_room_project_work_units_v1'}),'org');
  assert.equal(dto.entries[0].work_status,'unavailable'); assert.deepEqual(dto.entries[0].work_units,[]);
+});
+
+test('worker result strips nested secret fields and limits evidence',()=>{
+ const r=publicResult({summary:'Real check',execution_token:'hidden',countries:[{country_code:'FI',search_console:{secret:'hidden'},token:'hidden'},null],alerts:['OK',{secret:'hidden'}],source_tables:['site_instances']});
+ assert.doesNotMatch(JSON.stringify(r),/hidden|secret|token/);assert.equal(r.countries[0].country_code,'FI');assert.deepEqual(r.alerts,['OK']);
+});
+test('runtime links only owned work; unavailable runtime never claims verified result',async()=>{
+ const base=admin({work:[{id:'w',project_id:'a',work_unit_key:'check',status:'completed'}]});const original=base.from;
+ base.from=function(table){if(!table.includes('graph_'))return original.call(this,table);const q={select(){return q},in(k,v){assert.equal(k,'project_id');assert.deepEqual(v,['a']);return q},order(){return q},async limit(){return {error:{},data:null,count:null}}};return q};
+ const p=(await readOfficePortfolio(base,'org')).entries[0];assert.equal(p.work_units[0].runtime_status,'unavailable');assert.equal(p.work_units[0].result,null);
 });
