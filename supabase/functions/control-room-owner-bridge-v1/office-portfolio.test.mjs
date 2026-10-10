@@ -48,8 +48,9 @@ test('worker result strips nested secret fields and limits evidence',()=>{
  const r=publicResult({summary:'Real check',execution_token:'hidden',countries:[{country_code:'FI',search_console:{secret:'hidden'},token:'hidden'},null],alerts:['OK',{secret:'hidden'}],source_tables:['site_instances']});
  assert.doesNotMatch(JSON.stringify(r),/hidden|secret|token/);assert.equal(r.countries[0].country_code,'FI');assert.deepEqual(r.alerts,['OK']);
 });
-test('runtime links only owned work; unavailable runtime never claims verified result',async()=>{
- const base=admin({work:[{id:'w',project_id:'a',work_unit_key:'check',status:'completed'}]});const original=base.from;
- base.from=function(table){if(!table.includes('graph_'))return original.call(this,table);const q={select(){return q},in(k,v){assert.equal(k,'project_id');assert.deepEqual(v,['a']);return q},order(){return q},async limit(){return {error:{},data:null,count:null}}};return q};
- const p=(await readOfficePortfolio(base,'org')).entries[0];assert.equal(p.work_units[0].runtime_status,'unavailable');assert.equal(p.work_units[0].result,null);
+test('simple work result needs evidence and never queries graph runtime',async()=>{
+ const result={summary:'Checked',verified_at:'2026-10-10T07:00:00Z',observed_at:'2026-10-10T06:00:00Z',checks:['coverage'],source_project:'calendar',source_tables:['metrics']};
+ const a=admin({work:[{id:'w',project_id:'a',status:'completed',metadata:{office_result:result}},{id:'active',project_id:'a',status:'active',metadata:{office_result:result}},{id:'missing',project_id:'a',status:'completed',metadata:{office_result:{summary:'unsupported'}}}]});
+ const ws=(await readOfficePortfolio(a,'org')).entries[0].work_units;
+ assert.equal(ws[0].result.summary,'Checked');assert.equal(ws[1].result,null);assert.equal(ws[2].result,null);assert.ok(!a.calls.some(c=>typeof c==='string'&&c.includes('graph')));
 });
