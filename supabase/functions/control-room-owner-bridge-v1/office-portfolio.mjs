@@ -134,9 +134,19 @@ export function publicIncubator(value, project) {
   const list = v => Array.isArray(v) ? v.filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,1000)) : [];
   const brands = Array.isArray(value.brands) ? value.brands.filter(b=>object(b)&&typeof b.key==='string'&&/^[a-z0-9-]+$/.test(b.key)&&typeof b.name==='string').slice(0,100).map(b=>({
     ...pickText(b,['key','name','theme','goal','audience','promise','status','price_range','price_note']),
-    products:Array.isArray(b.products)?b.products.filter(object).slice(0,30).map(p=>pickText(p,['name','description','price'])):[]
+    build_brief: publicBuildBrief(b.build_brief),
+    products:Array.isArray(b.products)?b.products.filter(object).slice(0,30).map(p=>({...pickText(p,['name','description','price']),build_brief:publicBuildBrief(p.build_brief)})):[]
   })) : [];
   if (new Set(brands.map(b=>b.key)).size!==brands.length) return null;
-  return {...pickText(value,['name','goal','status','source_title','source_date','content_status','brand_model']),
+  return {...pickText(value,['name','goal','status','source_title','source_date','content_status','brand_model','brief_updated_at','brief_source']),
     schema_version:1,parent_project_id:project.id,workflow:list(value.workflow),shared_capabilities:list(value.shared_capabilities),brands};
+}
+
+
+export function publicBuildBrief(value) {
+  if (!object(value) || value.status !== 'proposed') return null;
+  const result = {...pickText(value,['status','objective','next_step'])};
+  for(const key of ['mvp','inputs','outputs','dependencies','acceptance','non_goals','open_decisions'])
+    result[key]=Array.isArray(value[key])?value[key].filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,2000)):[];
+  return result;
 }

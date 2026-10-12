@@ -1,35 +1,14 @@
 {
-  "schema_version": 1,
-  "parent_project_id": "cc187b93-a3fa-485c-a8fb-22e36bd3b7cc",
-  "name": "YritystenTiedot — Business Micro-Utilities",
   "goal": "Tuotteistaa yhteinen yritysdata rajatuiksi myytäviksi palveluiksi ja miniapeiksi.",
-  "status": "idea",
-  "source_title": "Yritystentiedot tuotteet",
-  "source_date": "2026-10-12",
-  "content_status": "Palveluiden nimet ovat työotsikoita. Sisällöt ovat suunnitelmia ja miniappien hinnat testihypoteeseja.",
-  "brand_model": "ONE COMPANY DATA CORE, MANY PRODUCTS. YritystenTiedot säilyy yhteisenä tietopohjana. Palvelubrändit ja miniapit käyttävät samaa Company Graphia, eikä jokaiselle rakenneta erillistä yritysdatan päärekisteriä. Ensimmäiset kuusi miniappiehdotusta on koottu YritystenTiedot-riville.",
-  "workflow": [
-    "Event Layerin lopullinen siivous",
-    "Yritysten varmennetut verkkosivut",
-    "Päättäjätietojen keruun ratkaisu",
-    "Palvelukohtainen tuotteistus ja kaupallinen testi"
-  ],
-  "shared_capabilities": [
-    "Yhteiset yritystunnisteet",
-    "Yritysten faktat ja tarjooma",
-    "Tapahtumat",
-    "Lähteet ja ajantasaisuus",
-    "Company Graph"
-  ],
+  "name": "YritystenTiedot — Business Micro-Utilities",
   "brands": [
     {
       "key": "yritystentiedot",
+      "goal": "Tarjota yrityksen perustiedot, tarjooma ja tapahtumat samasta tietopohjasta.",
       "name": "YritystenTiedot",
       "theme": "Yrityksen tietonäkymä",
-      "goal": "Tarjota yrityksen perustiedot, tarjooma ja tapahtumat samasta tietopohjasta.",
-      "audience": "Yritystietoja tarvitsevat käyttäjät",
       "status": "idea",
-      "price_range": "Miniappien hintahypoteesit",
+      "audience": "Yritystietoja tarvitsevat käyttäjät",
       "products": [
         {
           "name": "Yrityksen tietonäkymä",
@@ -37,127 +16,550 @@
         },
         {
           "name": "Yritystietojen oikeellisuustesti",
-          "description": "Yritystietojen oikeellisuuden tarkistus.",
-          "price": "9–29 €"
+          "price": "9–29 €",
+          "build_brief": {
+            "mvp": [
+              "Y-tunnuksen syöttö ja perustietojen tarkistus sovittuja lähteitä vasten."
+            ],
+            "inputs": [
+              "Y-tunnus; kanoniset perustiedot ja niiden lähteet."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Vertailuraportti: täsmää, ristiriita tai puuttuu; lähde ja korjauksen seuraava askel."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Tietojen korjaus viranomaisrekisteriin käyttäjän puolesta."
+            ],
+            "objective": "Yritys saa näkyviin tarkistettavat virheet ja puutteet omissa perustiedoissaan.",
+            "acceptance": [
+              "Ristiriita tai puuttuva tieto säilyy näkyvänä.",
+              "Raportti ei muuta rekisteritietoja automaattisesti."
+            ],
+            "dependencies": [
+              "Oikeellisuuden tarkistuslähteet ja vertailevat kentät määritellään etukäteen."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Yritystietojen oikeellisuuden tarkistus."
         },
         {
           "name": "Kotisivu- ja AI-luettavuustesti",
-          "description": "Yrityksen kotisivun ja AI-luettavuuden tarkistus.",
-          "price": "19–29 €"
+          "price": "19–29 €",
+          "build_brief": {
+            "mvp": [
+              "Yksi varmennettu yrityksen URL; rajattu sivujoukko.",
+              "Yritysidentiteetin, tarjooman ja saavutettavan tekstisisällön tarkistus."
+            ],
+            "inputs": [
+              "Y-tunnus; varmennettu URL; julkinen sivusisältö."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Tarkistuslista, sivukohtainen näyttö ja priorisoidut korjausehdotukset."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Sivuston automaattinen muokkaus ja näkyvyystakuu."
+            ],
+            "objective": "Yritys näkee, löytyvätkö sen keskeiset tiedot verkkosivulta ja ovatko ne koneluettavia.",
+            "acceptance": [
+              "Jokainen havainto osoittaa tarkistettuun sivuun.",
+              "Hakuliikennettä tai AI-vastausten näkyvyyttä ei väitetä todistetuksi tällä luettavuustestillä."
+            ],
+            "dependencies": [
+              "Varmennettujen verkkosivujen tunnistus; keruun rajaus ja lähde-evidenssi."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Yrityksen kotisivun ja AI-luettavuuden tarkistus."
         },
         {
           "name": "Yritysmuutosten seuranta",
-          "description": "Yritysten muutosten seuranta.",
-          "price": "5–9 €/kk"
+          "price": "5–9 €/kk",
+          "build_brief": {
+            "mvp": [
+              "Valittujen yritysten seurantalista ja yksi tapahtumanäkymä.",
+              "Muuttunut tieto verrataan edelliseen varmennettuun havaintoon."
+            ],
+            "inputs": [
+              "Y-tunnukset; Event Layerin tapahtumat ja havaintohistoria."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Muutokset, aiempi/uusi arvo, lähde ja havaintoaika."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Automaattiset myyntiviestit ja arvaamalla täytetyt muutokset."
+            ],
+            "objective": "Käyttäjä näkee valitsemiensa yritysten olennaiset muutokset.",
+            "acceptance": [
+              "Sama muutos ei näy uutena useita kertoja.",
+              "Lähdekatkos erottuu tilanteesta, jossa muutoksia ei ole."
+            ],
+            "dependencies": [
+              "Event Layer täysin kuntoon; lähteen päivitysprosessi määritelty."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Yritysten muutosten seuranta."
         },
         {
           "name": "Julkisten hankintojen vahti",
-          "description": "Sopivien julkisten tarjouskilpailujen seuranta.",
-          "price": "9–19 €/kk"
+          "price": "9–19 €/kk",
+          "build_brief": {
+            "mvp": [
+              "Yritysprofiili ja rajattu julkisten ilmoitusten vahti.",
+              "Määräajan ja sopivuuden perustelun sisältävä tuloslista."
+            ],
+            "inputs": [
+              "Yrityksen tarjooma; alue; julkiset hankintailmoitukset."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Ilmoitukset, lähdelinkit, määräajat ja sopivuuden perusteet."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Tarjoushakemusten laatiminen tai lähettäminen."
+            ],
+            "objective": "Yritys löytää tarjoomaansa sopivat julkiset hankinnat ajoissa.",
+            "acceptance": [
+              "Vanhentuneet ilmoitukset erotetaan avoimista.",
+              "Sopivuusperustelu löytyy ilmoituksen ja yritysprofiilin tiedoista."
+            ],
+            "dependencies": [
+              "Hankintalähde, päivitys ja tarjooman riittävä kattavuus varmennetaan."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Sopivien julkisten tarjouskilpailujen seuranta."
         },
         {
           "name": "Kilpailija- ja samankaltaisuusvertailu",
-          "description": "Yritysten kilpailija- ja samankaltaisuusvertailu.",
-          "price": "19–29 €"
+          "price": "19–29 €",
+          "build_brief": {
+            "mvp": [
+              "Yksi yritys ja rajattu vertailu toimialan, alueen ja varmennetun tarjooman avulla."
+            ],
+            "inputs": [
+              "Y-tunnus; sovitut vertailukriteerit; kanoninen yritysdata."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Vertailuyritykset ja yrityskohtaiset yhtäläisyydet sekä erot."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Kilpailijan liikevaihdon tai asiakkaiden keksiminen."
+            ],
+            "objective": "Käyttäjä saa perustellun vertailujoukon samankaltaisista yrityksistä.",
+            "acceptance": [
+              "Tuloksessa kerrotaan, miksi yritys on mukana.",
+              "Tietojen puutteet näkyvät eikä samankaltaisuutta tulkita varmennetuksi kilpailijasuhteeksi."
+            ],
+            "dependencies": [
+              "Verkkosivut ja tarjooma varmennettu; vertailukriteerit näkyvät."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Yritysten kilpailija- ja samankaltaisuusvertailu."
         },
         {
           "name": "AI-näkyvyysluonnos",
-          "description": "Raportti tai jatkuva näkyvyyden seuranta.",
-          "price": "19–39 € raportti / 9–19 €/kk"
+          "price": "19–39 € raportti / 9–19 €/kk",
+          "build_brief": {
+            "mvp": [
+              "Yhden yrityksen sisältö- ja tietopuutteiden raportti.",
+              "Korjausluonnos lähteistettyjen havaintojen perusteella."
+            ],
+            "inputs": [
+              "Y-tunnus; varmennettu verkkosivu; sovitut tarkistuskriteerit."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Priorisoitu korjausluonnos, havaintojen lähteet ja seurannan ehdotettu rajaus."
+            ],
+            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "non_goals": [
+              "Automaattinen julkaisu ja lupaus näkyä AI-vastauksissa."
+            ],
+            "objective": "Yritys saa perustellun luonnoksen tietojensa parempaan AI-luettavuuteen ja näkyvyyden jatkotutkimukseen.",
+            "acceptance": [
+              "Raportti erottaa havainnot, ehdotukset ja mittaamatta jääneet asiat.",
+              "Mahdollinen kuukausiseuranta määrittelee toistettavan mittauksen ennen myyntiä."
+            ],
+            "dependencies": [
+              "Kotisivun luettavuuden tarkistus; todellisen AI-näkyvyyden mittaustapa ratkaistaan erikseen."
+            ],
+            "open_decisions": [
+              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+            ]
+          },
+          "description": "Raportti tai jatkuva näkyvyyden seuranta."
         }
       ],
-      "price_note": "Kuusi Business Micro-Utilities -miniappia ovat yhteisiä ensimmäisiä testiehdotuksia. Niiden hinnat ovat testihypoteeseja; niitä ei ole kohdistettu vahvistetuiksi tuotteiksi yksittäisille palvelubrändeille."
+      "price_note": "Kuusi Business Micro-Utilities -miniappia ovat yhteisiä ensimmäisiä testiehdotuksia. Niiden hinnat ovat testihypoteeseja; niitä ei ole kohdistettu vahvistetuiksi tuotteiksi yksittäisille palvelubrändeille.",
+      "build_brief": {
+        "mvp": [
+          "Y-tunnuksella avattava yritysnäkymä: perustiedot, tarjooma ja olennaiset tapahtumat.",
+          "Kuusi miniappia suunnitellaan tämän tietopohjan päälle erillisiksi käyttötapauksiksi."
+        ],
+        "inputs": [
+          "Y-tunnus ja olemassa olevat kanoniset yritystiedot."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Lähteistetty yritysnäkymä, jossa näkyvät tietojen ajantasaisuus ja puutteet."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Tarjota lähteistetty yrityskuva ja toimia miniappien yhteisenä tietopohjana.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Miniappien hintahypoteesit"
     },
     {
       "key": "sales-match",
+      "goal": "Auttaa tunnistamaan, kenelle yrityksen pitäisi myydä.",
       "name": "Sales Match",
       "theme": "Myynnin kohdentaminen",
-      "goal": "Auttaa tunnistamaan, kenelle yrityksen pitäisi myydä.",
-      "audience": "Yritysten myynti",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Yritysten myynti",
       "products": [
         {
           "name": "Myynnin kohdeyritykset",
           "description": "Yritysdataan perustuva vastaus siihen, kenelle pitäisi myydä."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Käyttäjä kuvaa tarjoomansa ja kohderajauksensa.",
+          "Tuloksena rajattu yritysjoukko ja yrityskohtainen perustelu osumalle."
+        ],
+        "inputs": [
+          "Myyjän tuote/palvelu, alue, toimialat ja yritysten varmennettu tarjooma."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Kohdeyritykset, osuman perusteet, lähteet ja puuttuvat tiedot."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Tunnistaa perusteltu joukko mahdollisia kohdeyrityksiä myyjälle.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     },
     {
       "key": "hankintamatch",
+      "goal": "Auttaa löytämään yritykselle sopivat julkiset tarjouskilpailut.",
       "name": "HankintaMatch",
       "theme": "Julkiset tarjouskilpailut",
-      "goal": "Auttaa löytämään yritykselle sopivat julkiset tarjouskilpailut.",
-      "audience": "Julkisiin tarjouskilpailuihin osallistuvat yritykset",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Julkisiin tarjouskilpailuihin osallistuvat yritykset",
       "products": [
         {
           "name": "Sopivien hankintojen löytäminen",
           "description": "Yritykselle sopivat julkiset tarjouskilpailut."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Tarjooman ja alueen rajaus.",
+          "Hankintailmoituksen vertailu yrityksen tarjoomaan ja määräajan näyttäminen."
+        ],
+        "inputs": [
+          "Yrityksen tarjooma ja julkiset hankintailmoitukset."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Sopivat ilmoitukset, määräajat, lähdelinkit ja sopivuuden perusteet."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Löytää yrityksen tarjoomaan sopivat julkiset tarjouskilpailut.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta.",
+          "Hankintalähteen saatavuus, käyttöehdot ja päivitysprosessi varmistetaan."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     },
     {
       "key": "kasvuradar",
+      "goal": "Auttaa tunnistamaan muuttuvat ja kasvavat yritykset.",
       "name": "KasvuRadar",
       "theme": "Yritysten muutokset ja kasvu",
-      "goal": "Auttaa tunnistamaan muuttuvat ja kasvavat yritykset.",
-      "audience": "Yritysten kehitystä seuraavat käyttäjät",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Yritysten kehitystä seuraavat käyttäjät",
       "products": [
         {
           "name": "Muutosten ja kasvun seuranta",
           "description": "Muuttuvien ja kasvavien yritysten tunnistaminen."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Yritysjoukon ja seurattavien tapahtumien valinta.",
+          "Ajallisesti järjestetty muutosnäkymä ja signaalin lähde."
+        ],
+        "inputs": [
+          "Kanoniset yritystapahtumat ja vertailukelpoinen historia."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Muuttuvat yritykset, havaitut muutokset ja niiden havaintoajat."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Tunnistaa yritysten muutoksia ja kasvun mahdollisia signaaleja.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     },
     {
       "key": "toimittajatutka",
+      "goal": "Auttaa löytämään tietyn tuotteen tai palvelun toimittajat.",
       "name": "ToimittajaTutka",
       "theme": "Toimittajien löytäminen",
-      "goal": "Auttaa löytämään tietyn tuotteen tai palvelun toimittajat.",
-      "audience": "Tuotteiden ja palveluiden ostajat",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Tuotteiden ja palveluiden ostajat",
       "products": [
         {
           "name": "Toimittajahaku",
           "description": "Tietyn tuotteen tai palvelun toimittajien löytäminen."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Tuote/palveluhaku ja alueellinen rajaus.",
+          "Toimittajaehdokkaat, joille näytetään tarjoomaa tukeva lähde."
+        ],
+        "inputs": [
+          "Käyttäjän tarve ja verkkosivuilta varmennettu yritysten tarjooma."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Toimittajaehdokkaat, tarjooman näyttö ja lähdelinkit."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Löytää tuotetta tai palvelua tarjoavat yritykset.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     },
     {
       "key": "patenttiradar",
+      "goal": "Auttaa seuraamaan kilpailijoiden kehitystä.",
       "name": "PatenttiRadar",
       "theme": "Kilpailijoiden kehitys",
-      "goal": "Auttaa seuraamaan kilpailijoiden kehitystä.",
-      "audience": "Kilpailijoiden kehitystä seuraavat yritykset",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Kilpailijoiden kehitystä seuraavat yritykset",
       "products": [
         {
           "name": "Kilpailijakehityksen seuranta",
           "description": "Kilpailijoiden kehityksen seuranta patenttitietojen näkökulmasta."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Rajattu yritys- tai teknologiaseuranta.",
+          "Patenttijulkaisut yhdistetään yrityksiin vain perustellun tunnistuksen kautta."
+        ],
+        "inputs": [
+          "Yritys/teknologia ja varmennettu patenttilähde."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Patenttihavainnot, julkaisupäivät, yrityskytkentä ja lähteet."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Seurata kilpailijoiden patentteihin liittyvää kehitystä.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta.",
+          "Patenttilähteen saatavuus, käyttöehdot ja yritystunnistuksen kattavuus ovat vielä avoinna."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     },
     {
       "key": "lupatarkistus",
+      "goal": "Auttaa tarkistamaan, onko yrityksellä oikeus tehdä kyseinen työ.",
       "name": "LupaTarkistus",
       "theme": "Oikeus tehdä työ",
-      "goal": "Auttaa tarkistamaan, onko yrityksellä oikeus tehdä kyseinen työ.",
-      "audience": "Työn tilaajat ja työtä toteuttavat yritykset",
       "status": "idea",
-      "price_range": "Hinnoittelu avoin",
+      "audience": "Työn tilaajat ja työtä toteuttavat yritykset",
       "products": [
         {
           "name": "Työhön liittyvän oikeuden tarkistus",
           "description": "Oikeus tehdä kyseinen työ. Tarkka tietosisältö ja lähteet määritellään ennen toteutusta."
         }
-      ]
+      ],
+      "build_brief": {
+        "mvp": [
+          "Yksi tarkasti määritelty työtyyppi ja yksi virallinen rekisteri ensimmäiseksi.",
+          "Tietojen ja lähdeajan esittäminen; puuttuva tai epäselvä tieto omana tilanaan."
+        ],
+        "inputs": [
+          "Y-tunnus, työtyyppi ja virallisen rekisterin tiedot."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Lähteistetty tarkistus, tarkistuksen laajuus ja ratkaisematta jäävät tiedot."
+        ],
+        "next_step": "Tee yhden käyttäjän yhden tarpeen esimerkkituloste nykyisestä lähteistetystä datasta.",
+        "non_goals": [
+          "Erillinen yritysdatan päärekisteri.",
+          "Automaattinen outreach, tarjoushakemuksen lähettäminen tai kaupallinen päätös käyttäjän puolesta."
+        ],
+        "objective": "Selvittää tietystä virallisesta lähteestä työhön liittyvän oikeuden tai rekisterimerkinnän tila.",
+        "acceptance": [
+          "Jokainen tuloksen yritys on yksilöity Y-tunnuksella tai muulla varmennetulla tunnisteella.",
+          "Tuloksen peruste ja lähde sekä havaintoaika näkyvät.",
+          "Tuntematon tai ristiriitainen tieto ei muutu myönteiseksi tulokseksi."
+        ],
+        "dependencies": [
+          "Event Layerin siivous ennen uusien palveluiden tapahtumakäsittelyä.",
+          "Yritysten varmennetut verkkosivut ja myöhemmin päättäjätietojen keruun ratkaisu.",
+          "Yhteiset yritystunnisteet, lähteet ja ajantasaisuus kanonisesta yritysdatasta.",
+          "Valitaan oikeuden/luvan tyyppi ja virallinen rekisteri; tulkinnan rajaus tarkistetaan."
+        ],
+        "open_decisions": [
+          "Ensimmäinen kohderyhmä ja käyttötapaus.",
+          "Lähdekattavuus, päivitysväli, lopullinen hinnoittelu ja käyttöliittymän rajaus."
+        ]
+      },
+      "price_range": "Hinnoittelu avoin"
     }
   ],
-  "source_project_id": "f2cb28bc-2fbe-4f39-8651-12af0b80671a"
+  "status": "idea",
+  "workflow": [
+    "Event Layerin lopullinen siivous",
+    "Yritysten varmennetut verkkosivut",
+    "Päättäjätietojen keruun ratkaisu",
+    "Palvelukohtainen tuotteistus ja kaupallinen testi"
+  ],
+  "brand_model": "ONE COMPANY DATA CORE, MANY PRODUCTS. YritystenTiedot säilyy yhteisenä tietopohjana. Palvelubrändit ja miniapit käyttävät samaa Company Graphia, eikä jokaiselle rakenneta erillistä yritysdatan päärekisteriä. Ensimmäiset kuusi miniappiehdotusta on koottu YritystenTiedot-riville.",
+  "source_date": "2026-10-12",
+  "brief_source": "Rakennusbriefien täydennys omistajan pyynnöstä 12.10.2026; ensimmäisen version rajaukset ovat suunnitteluehdotuksia.",
+  "source_title": "Yritystentiedot tuotteet",
+  "content_status": "Palveluiden nimet ovat työotsikoita. Sisällöt ovat suunnitelmia ja miniappien hinnat testihypoteeseja.",
+  "schema_version": 1,
+  "brief_updated_at": "2026-10-12T19:38:48.180108+00:00",
+  "parent_project_id": "cc187b93-a3fa-485c-a8fb-22e36bd3b7cc",
+  "source_project_id": "f2cb28bc-2fbe-4f39-8651-12af0b80671a",
+  "shared_capabilities": [
+    "Yhteiset yritystunnisteet",
+    "Yritysten faktat ja tarjooma",
+    "Tapahtumat",
+    "Lähteet ja ajantasaisuus",
+    "Company Graph"
+  ]
 }

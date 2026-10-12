@@ -1,35 +1,14 @@
 {
-  "schema_version": 1,
-  "parent_project_id": "a856b823-6520-40e2-abca-067dcb93795e",
-  "name": "Digital Studio",
   "goal": "Kehittää erottuvia digitaalisia tuotebrändejä, joilla on oma yleisö, selkeä hyöty ja myytävä sisältökokonaisuus.",
-  "status": "idea",
-  "source_title": "Digitaalisen tuotteen myynti",
-  "source_date": "2026-10-12",
-  "content_status": "Keskustelun alustavat brändi-, sisältö- ja hintaehdotukset.",
-  "workflow": [
-    "Markkinatutkimus",
-    "Alkuperäinen sisältö",
-    "Tarkistus",
-    "Visuaalinen tuotteistus",
-    "Julkaisu"
-  ],
-  "shared_capabilities": [
-    "Maksut",
-    "Digitaalinen toimitus",
-    "Versiointi",
-    "Analytiikka",
-    "Asiakaspalvelun perusprosessi"
-  ],
-  "brand_model": "Brändeillä on omat ulkoasut, valikoimat ja markkinointi. Omat domainit kuuluvat suunniteltuun malliin.",
+  "name": "Digital Studio",
   "brands": [
     {
       "key": "tarjousvalmis",
+      "goal": "Auttaa yksinyrittäjää tekemään selkeitä tarjouksia ja hinnoittelemaan työnsä.",
       "name": "Tarjousvalmis",
       "theme": "Myynti ja tarjoukset",
-      "goal": "Auttaa yksinyrittäjää tekemään selkeitä tarjouksia ja hinnoittelemaan työnsä.",
+      "status": "idea",
       "audience": "Yksinyrittäjät",
-      "price_range": "29–119 €",
       "products": [
         {
           "name": "Tarjouspaketit",
@@ -40,15 +19,44 @@
           "description": "Työn hinnoittelua tukevat paketit."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "Yksi valitulle yrittäjäryhmälle tarkoitettu tarjous- ja hinnoittelupaketti.",
+          "Muokattava tarjouspohja, kustannuslaskuri sekä täytetty esimerkkitarjous.",
+          "Ohje työn rajaukseen, oletuksiin ja lisätöiden käsittelyyn."
+        ],
+        "inputs": [
+          "Työn kuvaus, työmäärä, kustannukset ja asiakkaan antamat lähtötiedot."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Muokattavat tiedostot, pikaohje ja valmis harjoitusesimerkki."
+        ],
+        "next_step": "Kirjoita yhden tarjouspaketin sisällysluettelo ja täytetty esimerkki.",
+        "non_goals": [
+          "CRM, laskutusjärjestelmä, automaattinen asiakasviestintä."
+        ],
+        "objective": "Asiakas pystyy kokoamaan yhdelle työlle ymmärrettävän tarjouksen ja hinnan.",
+        "acceptance": [
+          "Käyttäjä saa esimerkkityöstä tarjouksen ilman tekijän apua.",
+          "Laskurin summat täsmäävät ja puuttuvat lähtötiedot näkyvät."
+        ],
+        "dependencies": [
+          "Valitaan ensimmäinen yrittäjäryhmä ja sen tavallinen tarjousprosessi."
+        ],
+        "open_decisions": [
+          "Ensimmäinen toimiala; tiedostomuodot; paketin lopullinen sisältö ja hinta."
+        ]
+      },
+      "price_range": "29–119 €"
     },
     {
       "key": "kotikaava",
+      "goal": "Helpottaa kodin järjestämistä ja muuton suunnittelua käytännöllisillä digitaalisilla paketeilla.",
       "name": "Kotikaava",
       "theme": "Kodin järjestys",
-      "goal": "Helpottaa kodin järjestämistä ja muuton suunnittelua käytännöllisillä digitaalisilla paketeilla.",
+      "status": "idea",
       "audience": "Kodin järjestystä tai muuttoa suunnittelevat kuluttajat",
-      "price_range": "19–59 €",
       "products": [
         {
           "name": "Järjestelypaketit",
@@ -63,15 +71,44 @@
           "description": "Muuton suunnittelun ja järjestämisen työkalut."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "Yksi huonekohtainen järjestelypaketti tai yksi muuttopaketti.",
+          "Vaiheistus, tehtävälista, tavaroiden lajittelupohja ja tulostettavat tarkistuslistat.",
+          "Täytetty esimerkki ja ohje paketin sovittamiseen omaan kotiin."
+        ],
+        "inputs": [
+          "Valittu tila tai muuton ajankohta, käytettävissä oleva aika ja kotitalouden tarpeet."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "PDF-ohje, tulostettavat listat ja muokattava suunnittelupohja."
+        ],
+        "next_step": "Tee yksi huone- tai muuttotilanne kokonaan läpi esimerkillä.",
+        "non_goals": [
+          "Koko kodin hallintasovellus, tavararekisteri ja palveluntarjoajien markkinapaikka."
+        ],
+        "objective": "Asiakas saa rajatun kodin tilan tai muuton hallittavaan järjestykseen.",
+        "acceptance": [
+          "Listojen järjestys vastaa käytännön tehtäviä.",
+          "Käyttäjä tietää seuraavan tehtävän jokaisessa vaiheessa."
+        ],
+        "dependencies": [
+          "Valitaan yksi konkreettinen arkinen käyttötapaus."
+        ],
+        "open_decisions": [
+          "Järjestely vai muutto ensimmäiseksi; tiedostomuodot; visuaalinen suunta."
+        ]
+      },
+      "price_range": "19–59 €"
     },
     {
       "key": "perheklik",
+      "goal": "Sujuvoittaa lapsiperheen päivittäisiä rutiineja yhteisesti käytettävillä työkaluilla.",
       "name": "Perheklik",
       "theme": "Lapsiperheen arki",
-      "goal": "Sujuvoittaa lapsiperheen päivittäisiä rutiineja yhteisesti käytettävillä työkaluilla.",
+      "status": "idea",
       "audience": "Lapsiperheet",
-      "price_range": "19–59 €",
       "products": [
         {
           "name": "Aamurutiinit",
@@ -86,15 +123,44 @@
           "description": "Koulupäivän arkea ja rutiineja tukevat sisällöt."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "Yksi aamurutiini-, ruutuaika- tai koulupäiväpaketti.",
+          "Vanhemman ohje, lapselle selkeä rutiinitaulu ja yhdessä täytettävä sopimuspohja.",
+          "Soveltaminen eri perhetilanteisiin ja esimerkkiviikko."
+        ],
+        "inputs": [
+          "Lapsen ikäryhmä, perheen nykyinen rutiini ja tavoiteltu muutos."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Tulostettavat taulut, sopimuspohja ja lyhyt käyttöönotto-ohje."
+        ],
+        "next_step": "Laadi yhden aamun rutiinipaketti ja testaa ohjeen ymmärrettävyys.",
+        "non_goals": [
+          "Lapsen seurantasovellus, kasvatuksen yksilöarvio ja terveystietojen keruu."
+        ],
+        "objective": "Perhe pystyy sopimaan ja käyttämään yhtä yhteistä arjen rutiinia.",
+        "acceptance": [
+          "Perhe ymmärtää tehtävät ja sopimuksen ilman lisäopastusta.",
+          "Työkalu on käytettävissä ilman lapsen henkilötietojen keruuta."
+        ],
+        "dependencies": [
+          "Rajataan ensimmäinen ikäryhmä ja tilanne; arvioidaan sisällön sopivuus."
+        ],
+        "open_decisions": [
+          "Ensimmäinen ikäryhmä; ensimmäinen arjen pulma; käytetäänkö kuvallisia tauluja."
+        ]
+      },
+      "price_range": "19–59 €"
     },
     {
       "key": "kaksinhetki",
+      "goal": "Tarjota pariskunnille helposti toteutettavia yhteisiä hetkiä ja tekemistä.",
       "name": "Kaksinhetki",
       "theme": "Yhteistä aikaa",
-      "goal": "Tarjota pariskunnille helposti toteutettavia yhteisiä hetkiä ja tekemistä.",
+      "status": "idea",
       "audience": "Pariskunnat",
-      "price_range": "19–69 €",
       "products": [
         {
           "name": "Keskustelukortit",
@@ -113,15 +179,44 @@
           "description": "Kahdelle tarkoitettuja tekemisen sisältöjä."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "Yksi koti-ilta- tai treffipaketti.",
+          "Valmistelulista, etenemisrunko, keskustelukortit ja vaihtoehdot eri aika- ja budjettirajoille.",
+          "Selkeä ohje aloittamiseen ja toiminnan mukauttamiseen."
+        ],
+        "inputs": [
+          "Käytettävissä oleva aika, paikka ja budjetti."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Digitaalinen iltapaketti ja tulostettavat kortit."
+        ],
+        "next_step": "Käsikirjoita yksi kokonainen koti-ilta valmisteluista lopetukseen.",
+        "non_goals": [
+          "Deittisovellus, terapia ja käyttäjien yksityisten keskustelujen tallennus."
+        ],
+        "objective": "Pariskunta voi toteuttaa yhden mielekkään yhteisen illan valmiin paketin avulla.",
+        "acceptance": [
+          "Ilta voidaan toteuttaa pelkillä paketissa kerrotuilla valmisteluilla.",
+          "Kortit ovat ymmärrettäviä ja käyttäjä voi ohittaa kysymyksiä."
+        ],
+        "dependencies": [
+          "Valitaan ensimmäisen paketin teema ja oma brändin ilme."
+        ],
+        "open_decisions": [
+          "Ensimmäinen teema; korttien määrä; PDF vai myös mobiiliversio."
+        ]
+      },
+      "price_range": "19–69 €"
     },
     {
       "key": "paivaraami",
+      "goal": "Auttaa suunnittelemaan työviikkoa, hallitsemaan keskeytyksiä ja varaamaan aikaa keskittymiselle.",
       "name": "Päiväraami",
       "theme": "Aika ja keskittyminen",
-      "goal": "Auttaa suunnittelemaan työviikkoa, hallitsemaan keskeytyksiä ja varaamaan aikaa keskittymiselle.",
+      "status": "idea",
       "audience": "Työaikaansa ja keskittymistään kehittävät käyttäjät",
-      "price_range": "19–79 €",
       "products": [
         {
           "name": "Kalenterityökalut",
@@ -136,15 +231,44 @@
           "description": "Viikon työn ja ajankäytön suunnittelun kokonaisuudet."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "Viikkosuunnittelupohja, keskeytysten kartoitus ja päivän prioriteettilista.",
+          "Lyhyt käyttöohje ja täytetty esimerkkiviikko.",
+          "Yksi selkeä paketti ennen laajempaa valikoimaa."
+        ],
+        "inputs": [
+          "Viikon tehtävät, kiinteät menot ja käytettävissä oleva työaika."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Muokattavat suunnittelupohjat ja tulostettava viikkonäkymä."
+        ],
+        "next_step": "Tee yhden viikon työkalupaketti ja esimerkki ylikuormitetun viikon korjauksesta.",
+        "non_goals": [
+          "Kalenterisynkronointi, tiimien projektinhallinta ja automaattinen työntekijäseuranta."
+        ],
+        "objective": "Käyttäjä pystyy tekemään realistisen työviikon ja suojaamaan keskittymisajan.",
+        "acceptance": [
+          "Suunnitelma näyttää myös kapasiteetin ylityksen.",
+          "Sama käyttäjä pystyy suunnittelemaan seuraavan viikon ohjeen avulla."
+        ],
+        "dependencies": [
+          "Valitaan ensisijainen työtapa ja tiedostomuoto."
+        ],
+        "open_decisions": [
+          "Tulostettava pohja, taulukko vai muu muokattava muoto; ensimmäinen käyttäjäryhmä."
+        ]
+      },
+      "price_range": "19–79 €"
     },
     {
       "key": "huomenvara",
+      "goal": "Auttaa ymmärtämään tekoälyn vaikutusta omaan työhön ja valmistautumaan muutokseen käytännöllisesti.",
       "name": "Huomenvara",
       "theme": "AI ja muuttuva työelämä",
-      "goal": "Auttaa ymmärtämään tekoälyn vaikutusta omaan työhön ja valmistautumaan muutokseen käytännöllisesti.",
+      "status": "idea",
       "audience": "35–60-vuotiaat ei-tekniset työntekijät",
-      "price_range": "29–179 €",
       "products": [
         {
           "name": "AI ilman paniikkia",
@@ -167,17 +291,45 @@
           "description": "Valmennusten kokonaispaketti."
         }
       ],
-      "status": "idea"
+      "build_brief": {
+        "mvp": [
+          "AI ilman paniikkia ensimmäiseksi rajatuksi tuotteeksi.",
+          "Lyhyet oppisisällöt, arkiset työesimerkit, oman työn kartoitusharjoitus ja toimintalista.",
+          "Oman työn AI-kartta ja muut paketit suunnitellaan samaan oppimispolkuun."
+        ],
+        "inputs": [
+          "Käyttäjän tehtävätyypit ja tavoitteet; julkiset, varmennetut AI-esimerkit."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Valmennusaineisto, harjoituskirja ja oma seuraavan kuukauden toimintasuunnitelma."
+        ],
+        "next_step": "Kirjoita AI ilman paniikkia -tuotteen oppimistavoitteet ja yksi valmis luku.",
+        "non_goals": [
+          "Työllistymislupaukset, henkilökohtainen uratakuu ja työnantajadatan keruu."
+        ],
+        "objective": "Ei-tekninen työntekijä saa ymmärrettävän kuvan AI-muutoksesta ja oman etenemissuunnitelman.",
+        "acceptance": [
+          "Ei-tekninen testikäyttäjä ymmärtää käsitteet ja suorittaa harjoituksen.",
+          "Työesimerkit eivät vaadi työnantajan salaisen aineiston lähettämistä palveluun."
+        ],
+        "dependencies": [
+          "Lähteiden tarkistus ja päivityspäivä muuttuville AI-väitteille."
+        ],
+        "open_decisions": [
+          "Teksti vai video ensimmäiseksi; yksi ammattiryhmä vai yleinen aloitus; päivitysväli."
+        ]
+      },
+      "price_range": "29–179 €"
     },
     {
       "key": "valja",
+      "goal": "Tarjota selkeitä teemoja ja harjoituksia, joista syntyy omaan työarkeen sovellettava lopputulos.",
       "name": "Väljä",
       "theme": "Työarki ja itsensä kehittäminen",
-      "goal": "Tarjota selkeitä teemoja ja harjoituksia, joista syntyy omaan työarkeen sovellettava lopputulos.",
-      "audience": "Työarkea parantavat kuluttajat; myöhemmin myös yritysten henkilöstö",
+      "status": "idea",
       "promise": "Tilaa ajatella. Voimaa toimia.",
-      "price_range": "29 € / 89 € moduuli",
-      "price_note": "Kokonaispaketin hinta täydennetään alkuperäisestä suunnitelmasta.",
+      "audience": "Työarkea parantavat kuluttajat; myöhemmin myös yritysten henkilöstö",
       "products": [
         {
           "name": "Tilaa viikkoosi",
@@ -209,7 +361,60 @@
           "description": "Moduulien kokonaispaketti; hinta vahvistamatta."
         }
       ],
-      "status": "idea"
+      "price_note": "Kokonaispaketin hinta täydennetään alkuperäisestä suunnitelmasta.",
+      "build_brief": {
+        "mvp": [
+          "Tilaa viikkoosi: seitsemän päivän harjoituspolku.",
+          "Jokaiselle päivälle lyhyt sisältö, tehtävä ja konkreettinen omaan arkeen sovellettava tulos.",
+          "Selkeys, Rajat, Vire ja Yhteys määritellään omiksi moduuleikseen."
+        ],
+        "inputs": [
+          "Käyttäjän itse kuvaama työarki, oma tavoite ja harjoituksiin käytettävä aika."
+        ],
+        "status": "proposed",
+        "outputs": [
+          "Harjoitusmateriaali, työkirja ja henkilökohtainen toimintalista."
+        ],
+        "next_step": "Tee Tilaa viikkoosi -ohjelman kaikki seitsemän päivää sisällysluettelotasolla.",
+        "non_goals": [
+          "Henkilökohtainen terveysarvio, terapia ja työnantajan henkilöstöseuranta."
+        ],
+        "objective": "Käyttäjä tekee työarkeensa yhden rajatun, itse arvioitavan muutoksen.",
+        "acceptance": [
+          "Jokaisella päivällä ja moduulilla on näkyvä tavoite ja lopputulos.",
+          "Harjoitukset ovat toteutettavissa itsenäisesti annetussa ajassa."
+        ],
+        "dependencies": [
+          "Harjoitusten toimituksellinen tarkistus ja moduulien päällekkäisyyden rajaus."
+        ],
+        "open_decisions": [
+          "Toimitusmuoto; moduulien laajuus; kokonaispaketin hinta; yritysmyynnin myöhempi rajaus."
+        ]
+      },
+      "price_range": "29 € / 89 € moduuli"
     }
+  ],
+  "status": "idea",
+  "workflow": [
+    "Markkinatutkimus",
+    "Alkuperäinen sisältö",
+    "Tarkistus",
+    "Visuaalinen tuotteistus",
+    "Julkaisu"
+  ],
+  "brand_model": "Brändeillä on omat ulkoasut, valikoimat ja markkinointi. Omat domainit kuuluvat suunniteltuun malliin.",
+  "source_date": "2026-10-12",
+  "brief_source": "Rakennusbriefien täydennys omistajan pyynnöstä 12.10.2026; ensimmäisen version rajaukset ovat suunnitteluehdotuksia.",
+  "source_title": "Digitaalisen tuotteen myynti",
+  "content_status": "Keskustelun alustavat brändi-, sisältö- ja hintaehdotukset.",
+  "schema_version": 1,
+  "brief_updated_at": "2026-10-12T19:38:40.598532+00:00",
+  "parent_project_id": "a856b823-6520-40e2-abca-067dcb93795e",
+  "shared_capabilities": [
+    "Maksut",
+    "Digitaalinen toimitus",
+    "Versiointi",
+    "Analytiikka",
+    "Asiakaspalvelun perusprosessi"
   ]
 }
