@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "parent_project_id": "a856b823-6520-40e2-abca-067dcb93795e",
+  "name": "Digital Studio",
+  "goal": "Kehittää erottuvia digitaalisia tuotebrändejä, joilla on oma yleisö, selkeä hyöty ja myytävä sisältökokonaisuus.",
+  "status": "idea",
+  "source_title": "Digitaalisen tuotteen myynti",
+  "source_date": "2026-10-12",
+  "content_status": "Keskustelun alustavat brändi-, sisältö- ja hintaehdotukset.",
+  "workflow": [
+    "Markkinatutkimus",
+    "Alkuperäinen sisältö",
+    "Tarkistus",
+    "Visuaalinen tuotteistus",
+    "Julkaisu"
+  ],
+  "shared_capabilities": [
+    "Maksut",
+    "Digitaalinen toimitus",
+    "Versiointi",
+    "Analytiikka",
+    "Asiakaspalvelun perusprosessi"
+  ],
+  "brand_model": "Brändeillä on omat ulkoasut, valikoimat ja markkinointi. Omat domainit kuuluvat suunniteltuun malliin.",
+  "brands": [
+    {
+      "key": "tarjousvalmis",
+      "name": "Tarjousvalmis",
+      "theme": "Myynti ja tarjoukset",
+      "goal": "Auttaa yksinyrittäjää tekemään selkeitä tarjouksia ja hinnoittelemaan työnsä.",
+      "audience": "Yksinyrittäjät",
+      "price_range": "29–119 €",
+      "products": [
+        {
+          "name": "Tarjouspaketit",
+          "description": "Tarjousten valmistelua tukevat digitaaliset työkalut ja pohjat."
+        },
+        {
+          "name": "Hinnoittelupaketit",
+          "description": "Työn hinnoittelua tukevat paketit."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "kotikaava",
+      "name": "Kotikaava",
+      "theme": "Kodin järjestys",
+      "goal": "Helpottaa kodin järjestämistä ja muuton suunnittelua käytännöllisillä digitaalisilla paketeilla.",
+      "audience": "Kodin järjestystä tai muuttoa suunnittelevat kuluttajat",
+      "price_range": "19–59 €",
+      "products": [
+        {
+          "name": "Järjestelypaketit",
+          "description": "Kodin järjestämisen työkalut."
+        },
+        {
+          "name": "Huonekohtaiset paketit",
+          "description": "Kodin eri tilojen järjestämiseen rajatut kokonaisuudet."
+        },
+        {
+          "name": "Muuttopaketit",
+          "description": "Muuton suunnittelun ja järjestämisen työkalut."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "perheklik",
+      "name": "Perheklik",
+      "theme": "Lapsiperheen arki",
+      "goal": "Sujuvoittaa lapsiperheen päivittäisiä rutiineja yhteisesti käytettävillä työkaluilla.",
+      "audience": "Lapsiperheet",
+      "price_range": "19–59 €",
+      "products": [
+        {
+          "name": "Aamurutiinit",
+          "description": "Työkaluja perheen aamujen suunnitteluun."
+        },
+        {
+          "name": "Ruutuaika",
+          "description": "Perheen ruutuajan käytäntöjä tukevat työkalut."
+        },
+        {
+          "name": "Koulupäivän työkalut",
+          "description": "Koulupäivän arkea ja rutiineja tukevat sisällöt."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "kaksinhetki",
+      "name": "Kaksinhetki",
+      "theme": "Yhteistä aikaa",
+      "goal": "Tarjota pariskunnille helposti toteutettavia yhteisiä hetkiä ja tekemistä.",
+      "audience": "Pariskunnat",
+      "price_range": "19–69 €",
+      "products": [
+        {
+          "name": "Keskustelukortit",
+          "description": "Yhteisen keskustelun avaajat."
+        },
+        {
+          "name": "Koti-illat",
+          "description": "Kotona toteutettavat yhteiset elämykset."
+        },
+        {
+          "name": "Treffipaketit",
+          "description": "Valmiiksi suunniteltuja treffikokonaisuuksia."
+        },
+        {
+          "name": "Yhteinen tekeminen",
+          "description": "Kahdelle tarkoitettuja tekemisen sisältöjä."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "paivaraami",
+      "name": "Päiväraami",
+      "theme": "Aika ja keskittyminen",
+      "goal": "Auttaa suunnittelemaan työviikkoa, hallitsemaan keskeytyksiä ja varaamaan aikaa keskittymiselle.",
+      "audience": "Työaikaansa ja keskittymistään kehittävät käyttäjät",
+      "price_range": "19–79 €",
+      "products": [
+        {
+          "name": "Kalenterityökalut",
+          "description": "Ajankäytön suunnittelun pohjat ja työkalut."
+        },
+        {
+          "name": "Keskeytysten hallinta",
+          "description": "Keskittymistä ja keskeytysten hallintaa tukevat työkalut."
+        },
+        {
+          "name": "Viikkosuunnittelu",
+          "description": "Viikon työn ja ajankäytön suunnittelun kokonaisuudet."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "huomenvara",
+      "name": "Huomenvara",
+      "theme": "AI ja muuttuva työelämä",
+      "goal": "Auttaa ymmärtämään tekoälyn vaikutusta omaan työhön ja valmistautumaan muutokseen käytännöllisesti.",
+      "audience": "35–60-vuotiaat ei-tekniset työntekijät",
+      "price_range": "29–179 €",
+      "products": [
+        {
+          "name": "AI ilman paniikkia",
+          "price": "29 €",
+          "description": "Tekoälyn muutoksen ymmärtäminen."
+        },
+        {
+          "name": "Oman työn AI-kartta",
+          "price": "79 €",
+          "description": "Tekoälyn vaikutusten tarkastelu oman työn näkökulmasta."
+        },
+        {
+          "name": "Osaaminen uuteen aikaan",
+          "price": "119 €",
+          "description": "Oman osaamisen kehittäminen muuttuvassa työelämässä."
+        },
+        {
+          "name": "Koko polku",
+          "price": "179 €",
+          "description": "Valmennusten kokonaispaketti."
+        }
+      ],
+      "status": "idea"
+    },
+    {
+      "key": "valja",
+      "name": "Väljä",
+      "theme": "Työarki ja itsensä kehittäminen",
+      "goal": "Tarjota selkeitä teemoja ja harjoituksia, joista syntyy omaan työarkeen sovellettava lopputulos.",
+      "audience": "Työarkea parantavat kuluttajat; myöhemmin myös yritysten henkilöstö",
+      "promise": "Tilaa ajatella. Voimaa toimia.",
+      "price_range": "29 € / 89 € moduuli",
+      "price_note": "Kokonaispaketin hinta täydennetään alkuperäisestä suunnitelmasta.",
+      "products": [
+        {
+          "name": "Tilaa viikkoosi",
+          "price": "29 €",
+          "description": "7 päivän työarjen selkeyttämisohjelma."
+        },
+        {
+          "name": "Selkeys",
+          "price": "89 €",
+          "description": "Tavoitteet, valinnat ja suunta."
+        },
+        {
+          "name": "Rajat",
+          "price": "89 €",
+          "description": "Rajat, kuormituksesta keskustelu ja tarpeiden ilmaisu."
+        },
+        {
+          "name": "Vire",
+          "price": "89 €",
+          "description": "Työpäivän rytmi, tauot ja palautuminen."
+        },
+        {
+          "name": "Yhteys",
+          "price": "89 €",
+          "description": "Vuorovaikutus ja kuuntelu."
+        },
+        {
+          "name": "Koko Väljä",
+          "description": "Moduulien kokonaispaketti; hinta vahvistamatta."
+        }
+      ],
+      "status": "idea"
+    }
+  ]
+}
