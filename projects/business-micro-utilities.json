@@ -146,72 +146,117 @@
           "description": "Sopivien julkisten tarjouskilpailujen seuranta."
         },
         {
-          "name": "Kilpailija- ja samankaltaisuusvertailu",
+          "name": "Kilpailija-analyysi",
           "price": "19–29 €",
           "build_brief": {
             "mvp": [
-              "Yksi yritys ja rajattu vertailu toimialan, alueen ja varmennetun tarjooman avulla."
+              "Yksi yritys ja rajattu toimiala tai alue.",
+              "Perusteltu kilpailijajoukko ja sama lähteistetty vertailurunko kaikille."
             ],
             "inputs": [
-              "Y-tunnus; sovitut vertailukriteerit; kanoninen yritysdata."
+              "Y-tunnus, tarjooma, kohdealue ja käyttäjän nimeämät kilpailijat."
             ],
             "status": "proposed",
             "outputs": [
-              "Vertailuyritykset ja yrityskohtaiset yhtäläisyydet sekä erot."
+              "Kilpailijajoukko, tarjooma- ja kohderyhmävertailu, erot ja jatkoselvitettävät asiat."
             ],
-            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "next_step": "Tee yhdelle yritykselle kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
             "non_goals": [
-              "Kilpailijan liikevaihdon tai asiakkaiden keksiminen."
+              "Markkinaosuuksien, asiakkaiden tai hintojen arvaaminen."
             ],
-            "objective": "Käyttäjä saa perustellun vertailujoukon samankaltaisista yrityksistä.",
+            "objective": "Tunnistaa mahdollisia kilpailijoita ja vertaa niiden tarjoomaa, kohderyhmiä, alueita ja julkisesti todennettavia eroja. Raportti perustelee kilpailijavalinnat ja erottaa havainnot analyysin päätelmistä.",
             "acceptance": [
-              "Tuloksessa kerrotaan, miksi yritys on mukana.",
-              "Tietojen puutteet näkyvät eikä samankaltaisuutta tulkita varmennetuksi kilpailijasuhteeksi."
+              "Valinnat perustellaan ja havainnoilla on lähde sekä havaintoaika.",
+              "Puuttuva tieto erotetaan erosta; päätelmät merkitään."
             ],
             "dependencies": [
-              "Verkkosivut ja tarjooma varmennettu; vertailukriteerit näkyvät."
+              "Varmennetut yritysten verkkosivut ja riittävä tarjoomadata."
             ],
             "open_decisions": [
-              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+              "Ensimmäinen toimiala, vertailun laajuus ja toimitusmuoto; kertaraportti vai seuranta."
             ]
           },
-          "description": "Yritysten kilpailija- ja samankaltaisuusvertailu."
+          "description": "Tunnistaa mahdollisia kilpailijoita ja vertaa niiden tarjoomaa, kohderyhmiä, alueita ja julkisesti todennettavia eroja. Raportti perustelee kilpailijavalinnat ja erottaa havainnot analyysin päätelmistä.",
+          "previous_name": "Kilpailija- ja samankaltaisuusvertailu"
         },
         {
-          "name": "AI-näkyvyysluonnos",
+          "name": "AI-näkyvyystesti",
           "price": "19–39 € raportti / 9–19 €/kk",
           "build_brief": {
             "mvp": [
-              "Yhden yrityksen sisältö- ja tietopuutteiden raportti.",
-              "Korjausluonnos lähteistettyjen havaintojen perusteella."
+              "Yksi yritys ja dokumentoitu kysymyssarja valituissa AI-palveluissa.",
+              "Mallin nimi, testiaika ja vastaukset tallennetaan; yritysmaininnat erotetaan luettavuushavainnoista."
             ],
             "inputs": [
-              "Y-tunnus; varmennettu verkkosivu; sovitut tarkistuskriteerit."
+              "Y-tunnus, varmennettu verkkosivu, tarjooma, alue ja asiakaskysymykset."
             ],
             "status": "proposed",
             "outputs": [
-              "Priorisoitu korjausluonnos, havaintojen lähteet ja seurannan ehdotettu rajaus."
+              "Toistettavan testin tulokset ja priorisoitu näkyvyysraportti."
             ],
-            "next_step": "Tuota yksi kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
+            "next_step": "Tee yhdelle yritykselle kokonainen esimerkkiraportti ja tarkista se lähteitä vasten.",
             "non_goals": [
-              "Automaattinen julkaisu ja lupaus näkyä AI-vastauksissa."
+              "Näkyvyystakuu ja sivuston automaattinen muokkaus."
             ],
-            "objective": "Yritys saa perustellun luonnoksen tietojensa parempaan AI-luettavuuteen ja näkyvyyden jatkotutkimukseen.",
+            "objective": "Testaa, mainitaanko yritys valituissa AI-palveluissa sovituilla asiakaskysymyksillä. Raportti näyttää vastaukset, yritysmaininnat, lähdeviittaukset, vertailuyritykset ja kehitysehdotukset. Verkkosivun AI-luettavuus tarkistetaan erillisenä osana.",
             "acceptance": [
-              "Raportti erottaa havainnot, ehdotukset ja mittaamatta jääneet asiat.",
-              "Mahdollinen kuukausiseuranta määrittelee toistettavan mittauksen ennen myyntiä."
+              "Jokainen näkyvyysväite on jäljitettävissä vastaukseen ja aikaan.",
+              "Samannimiset yritykset erotetaan; testin rajat kerrotaan."
             ],
             "dependencies": [
-              "Kotisivun luettavuuden tarkistus; todellisen AI-näkyvyyden mittaustapa ratkaistaan erikseen."
+              "AI-palveluiden pääsy, käyttöehdot ja testikustannukset ratkaistaan."
             ],
             "open_decisions": [
-              "Ensimmäisen testin tarkka rajaus, toimitusmuoto ja hintahypoteesin testi."
+              "Ensimmäiset AI-palvelut, kysymykset ja uusintatestit; kertatesti vai jatkuva seuranta."
             ]
           },
-          "description": "Raportti tai jatkuva näkyvyyden seuranta."
+          "description": "Testaa, mainitaanko yritys valituissa AI-palveluissa sovituilla asiakaskysymyksillä. Raportti näyttää vastaukset, yritysmaininnat, lähdeviittaukset, vertailuyritykset ja kehitysehdotukset. Verkkosivun AI-luettavuus tarkistetaan erillisenä osana.",
+          "previous_name": "AI-näkyvyysluonnos"
+        },
+        {
+          "name": "Automaattinen Google Ads -palvelu",
+          "build_brief": {
+            "mvp": [
+              "Yksi yritys, yksi mainostili ja yksi rajattu Search-kampanjan käyttötapaus.",
+              "Tarjooman ja laskeutumissivun tarkistus, hakusanat, mainostekstit ja kampanjarakenne.",
+              "Tulosten seuranta ja rajatut optimointimuutokset hyväksyttyjen sääntöjen sisällä.",
+              "Raportti tehdyistä muutoksista, mainoskuluista, konversioista ja seuraavista toimista."
+            ],
+            "inputs": [
+              "Y-tunnus, verkkosivu, myytävä palvelu, alue ja kampanjatavoite.",
+              "Asiakkaan Google Ads -tili, valtuutus, budjetti ja sallittujen muutosten rajat.",
+              "Konversiomäärittely ja toimiva seuranta."
+            ],
+            "status": "proposed",
+            "outputs": [
+              "Kampanja, jatkuva optimointi sekä muutosten ja tulosten raportti."
+            ],
+            "next_step": "Suunnittele esimerkkiyrityksen kampanja ja optimointisäännöt testidatalla ennen oikean mainostilin käyttöä.",
+            "non_goals": [
+              "Mainonnan käynnistäminen ilman valtuutusta, budjetin ylitys ja asiakastulosten takaaminen.",
+              "Muut mainosalustat ensimmäisessä versiossa."
+            ],
+            "objective": "Yritys saa tavoitteeseen ohjatun palvelun, joka hoitaa sovitut Google Ads -tehtävät automaattisesti.",
+            "acceptance": [
+              "Budjetti ja valtuutus on määritelty ennen käynnistystä.",
+              "Jokainen muutos on jäljitettävissä tavoitteeseen ja havaittuun tietoon.",
+              "Budjettirajoja valvotaan; virheellinen seuranta tai puuttuva valtuutus pysäyttää muutokset.",
+              "Mainoskulut ja palvelumaksu näkyvät erikseen."
+            ],
+            "dependencies": [
+              "Google Ads -integraatio, tilivaltuudet ja käyttöehdot selvitetään.",
+              "Konversioseuranta ja laskeutumissivu varmennetaan."
+            ],
+            "open_decisions": [
+              "Ensimmäinen asiakasryhmä ja kampanjatavoite.",
+              "Tilin kytkentä, seuranta ja sallittujen automaattisten muutosten laajuus.",
+              "Palvelun hinnoittelu, raportointiväli ja poikkeustilanteet."
+            ]
+          },
+          "description": "Yrityksen tarjoomaan ja tavoitteeseen perustuva automaattinen mainonnan palvelu: kampanjoiden suunnittelu, mainostekstit, seuranta ja optimointi asiakkaan hyväksymän budjetin ja toimintavaltuuden sisällä. Palvelumaksu ja mainosbudjetti erotetaan."
         }
       ],
-      "price_note": "Kuusi Business Micro-Utilities -miniappia ovat yhteisiä ensimmäisiä testiehdotuksia. Niiden hinnat ovat testihypoteeseja; niitä ei ole kohdistettu vahvistetuiksi tuotteiksi yksittäisille palvelubrändeille.",
+      "price_note": "Seitsemän miniappia ovat palveluideoita. Hinnat ovat testihypoteeseja; Google Ads -palvelun hinnoittelu on avoin.",
       "build_brief": {
         "mvp": [
           "Y-tunnuksella avattava yritysnäkymä: perustiedot, tarjooma ja olennaiset tapahtumat.",
@@ -546,13 +591,13 @@
     "Päättäjätietojen keruun ratkaisu",
     "Palvelukohtainen tuotteistus ja kaupallinen testi"
   ],
-  "brand_model": "ONE COMPANY DATA CORE, MANY PRODUCTS. YritystenTiedot säilyy yhteisenä tietopohjana. Palvelubrändit ja miniapit käyttävät samaa Company Graphia, eikä jokaiselle rakenneta erillistä yritysdatan päärekisteriä. Ensimmäiset kuusi miniappiehdotusta on koottu YritystenTiedot-riville.",
+  "brand_model": "ONE COMPANY DATA CORE, MANY PRODUCTS. YritystenTiedot säilyy yhteisenä tietopohjana. Palvelubrändit ja miniapit käyttävät samaa Company Graphia, eikä jokaiselle rakenneta erillistä yritysdatan päärekisteriä. Miniappiehdotukset on koottu YritystenTiedot-riville.",
   "source_date": "2026-10-12",
   "brief_source": "Rakennusbriefien täydennys omistajan pyynnöstä 12.10.2026; ensimmäisen version rajaukset ovat suunnitteluehdotuksia.",
   "source_title": "Yritystentiedot tuotteet",
-  "content_status": "Palveluiden nimet ovat työotsikoita. Sisällöt ovat suunnitelmia ja miniappien hinnat testihypoteeseja.",
+  "content_status": "Palveluiden nimet ovat työotsikoita. Sisällöt ovat suunnitelmia ja miniappien hinnat testihypoteeseja. Rakennusbriefit on tallennettu; niiden näyttäminen odottaa Supabasen lukutoiminnon julkaisuvirheen korjausta.",
   "schema_version": 1,
-  "brief_updated_at": "2026-10-12T19:38:48.180108+00:00",
+  "brief_updated_at": "2026-10-12T19:51:56.045384+00:00",
   "parent_project_id": "cc187b93-a3fa-485c-a8fb-22e36bd3b7cc",
   "source_project_id": "f2cb28bc-2fbe-4f39-8651-12af0b80671a",
   "shared_capabilities": [
@@ -561,5 +606,6 @@
     "Tapahtumat",
     "Lähteet ja ajantasaisuus",
     "Company Graph"
-  ]
+  ],
+  "brief_delivery_status": "reader_deploy_blocked"
 }

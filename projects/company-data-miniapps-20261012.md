@@ -1,0 +1,5 @@
+# Company-data miniapp scope update — 2026-10-12
+
+At the owner's request, AI-näkyvyysluonnos becomes AI-näkyvyystesti, Kilpailija- ja samankaltaisuusvertailu becomes Kilpailija-analyysi, and Automaattinen Google Ads -palvelu is added. Previous names are retained in source metadata. There are now seven miniapp concepts beneath the YritystenTiedot disclosure. Descriptions and proposed build briefs define the initial test, required inputs, deliverables, evidence, dependencies and unresolved choices. Google Ads is a service concept; this recording does not authorize spending or activate campaigns. Customer budget, account authorization, conversion measurement and automation bounds belong to its future service contract. Pricing is unresolved for Ads; earlier prices remain test hypotheses.
+
+Canonical metadata was updated narrowly and read back. The existing reader already exposes the new names and descriptions. Expanded structured briefs remain blocked by the previously recorded Supabase Edge deployment failure; preserve that distinction until reader deployment succeeds.
