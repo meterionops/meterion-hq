@@ -139,7 +139,8 @@ export function publicIncubator(value, project) {
   })) : [];
   if (new Set(brands.map(b=>b.key)).size!==brands.length) return null;
   return {...pickText(value,['name','goal','status','source_title','source_date','content_status','brand_model','brief_updated_at','brief_source']),
-    schema_version:1,parent_project_id:project.id,workflow:list(value.workflow),shared_capabilities:list(value.shared_capabilities),brands};
+    schema_version:1,parent_project_id:project.id,workflow:list(value.workflow),shared_capabilities:list(value.shared_capabilities),brands,
+    miniapps:(brands.find(b=>b.key==='yritystentiedot')?.products.slice(1)||[]).map((p,i)=>({...p,key:'miniapp-'+i,goal:p.description,theme:'Miniappi',price_range:p.price||'Hinnoittelu avoin',products:[]}))};
 }
 
 
