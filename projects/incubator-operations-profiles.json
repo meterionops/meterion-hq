@@ -1,0 +1,250 @@
+[
+  {
+    "key": "digital-studio",
+    "operations": {
+      "schema_version": 1,
+      "status": "configured",
+      "authority_recorded_at": "2026-10-13",
+      "authority_source": "Omistaja: pienihintaiset tuotteet saavat toimia autonomisesti.",
+      "policy": "Pienihintaisten tuotteiden rutiinitoimet saavat toimia autonomisesti nykyisen tuotesisällön, laatuehtojen ja sovittujen kustannusrajojen sisällä.",
+      "allowed": [
+        "Maksetun tuotteen toimitus ja toimitusvirheen korjaus",
+        "Tilatun raportin tuottaminen varmennetusta datasta",
+        "Tavallinen asiakaspalvelu hyväksytyistä ohjeista",
+        "Sisältö- ja SEO-päivitys lukitussa tuoterajauksessa laatutarkistuksen jälkeen",
+        "Turvallinen uusintayritys ja tuloksen varmennus"
+      ],
+      "owner_decisions": [
+        "Uusi kustannussitoumus tai sovitun kustannusrajan korotus",
+        "Liiketoimintamallin tai tuoterajauksen olennainen muutos",
+        "Oikeudellinen sitoumus tai peruuttamaton tietomuutos"
+      ],
+      "jobs": [
+        {
+          "name": "Officen automaation valmiusvalvonta",
+          "trigger": "Kuuden tunnin välein",
+          "mode": "Autonominen",
+          "status": "active",
+          "action": "Tarkistaa profiilit, rakennusbriefit ja käynnistysriippuvuudet."
+        },
+        {
+          "name": "Myynti ja digitaalinen toimitus",
+          "trigger": "Varmennettu maksutapahtuma",
+          "mode": "Autonominen julkaisun jälkeen",
+          "status": "waiting",
+          "action": "Toimitus, kertaluonteisuuden varmistus ja virheen uusintayritys."
+        },
+        {
+          "name": "Asiakaspalvelu",
+          "trigger": "Asiakkaan tukipyyntö",
+          "mode": "Autonominen hyväksytyissä ohjeissa",
+          "status": "waiting",
+          "action": "Toimitus- ja käyttökysymykset; poikkeukset käsiteltäviksi."
+        },
+        {
+          "name": "Laatu ja sisältöhuolto",
+          "trigger": "Tuotteen muutos tai vanhentunut lähde",
+          "mode": "Autonominen rajatussa sisällössä",
+          "status": "waiting",
+          "action": "Tarkistus, rajattu korjaus ja julkaisutestin läpäisy."
+        },
+        {
+          "name": "SEO, myynti ja kustannukset",
+          "trigger": "Viikkokooste ja olennaiset poikkeukset",
+          "mode": "Autonominen seuranta",
+          "status": "waiting",
+          "action": "Havaitsee toimitus-, näkyvyys- ja kustannuspoikkeamat."
+        }
+      ],
+      "readiness": {
+        "state": "prelaunch",
+        "last_checked_at": null,
+        "next_action": "Tuotteen sisältö, myyntipolku, laatutestit ja toimituskytkentä toteutetaan ennen asiakasajoja.",
+        "checks": [],
+        "issues": []
+      },
+      "profiles": [
+        {
+          "name": "Tarjousvalmis",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Laskurien ja tarjouspohjien testit sekä toimialapakettien päivitys.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Kotikaava",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "PDF-, tulostus- ja käyttöönotto-ohjeiden testit.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Perheklik",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Ikäryhmän ja ohjeiden sopivuuden tarkistus; rutiinipaketin toimitus.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Kaksinhetki",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Ilta- ja korttipakettien toimitus sekä rajatun uuden sisällön laatutarkistus.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Päiväraami",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Viikko- ja laskentapohjien testit sekä vuosiversiot.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Huomenvara",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "AI-lähteiden muutosseuranta ja lähteistetyt sisältöpäivitykset.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        },
+        {
+          "name": "Väljä",
+          "trigger": "Tuotteen toimitus tai sisältöpäivitys",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Harjoituspolun toimitus, asiakkaan tilaamat muistutukset ja palautekooste.",
+          "dependency": "Tuote, laatutestit ja toimituskanava"
+        }
+      ]
+    }
+  },
+  {
+    "key": "business-micro-utilities",
+    "operations": {
+      "schema_version": 1,
+      "status": "configured",
+      "authority_recorded_at": "2026-10-13",
+      "authority_source": "Omistaja: pienihintaiset tuotteet saavat toimia autonomisesti.",
+      "policy": "Pienihintaisten tuotteiden rutiinitoimet saavat toimia autonomisesti nykyisen tuotesisällön, laatuehtojen ja sovittujen kustannusrajojen sisällä. Google Ads -muutokset edellyttävät lisäksi asiakkaan tilivaltuutusta, mainosbudjettia ja sallittujen muutosten rajoja.",
+      "allowed": [
+        "Maksetun tuotteen toimitus ja toimitusvirheen korjaus",
+        "Tilatun raportin tuottaminen varmennetusta datasta",
+        "Tavallinen asiakaspalvelu hyväksytyistä ohjeista",
+        "Sisältö- ja SEO-päivitys lukitussa tuoterajauksessa laatutarkistuksen jälkeen",
+        "Turvallinen uusintayritys ja tuloksen varmennus"
+      ],
+      "owner_decisions": [
+        "Uusi kustannussitoumus tai sovitun kustannusrajan korotus",
+        "Liiketoimintamallin tai tuoterajauksen olennainen muutos",
+        "Oikeudellinen sitoumus tai peruuttamaton tietomuutos"
+      ],
+      "jobs": [
+        {
+          "name": "Officen automaation valmiusvalvonta",
+          "trigger": "Kuuden tunnin välein",
+          "mode": "Autonominen",
+          "status": "active",
+          "action": "Tarkistaa profiilit, rakennusbriefit ja käynnistysriippuvuudet."
+        },
+        {
+          "name": "Myynti ja digitaalinen toimitus",
+          "trigger": "Varmennettu maksutapahtuma",
+          "mode": "Autonominen julkaisun jälkeen",
+          "status": "waiting",
+          "action": "Toimitus, kertaluonteisuuden varmistus ja virheen uusintayritys."
+        },
+        {
+          "name": "Asiakaspalvelu",
+          "trigger": "Asiakkaan tukipyyntö",
+          "mode": "Autonominen hyväksytyissä ohjeissa",
+          "status": "waiting",
+          "action": "Toimitus- ja käyttökysymykset; poikkeukset käsiteltäviksi."
+        },
+        {
+          "name": "Laatu ja sisältöhuolto",
+          "trigger": "Tuotteen muutos tai vanhentunut lähde",
+          "mode": "Autonominen rajatussa sisällössä",
+          "status": "waiting",
+          "action": "Tarkistus, rajattu korjaus ja julkaisutestin läpäisy."
+        },
+        {
+          "name": "SEO, myynti ja kustannukset",
+          "trigger": "Viikkokooste ja olennaiset poikkeukset",
+          "mode": "Autonominen seuranta",
+          "status": "waiting",
+          "action": "Havaitsee toimitus-, näkyvyys- ja kustannuspoikkeamat."
+        }
+      ],
+      "readiness": {
+        "state": "prelaunch",
+        "last_checked_at": null,
+        "next_action": "Tuotteen sisältö, myyntipolku, laatutestit ja toimituskytkentä toteutetaan ennen asiakasajoja.",
+        "checks": [],
+        "issues": []
+      },
+      "profiles": [
+        {
+          "name": "Yritystietojen oikeellisuustesti",
+          "trigger": "Tilauksesta",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Tietojen vertailu ja lähteistetty raportti.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "Kotisivu- ja AI-luettavuustesti",
+          "trigger": "Tilauksesta tai sovitulla seurantavälillä",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Rajattu sivutarkistus ja havaintoraportti.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "Yritysmuutosten seuranta",
+          "trigger": "Lähdepäivityksen valmistuttua",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Muutosten tunnistus ja asiakkaan tilaamat ilmoitukset.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "Julkisten hankintojen vahti",
+          "trigger": "Päivittäin lähdepäivityksen jälkeen",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Ilmoitusten täsmäytys, määräajat ja tilatut ilmoitukset.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "Kilpailija-analyysi",
+          "trigger": "Tilauksesta; seurannassa kuukausittain",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Lähteistetty vertailu ja muutosten yhteenveto.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "AI-näkyvyystesti",
+          "trigger": "Tilauksesta; seurannassa kuukausittain",
+          "mode": "Autonominen",
+          "status": "waiting",
+          "action": "Toistettava kysymyssarja ja näkyvyystulos.",
+          "dependency": "Varmennettu tietopohja, lähdekytkentä ja raportin laatutesti"
+        },
+        {
+          "name": "Automaattinen Google Ads -palvelu",
+          "trigger": "Päivittäinen seuranta; muutokset havaintojen mukaan",
+          "mode": "Autonominen asiakkaan valtuutuksella",
+          "status": "waiting",
+          "action": "Tulokset, konversioseuranta ja rajattu optimointi asiakkaan mainostilillä.",
+          "dependency": "Mainostili, asiakkaan budjetti ja konversioseuranta"
+        }
+      ]
+    }
+  }
+]

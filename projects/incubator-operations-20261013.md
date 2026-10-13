@@ -1,0 +1,7 @@
+# Office incubator operations — 2026-10-13
+
+Owner authorized small-priced products to operate autonomously and requested visible maintenance automation in Office. The current Digital Studio brands and company-data miniapps have seven operations profiles each, with triggers, allowed routine actions, readiness dependencies and truthful runtime state. Autonomous routine work is allowed within the existing product scope, quality rules and agreed cost limits. New cost commitments, legal commitments, destructive operations and material pivots still need a separate decision. Customer Google Ads operations additionally need account authorization, customer ad budget and permitted change bounds. No paid calls, ad campaigns or customer messages were started.
+
+Active automation: office-incubator-readiness-v1, cron 17 */6 * * *. A private-to-API security-invoker function checks the two authorized canonical project bindings and brand build briefs, then writes actual check timestamps and readiness evidence into their existing connection metadata. Initial invocation verified two groups. Customer jobs remain waiting until products, delivery/source integrations and quality tests exist. The monitor does not claim to test unavailable external products.
+
+Office displays the policy, monitor state, latest check, jobs and per-product profiles. Backend auth modules unchanged. API roles cannot invoke the mutating monitor. Current runtime state belongs to canonical metadata, not the initial JSON setup snapshot.

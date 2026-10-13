@@ -139,7 +139,7 @@ export function publicIncubator(value, project) {
   })) : [];
   if (new Set(brands.map(b=>b.key)).size!==brands.length) return null;
   return {...pickText(value,['name','goal','status','source_title','source_date','content_status','brand_model','brief_updated_at','brief_source']),
-    schema_version:1,parent_project_id:project.id,workflow:list(value.workflow),shared_capabilities:list(value.shared_capabilities),brands,
+    operations:publicOperations(value.operations),schema_version:1,parent_project_id:project.id,workflow:list(value.workflow),shared_capabilities:list(value.shared_capabilities),brands,
     miniapps:(brands.find(b=>b.key==='yritystentiedot')?.products.slice(1)||[]).map((p,i)=>({...p,key:'miniapp-'+i,goal:p.description,theme:'Miniappi',price_range:p.price||'Hinnoittelu avoin',products:[]}))};
 }
 
@@ -150,4 +150,11 @@ export function publicBuildBrief(value) {
   for(const key of ['mvp','inputs','outputs','dependencies','acceptance','non_goals','open_decisions'])
     result[key]=Array.isArray(value[key])?value[key].filter(x=>typeof x==='string').slice(0,20).map(x=>x.slice(0,2000)):[];
   return result;
+}
+
+export function publicOperations(value){
+ if(!object(value)||value.schema_version!==1)return null;
+ const list=v=>Array.isArray(v)?v.filter(x=>typeof x==='string').slice(0,30).map(x=>x.slice(0,2000)):[];
+ const jobs=v=>Array.isArray(v)?v.filter(object).slice(0,30).map(x=>pickText(x,['name','trigger','mode','status','action','dependency'])):[];
+ return {...pickText(value,['status','policy','authority_recorded_at','authority_source']),schema_version:1,allowed:list(value.allowed),owner_decisions:list(value.owner_decisions),jobs:jobs(value.jobs),profiles:jobs(value.profiles),readiness:object(value.readiness)?{...pickText(value.readiness,['state','last_checked_at','next_action']),checks:list(value.readiness.checks),issues:list(value.readiness.issues)}:null};
 }
