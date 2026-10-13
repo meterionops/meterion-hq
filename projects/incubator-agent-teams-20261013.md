@@ -23,3 +23,7 @@ The six-hour deterministic readiness cron already exists and remains unchanged. 
 - Owner-authenticated real provider execution remains unverified: no owner session is available in this working environment. Test provider responses were fixtures; no fabricated production runtime history was inserted.
 
 Backend: Control Room `cavvdvxicadgfftbziao`, owner bridge v14. Provider runtime remains in `yokcfxcbomuaupxxxoha`. Source/provider credentials were not retrieved or copied.
+
+## Published checkpoint
+
+Office production deployment `dpl_4DuMg9oAp1xEev5g4AmDnmAuYTCd` is READY and aliased to `https://ai-company-os-ceo-dashboard.vercel.app`. Frontend source commit `dfdaedfde90b79d43fddc986ecb86532f00a1d16`; backend implementation commit `86f4b166c3fed133aca05f3536db946be6956c22`. Both remain on `office-autonomous-maintenance-20261013`; main was not used as a deployment source. Production JS and CSS match the tested source byte-for-byte. Edge v14 files match persisted source. Backread confirms all 14 brand briefs and 7 miniapp briefs are unchanged.
