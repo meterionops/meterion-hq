@@ -72,13 +72,27 @@ export async function readOfficePortfolio(admin, organizationId) {
         && Array.isArray(saved.source_tables) && saved.source_tables.length > 0;
       return {...pick(w, ['id','work_unit_key','objective','definition_of_done','status','updated_at','completed_at']),
         result: verified ? publicResult(saved) : null,
+        team: publicTeam(w.metadata?.office_team),
         next_action: typeof w.metadata?.next_action === 'string' ? w.metadata.next_action.slice(0,5000) : null,
         resume_note: typeof w.metadata?.resume_note === 'string' ? w.metadata.resume_note.slice(0,5000) : null,
         maintenance: object(w.metadata?.office_maintenance) ? pickText(w.metadata.office_maintenance,
           ['schedule_label','next_expected_at','schedule_recorded_at','pilot_end_at']) : null};
     }) : [];
   }
+  const teamRuns=portfolio.entries.flatMap(p=>p.work_units.filter(w=>w.team).map(w=>w.team.run_key));
+  if(teamRuns.length){
+    const nodes=await admin.from('control_room_project_graph_nodes_v1').select('graph_run_key,node_key,status,result,evidence,started_at,completed_at').in('graph_run_key',teamRuns.slice(0,100)).limit(601);
+    for(const p of portfolio.entries)for(const w of p.work_units)if(w.team){
+      w.team.nodes=!nodes.error&&Array.isArray(nodes.data)?nodes.data.filter(n=>n.graph_run_key===w.team.run_key).map(n=>({...pickText(n,['node_key','status','started_at','completed_at']),summary:typeof n.result?.summary==='string'?n.result.summary.slice(0,2000):null,code:typeof n.result?.code==='string'?n.result.code.slice(0,100):null,provider:typeof n.evidence?.provider==='string'?n.evidence.provider:null,model:typeof n.evidence?.model==='string'?n.evidence.model:null,provider_runtime_run_id:typeof n.evidence?.provider_runtime_run_id==='string'?n.evidence.provider_runtime_run_id:null,estimated_cost_usd:typeof n.evidence?.estimated_cost_usd==='number'?n.evidence.estimated_cost_usd:null})):null;
+    }
+  }
   return portfolio;
+}
+
+export function publicTeam(value){
+ if(!object(value)||value.schema_version!==1||typeof value.run_key!=='string'||!value.run_key.startsWith('office-team-'))return null;
+ const artifact=object(value.artifact)?{...pickText(value.artifact,['target_key','target_name','objective','artifact_status','created_at']),steps:Array.isArray(value.artifact.steps)?value.artifact.steps.filter(x=>typeof x==='string').slice(0,5):[],acceptance:Array.isArray(value.artifact.acceptance)?value.artifact.acceptance.filter(x=>typeof x==='string').slice(0,5):[],risks:Array.isArray(value.artifact.risks)?value.artifact.risks.filter(x=>typeof x==='string').slice(0,3):[]}:null;
+ return {...pickText(value,['run_key','trigger','target_key','target_name','started_at','runtime']),schema_version:1,continuous_ai:false,artifact};
 }
 
 export function publicResult(value) {
@@ -158,3 +172,4 @@ export function publicOperations(value){
  const jobs=v=>Array.isArray(v)?v.filter(object).slice(0,30).map(x=>pickText(x,['name','trigger','mode','status','action','dependency'])):[];
  return {...pickText(value,['status','policy','authority_recorded_at','authority_source']),schema_version:1,allowed:list(value.allowed),owner_decisions:list(value.owner_decisions),jobs:jobs(value.jobs),profiles:jobs(value.profiles),readiness:object(value.readiness)?{...pickText(value.readiness,['state','last_checked_at','next_action']),checks:list(value.readiness.checks),issues:list(value.readiness.issues)}:null};
 }
+

@@ -3,6 +3,7 @@ import { createRemoteJWKSet, jwtVerify } from "npm:jose@6.1.0";
 
 import { readOfficePortfolio } from "./office-portfolio.mjs";
 import { hasCurrentOwnerAccess } from "./current-owner.mjs";
+import { runTeamCycle } from "./team-cycle.mjs";
 
 type JsonObject = Record<string, unknown>;
 
@@ -154,6 +155,14 @@ export default {
     }
 
     const action = body.action;
+    if (action === 'run_incubator_team_cycle') {
+      try {
+        const data = await runTeamCycle(ctx.supabaseAdmin, request.headers.get('authorization'), projectKey(body.project_key));
+        return json(request, 200, {ok:true, action, data, request_id:requestId});
+      } catch {
+        return json(request, 503, {ok:false,code:'team_start_failed',request_id:requestId});
+      }
+    }
     const allowedActions: ReadAction[] = [
       "get_project_state",
       "get_projects",
@@ -264,3 +273,4 @@ export default {
     });
   }),
 };
+
